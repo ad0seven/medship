@@ -225,14 +225,14 @@
           log("Upload");
           xhr.onload = function () {
               log(this.status);
-              if (this.status == 500) {
+              if (this.status == 200) {
                 log("Sending Blob to Python");
                 new_img = this.response;
                 log("Sending Objects to JS");
             }
-            xhr.send(fd);
-            recordedChunks[index] = new_img;
           };
+          xhr.send(fd);
+          recordedChunks[index] = new_img;
         })
 
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
