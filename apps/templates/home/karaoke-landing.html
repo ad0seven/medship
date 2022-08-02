@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Expression Practice {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+      <div class="body flex-grow-1 px-3">
+        <div class="container-lg">
+          <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-center" style="color: #E7751D"><strong>Expression Practice</strong></h4>
+                <p class="card-text">
+                  Let's practice controlling your face and expression! We've found that people commonly have less control and understanding
+                  of their expression than they realize. So, we've designed <strong style="color: #E7751D">Expression Practice</strong>, a tool
+                  to help you learn to control your expression.
+                </p>
+                <p class="card-text">
+                  Choose an expression to practice below! To skip <strong style="color: #E7751D">Expression Practice</strong>, click "Continue".
+                </p>
+                <p>
+                  <div class="row">
+                    <div class = "col">
+                      <div class ="card">
+                        <div class="card-body text-center">
+                          <a href="karaoke-sad.html" class="btn btn-primary stretched-link"><p class="card-text">Sad Emoji</p></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class = "col">
+                        <div class ="card">
+                            <div class="card-body text-center">
+                            <a href="karaoke-happy.html" class="btn btn-primary stretched-link"><p class="card-text">Happy Emoji</p></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "col">
+                      <div class ="card">
+                          <div class="card-body text-center">
+                          <a href="karaoke-angry.html" class="btn btn-primary stretched-link"><p class="card-text">Angry Emoji</p></a>
+                          </div>
+                      </div>
+                  </div>
+                  <div class = "col">
+                    <div class ="card">
+                        <div class="card-body text-center">
+                        <a href="karaoke-neutral.html" class="btn btn-primary stretched-link"><p class="card-text">Neutral Emoji</p></a>
+                        </div>
+                    </div>
+                </div>
+                <div class = "col">
+                  <div class ="card">
+                      <div class="card-body text-center">
+                      <a href="karaoke-fear.html" class="btn btn-primary stretched-link"><p class="card-text">Fear Emoji</p></a>
+                      </div>
+                  </div>
+                </div>  
+                  </div>
+                </p>
+              </div>
+          </div>
+          <br>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="home-about.html">
+          <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
+          </a>
+        </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="training-landing.html">
+          <button class="btn btn-dark" type="button">Continue</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+
+{% endblock javascripts %}

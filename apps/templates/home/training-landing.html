@@ -1,0 +1,95 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Training {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <div class="card mb-4"> 
+        <div class="card-body">
+          <h4 class="card-title text-center" style="color: #E7751D"><strong>Module Selection</strong></h4>
+          <p> <strong style="color: #E7751D">Medship</strong> is composed of several modules,
+          each one portraying a unique clinical vignette of interest, that focuses on specific and actionable training points. Click on the a tile below to 
+          train. </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3 ">
+            <div class="card-header">Module 1</div>
+            <div class="card-body">
+              <h5 class="card-title">Trauma-Informed Introduction</h5>
+              <a href="training-m1-setup.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Module 2</div>
+            <div class="card-body">
+              <h5 class="card-title">Meeting the Patient Where They Are At</h5>
+              <a href="training-m2-setup.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-xl-4">
+          <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Module 3</div>
+            <div class="card-body">
+              <h5 class="card-title">Coming Soon</h5>
+              <p class="card-text">This module is not available yet. Please check back later.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Module 4</div>
+            <div class="card-body">
+              <h5 class="card-title">Coming Soon</h5>
+              <p class="card-text">This module is not available yet. Please check back later.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Module 5</div>
+            <div class="card-body">
+              <h5 class="card-title">Coming Soon</h5>
+              <p class="card-text">This module is not available yet. Please check back later.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Module 6</div>
+            <div class="card-body">
+              <h5 class="card-title">Coming Soon</h5>
+              <p class="card-text">This module is not available yet. Please check back later.</p>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+
+{% endblock javascripts %}
