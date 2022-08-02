@@ -205,9 +205,15 @@
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
         // log("about to SAVE!");
-        let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+
         log("Sending video blob to upload");
-        let objects = upload_video(recordedBlob)
+        recordedChunks.forEach((element, index) => {
+          bt = new Blob(element, {type: 'image/jpeg'});
+          recordedChunks[index] = upload_video(bt)
+        })
+
+        let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+        // let objects = upload_video(recordedBlob)
         // log("SAVING!");
         recording.src = URL.createObjectURL(recordedBlob);
         // log("SAVED!");
@@ -255,14 +261,14 @@
       var fd = new FormData();
       fd.append("vid_file", blob);
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "/ml_upload_vid", true);
+      xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
           log("Sending Blob to Python");
-          objects = JSON.parse(this.response);
+          new_img = this.response;
           log("Sending Objects to JS");
           xhr.send(fd);
-          return objects
+          return new_img
         }
       };
       xhr.send(fd);

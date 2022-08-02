@@ -52,14 +52,24 @@ def upload_file():
 
         return json.dumps(face_properties)
 
-@app.route('/ml_upload_vid', methods=['POST', 'GET'])
-def upload_vid():
+# @app.route('/ml_upload_vid', methods=['POST', 'GET'])
+# def upload_vid():
+#     if request.method == 'POST' and 'vid_file' in request.files:
+#         video = request.files["vid_file"]
+#         # filename = secure_filename(video.filename) # Secure the filename to prevent some kinds of attack
+#         # media_set.save(video, name=filename)
+#         vid_properties = classify_video(video, video.filename, face_detector, model)
+#         return json.dumps(vid_properties)
+
+@app.route('/ml_upload_vid_frames', methods=['POST', 'GET'])
+def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
-        video = request.files["vid_file"]
-        # filename = secure_filename(video.filename) # Secure the filename to prevent some kinds of attack
-        # media_set.save(video, name=filename)
-        vid_properties = classify_video(video, video.filename, face_detector, model)
-        return json.dumps(vid_properties)
+        f = request.files['vid_file'].read()
+        npimg = np.fromstring(f, np.uint8)
+        img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
+        new_img = classify_video(img, face_detector, model)
+
+        return new_img
 
 
 if DEBUG:
