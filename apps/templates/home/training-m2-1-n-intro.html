@@ -140,35 +140,32 @@
       streamParent.toBlob(upload, "image/jpeg");
     }
 
+    function blobToDataURL(blob, callback) {
+        var a = new FileReader();
+        a.onload = function(e) {callback(e.target.result);}
+        a.readAsDataURL(blob);
+    }
+
     function startRecording(stream, lengthInMS) {
-      // log("Started Recording");
       let recorder = new MediaRecorder(stream);
       let data = [];
-      let blobevents = [];
-      // recorder.ondataavailable = function(e) {
-      //   let dt = e.data;
-      //   log("Making Blob with Frame");
-      //   let bdt = new Blob(dt, {type: 'image/jpeg'});
-      //   log("Uploading Blob");
-      //   objects = upload(bdt);
-      //   log("Received Objects");
-      //   objects.forEach(object => {
-      //     let label = object.label;
-      //     let score = Number(object.score);
-      //     let x = Number(object.x);
-      //     let y = Number(object.y);
-      //     let width = Number(object.width);
-      //     let height = Number(object.height);
-      //     // do this in python?
-      //     log("Objects have values, x = ", x);
-      //     bdt.fillText(label + " - " + score, x + 5, y + 20); // Cant draw on a blob
-      //     bdt.strokeRect(x, y, width, height);
-      //   });
-      //   // log("Pushing Data")
-      //   data.push(bdt);
-      // } 
-      // recorder.ondataavailable = event => data.push(event.data);
-      recorder.ondataavailable = event => data.push(event);
+
+      recorder.ondataavailable = function(e) {
+        log('1');
+        let dt = e.data;
+        log('2');
+        let obj = document.createElement('a');
+        log('3');
+        blobToDataURL(dt, function(dataurl){
+          link.href = dataurl;
+        });
+        log('4');
+        let eblob = new Blob(obj, {type: 'image/jpeg'})
+        log('5');
+        data.push(eblob);
+      }
+      
+      // recorder.ondataavailable = event => data.push(event);
       // log(data);
       // log(blobevents);
       recorder.start();
@@ -196,18 +193,14 @@
     }
 
     function startListener() {
-      // log("Started Listening");
       navigator.mediaDevices.getUserMedia({video: true, audio: true})
       .then(stream => {
-        // log("Connected to Stream");
         preview.srcObject = stream;
         downloadButton.href = stream;
         preview.captureStream = preview.captureStream || preview.mozCaptureStream;
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
-        // log(recordedChunks);
-
         log("Sending video blob to upload");
         recordedChunks.forEach((element, index) => {
           log("Iteration");
