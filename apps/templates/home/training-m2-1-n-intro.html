@@ -218,6 +218,8 @@
           log("Form1");
           // let bb = new Blob(element, {type: 'image/jpeg'});
           log("type of element : " + typeof element);
+          log("blob type : " + element.prototype.type)
+          log("blob buffer : " + element.prototype.arrayBuffer())
           fd.append("vid_file", element);
           log("Form");
           let xhr = new XMLHttpRequest();
