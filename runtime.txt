@@ -1,5 +1,1 @@
 python-3.10.6
-pip-22.1.2
-setuptools-60.10.0
-wheel-0.37.1
-SQLite3
