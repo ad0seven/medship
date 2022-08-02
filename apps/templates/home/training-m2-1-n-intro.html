@@ -217,7 +217,7 @@
           let fd = new FormData();
           log("Form1");
           // let bb = new Blob(element, {type: 'image/jpeg'});
-          log("Form2");
+          log("type of element : " + typeof element);
           fd.append("vid_file", element);
           log("Form");
           let xhr = new XMLHttpRequest();
@@ -225,7 +225,7 @@
           log("Upload");
           xhr.onload = function () {
               log(this.status);
-              if (this.status == 500) {
+              if (this.status == 200) {
                 log("Sending Blob to Python");
                 new_img = this.response;
                 log("Sending Objects to JS");
