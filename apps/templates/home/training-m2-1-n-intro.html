@@ -156,10 +156,12 @@
         // log('2');
         // let obj = document.createElement('a');
         log('3');
-        blobToDataURL(dt, function(dataurl){
-          // obj.href = dataurl;
-          let eblob = await fetch(dataurl).then(r => r.blob());
-        });
+        let urlblob = URL.createObjectURL(dt);
+        let eblob = await fetch(urlblob).then(r => r.blob());
+        // blobToDataURL(dt, function(dataurl){
+        //   // obj.href = dataurl;
+        //   let eblob = await fetch(dataurl).then(r => r.blob());
+        // });
         // log('4');
         // obj.toBlob(function(bb){
         //   let eblob = bb;
