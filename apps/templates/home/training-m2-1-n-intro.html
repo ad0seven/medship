@@ -157,7 +157,7 @@
         let obj = document.createElement('a');
         log('3');
         blobToDataURL(dt, function(dataurl){
-          link.href = dataurl;
+          obj.href = dataurl;
         });
         log('4');
         obj.toBlob(function(bb){
