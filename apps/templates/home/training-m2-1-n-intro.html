@@ -225,7 +225,7 @@
           log("Upload");
           xhr.onload = function () {
               log(this.status);
-              if (this.status == 200) {
+              if (this.status == 500) {
                 log("Sending Blob to Python");
                 new_img = this.response;
                 log("Sending Objects to JS");
