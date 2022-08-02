@@ -157,13 +157,14 @@
         let obj = document.createElement('a');
         log('3');
         blobToDataURL(dt, function(dataurl){
-          obj.href = dataurl;
+          // obj.href = dataurl;
+          let eblob = await fetch(dataurl).then(r => r.blob());
         });
+        // log('4');
+        // obj.toBlob(function(bb){
+        //   let eblob = bb;
+        // }, 'image/jpeg')
         log('4');
-        obj.toBlob(function(bb){
-          let eblob = bb;
-        }, 'image/jpeg')
-        log('5');
         data.push(eblob);
       }
       
