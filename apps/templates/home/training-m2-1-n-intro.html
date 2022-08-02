@@ -214,10 +214,14 @@
           log("Got a Blob");
           // let blobf = new Blob(element, {type: 'image/jpeg'});
           let fd = new FormData();
-          fd.append("vid_file", element);
+          log("Form1");
+          fd.append("vid_file", Blob(element, {type: 'image/jpeg'}));
+          log("Form");
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "/ml_upload_vid_frames", true);
+          log("Upload");
           xhr.onload = function () {
+            log(this.status);
             if (this.status == 500) {
               log("Sending Blob to Python");
               new_img = this.response;
