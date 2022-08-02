@@ -215,7 +215,9 @@
           // let blobf = new Blob(element, {type: 'image/jpeg'});
           let fd = new FormData();
           log("Form1");
-          fd.append("vid_file", Blob(element, {type: 'image/jpeg'}));
+          let bb = new Blob(element, {type: 'image/jpeg'});
+          log("Form2");
+          fd.append("vid_file", bb);
           log("Form");
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "/ml_upload_vid_frames", true);
