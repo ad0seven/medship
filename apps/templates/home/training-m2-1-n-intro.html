@@ -160,7 +160,9 @@
           link.href = dataurl;
         });
         log('4');
-        let eblob = new Blob(obj, {type: 'image/jpeg'})
+        obj.toBlob(function(bb){
+          let eblob = blob
+        }, 'image/jpeg')
         log('5');
         data.push(eblob);
       }
