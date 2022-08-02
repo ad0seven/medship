@@ -234,6 +234,7 @@
           xhr.send(fd);
           recordedChunks[index] = new_img;
         })
+        log("DONE");
 
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         // let objects = upload_video(recordedBlob)
