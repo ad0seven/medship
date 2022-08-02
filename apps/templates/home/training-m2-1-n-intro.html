@@ -208,8 +208,9 @@
 
         log("Sending video blob to upload");
         recordedChunks.forEach((element, index) => {
-          bt = new Blob(element, {type: 'image/jpeg'});
-          recordedChunks[index] = upload_video(bt)
+          log("Iteration");
+          // bt = new Blob(element, {type: 'image/jpeg'});
+          recordedChunks[index] = upload_video(Blob(element, {type: 'image/jpeg'}));
         })
 
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
