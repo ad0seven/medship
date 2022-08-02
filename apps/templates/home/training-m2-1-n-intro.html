@@ -221,8 +221,8 @@
           log("type of element : " + typeof element);
           let bb = new Blob(element.data, {type: 'image/jpeg'});
           log("create image blob : " + bb)
-          log("blob type : " + bb.prototype.type)
-          log("blob buffer : " + bb.prototype.arrayBuffer())
+          // log("blob type : " + bb.prototype.type)
+          // log("blob buffer : " + bb.prototype.arrayBuffer())
           fd.append("vid_file", bb);
           log("Form");
           let xhr = new XMLHttpRequest();
