@@ -211,27 +211,28 @@
           log("Iteration");
           // bt = new Blob(element, {type: 'image/jpeg'});
           // recordedChunks[index] = upload_video(new Blob(element, {type: 'image/jpeg'}));
+          log(element);
           log("Got a Blob");
           // let blobf = new Blob(element, {type: 'image/jpeg'});
           let fd = new FormData();
           log("Form1");
-          let bb = new Blob(element, {type: 'image/jpeg'});
+          // let bb = new Blob(element, {type: 'image/jpeg'});
           log("Form2");
-          fd.append("vid_file", bb);
+          fd.append("vid_file", element);
           log("Form");
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "/ml_upload_vid_frames", true);
           log("Upload");
           xhr.onload = function () {
-            log(this.status);
-            if (this.status == 500) {
-              log("Sending Blob to Python");
-              new_img = this.response;
-              log("Sending Objects to JS");
-          }
-          xhr.send(fd);
-          recordedChunks[index] = new_img;
-      };
+              log(this.status);
+              if (this.status == 500) {
+                log("Sending Blob to Python");
+                new_img = this.response;
+                log("Sending Objects to JS");
+            }
+            xhr.send(fd);
+            recordedChunks[index] = new_img;
+          };
         })
 
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
