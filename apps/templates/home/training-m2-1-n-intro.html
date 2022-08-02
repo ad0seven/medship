@@ -218,7 +218,7 @@
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "/ml_upload_vid_frames", true);
           xhr.onload = function () {
-            if (this.status == 200) {
+            if (this.status == 500) {
               log("Sending Blob to Python");
               new_img = this.response;
               log("Sending Objects to JS");
