@@ -157,7 +157,8 @@
         // let obj = document.createElement('a');
         log('3');
         let urlblob = URL.createObjectURL(dt);
-        let eblob = await fetch(urlblob).then(r => r.blob());
+        log(urlblob)
+        // let eblob = await fetch(urlblob).then(r => r.blob());
         // blobToDataURL(dt, function(dataurl){
         //   // obj.href = dataurl;
         //   let eblob = await fetch(dataurl).then(r => r.blob());
@@ -167,10 +168,10 @@
         //   let eblob = bb;
         // }, 'image/jpeg')
         log('4');
-        data.push(eblob);
+        // data.push(eblob);
       }
       
-      // recorder.ondataavailable = event => data.push(event);
+      recorder.ondataavailable = event => data.push(event.data);
       // log(data);
       // log(blobevents);
       recorder.start();
