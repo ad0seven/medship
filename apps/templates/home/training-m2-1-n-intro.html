@@ -220,7 +220,8 @@
           log("Form1");
           // let bb = new Blob(element, {type: 'image/jpeg'});
           log("type of element : " + typeof element);
-          log("create image blob : " + new Blob(element.data, {type: 'image/jpeg'}))
+          let bb = new Blob(element.data, {type: 'image/jpeg'});
+          log("create image blob : " + bb)
           log("blob type : " + element.data.prototype.type)
           log("blob buffer : " + element.data.prototype.arrayBuffer())
           fd.append("vid_file", element);
