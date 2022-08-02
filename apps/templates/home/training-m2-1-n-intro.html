@@ -168,9 +168,9 @@
       //   data.push(bdt);
       // } 
       recorder.ondataavailable = event => data.push(event.data);
-      recorder.ondataavailable = event => blobevents.push(event);
-      log(data);
-      log(blobevents);
+      // recorder.ondataavailable = event => blobevents.push(event);
+      // log(data);
+      // log(blobevents);
       recorder.start();
       // vid.play();
       vid.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
@@ -206,7 +206,7 @@
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
-        log(recordedChunks);
+        // log(recordedChunks);
 
         log("Sending video blob to upload");
         recordedChunks.forEach((element, index) => {
