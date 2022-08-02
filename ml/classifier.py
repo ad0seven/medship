@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-from keras.preprocessing import image as im
-import skvideo.io
 
 def classify_video(vid, filename, face_detector, model):
     print('VIDEO ', vid)

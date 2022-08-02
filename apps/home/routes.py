@@ -3,12 +3,7 @@ from jinja2 import TemplateNotFound
 from flask_login import login_required
 from flask import render_template, request
 
-import cv2
-import json
-import numpy as np
 from flask import request
-from ml.classifier import classify
-from keras.models import model_from_json
 
 @blueprint.route('/index')
 @login_required
