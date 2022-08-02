@@ -150,26 +150,26 @@
       let recorder = new MediaRecorder(stream);
       let data = [];
 
-      recorder.ondataavailable = function(e) {
-        log('1');
-        let dt = e.data;
-        // log('2');
-        // let obj = document.createElement('a');
-        log('3');
-        let urlblob = URL.createObjectURL(dt);
-        log(urlblob)
-        // let eblob = await fetch(urlblob).then(r => r.blob());
-        // blobToDataURL(dt, function(dataurl){
-        //   // obj.href = dataurl;
-        //   let eblob = await fetch(dataurl).then(r => r.blob());
-        // });
-        // log('4');
-        // obj.toBlob(function(bb){
-        //   let eblob = bb;
-        // }, 'image/jpeg')
-        log('4');
-        // data.push(eblob);
-      }
+      // recorder.ondataavailable = function(e) {
+      //   log('1');
+      //   let dt = e.data;
+      //   // log('2');
+      //   // let obj = document.createElement('a');
+      //   log('3');
+      //   let urlblob = URL.createObjectURL(dt);
+      //   log(urlblob)
+      //   // let eblob = await fetch(urlblob).then(r => r.blob());
+      //   // blobToDataURL(dt, function(dataurl){
+      //   //   // obj.href = dataurl;
+      //   //   let eblob = await fetch(dataurl).then(r => r.blob());
+      //   // });
+      //   // log('4');
+      //   // obj.toBlob(function(bb){
+      //   //   let eblob = bb;
+      //   // }, 'image/jpeg')
+      //   log('4');
+      //   // data.push(eblob);
+      // }
       
       recorder.ondataavailable = event => data.push(event.data);
       // log(data);
@@ -221,9 +221,9 @@
           log("type of element : " + typeof element);
           let bb = new Blob(element.data, {type: 'image/jpeg'});
           log("create image blob : " + bb)
-          log("blob type : " + element.data.prototype.type)
-          log("blob buffer : " + element.data.prototype.arrayBuffer())
-          fd.append("vid_file", element);
+          log("blob type : " + bb.prototype.type)
+          log("blob buffer : " + bb.prototype.arrayBuffer())
+          fd.append("vid_file", bb);
           log("Form");
           let xhr = new XMLHttpRequest();
           xhr.open("POST", "/ml_upload_vid_frames", true);
