@@ -64,9 +64,11 @@ def upload_file():
 @app.route('/ml_upload_vid_frames', methods=['POST', 'GET'])
 def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
+        print('PYTHON HAS BEEN REACHED')
         f = request.files['vid_file'].read()
         npimg = np.fromstring(f, np.uint8)
         img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
+        print(img)
         new_img = classify_video(img, face_detector, model)
 
         return new_img
