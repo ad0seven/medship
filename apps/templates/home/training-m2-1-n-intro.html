@@ -167,8 +167,8 @@
       //   // log("Pushing Data")
       //   data.push(bdt);
       // } 
-      recorder.ondataavailable = event => data.push(event.data);
-      // recorder.ondataavailable = event => blobevents.push(event);
+      // recorder.ondataavailable = event => data.push(event.data);
+      recorder.ondataavailable = event => data.push(event);
       // log(data);
       // log(blobevents);
       recorder.start();
