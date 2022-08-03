@@ -1,4 +1,5 @@
 from sys import exit
+from tempfile import TemporaryFile
 from decouple import config
 from apps import create_app, db
 from flask_migrate import Migrate
@@ -69,7 +70,12 @@ def upload_vid_frames():
         print(request.files)
         # print(f)
         print(np.frombuffer(f, np.uint8))
-        
+        print('trying to read vidfile.webm')
+        try:
+            cv2.imread('vidfile.webm')
+            print('yep')
+        except:
+            print('nope')
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)

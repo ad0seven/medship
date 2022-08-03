@@ -5,6 +5,10 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 
+<!-- https://cdnjs.com/libraries/FileSaver.js -->
+<!-- https://github.com/eligrey/FileSaver.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
 {% endblock stylesheets %}
 
 {% block content %}
@@ -243,9 +247,13 @@
 
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        let objects = await upload_video(recordedBlob);
-        log(typeof objects);
-        log(objects);
+        let vidfile = new File([recordedBlob], 'vidfile.webm')
+        log('trying to save vidfile');
+        saveAs(vidfile);
+        upload_video(recordedBlob);
+        // let objects = upload_video(recordedBlob);
+        // log(typeof objects);
+        // log(objects.vidfile);
         // recordedBlob = objects.vid_file;
         log('RecordedBlob has been changed to itself');
         // let objects = upload_video(recordedBlob)
