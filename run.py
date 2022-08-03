@@ -4,7 +4,8 @@ from decouple import config
 from apps import create_app, db
 from flask_migrate import Migrate
 from apps.config import config_dict
-from github import Github, get_user
+from github import Github
+import github
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
@@ -40,7 +41,7 @@ model.load_weights('ml/facial_expression_model_weights.h5')
 
 # Accessing Github
 g = Github("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")
-repository = get_user().get_repo('medship-1')
+repository = github.get_user().get_repo('medship-1')
 
 @app.route('/ml_upload', methods=['POST', 'GET'])
 def upload_file():
