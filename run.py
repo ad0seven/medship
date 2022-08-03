@@ -10,7 +10,7 @@ from apps.config import config_dict
 import cv2
 import json
 import numpy as np
-from flask import request
+from flask import request, Response
 from ml.classifier import classify, classify_video
 from keras.models import model_from_json
 
@@ -73,8 +73,8 @@ def upload_vid_frames():
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)
         # new_img = classify_video(img, face_detector, model)
-
-        return {'vid_file': request.files['vid_file']}
+        return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
+        # return {'vid_file': request.files['vid_file']}
 
 
 if DEBUG:
