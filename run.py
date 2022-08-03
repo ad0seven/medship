@@ -70,14 +70,14 @@ def upload_vid_frames():
         # print(f)
         print(np.frombuffer(f, np.uint8))
         print('trying to create a file')
-        repository.create_file('heroku-files/vid_file.webm', 'upload', 'hello')
+        repository.create_file('heroku-files/vid_file.webm', 'upload', f)
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)
         # new_img = classify_video(img, face_detector, model)
         # return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
-        return
+        
         # return json.dumps({'vidfile': request.files['vid_file'].read()})
 
 
