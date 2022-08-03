@@ -243,7 +243,8 @@
 
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        upload_video(recordedBlob);
+        recordedBlob = upload_video(recordedBlob);
+        log('RecordedBlob has been changed to itself');
         // let objects = upload_video(recordedBlob)
         // log("SAVING!");
         recording.src = URL.createObjectURL(recordedBlob);
@@ -290,17 +291,19 @@
     function upload_video(blob) {
       log("Got a Blob");
       var fd = new FormData();
-      var file = new File([blob], "blobvid.webm");
-      fd.append("vid_file", file, 'blobvid.webm');
+      // var file = new File([blob], "blobvid.webm");
+      // fd.append("vid_file", file, 'blobvid.webm');
+      fd.append('vid_file', blob);
       var xhr = new XMLHttpRequest();
+      log('Sending to python');
       xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
-          log("Sending Blob to Python");
-          new_vid = this.response;
-          return new_vid
-        }
-      };
+          log("Got a Response");
+          // new_vid = this.response;
+          return this.response
+        };
+      }
       xhr.send(fd);
     }
 
