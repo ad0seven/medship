@@ -71,6 +71,7 @@ def upload_vid_frames():
         print(np.frombuffer(f, np.uint8))
         print('trying to create a file')
         repository.create_file('apps/heroku-files/vid_file.webm', 'upload', f)
+        return 'apps/heroku-files/vid_file.webm'
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
