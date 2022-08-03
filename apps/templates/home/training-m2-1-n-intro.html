@@ -243,7 +243,9 @@
 
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        recordedBlob = upload_video(recordedBlob);
+        let objects = upload_video(recordedBlob);
+        log(objects);
+        recordedBlob = objects.vid_file;
         log('RecordedBlob has been changed to itself');
         // let objects = upload_video(recordedBlob)
         // log("SAVING!");

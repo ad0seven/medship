@@ -67,14 +67,14 @@ def upload_vid_frames():
         print('PYTHON HAS BEEN REACHED')
         f = request.files['vid_file'].read()
         print(request.files)
-        print(f)
+        # print(f)
         print(np.frombuffer(f, np.uint8))
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)
         # new_img = classify_video(img, face_detector, model)
 
-        return request.files['vid_file']
+        return json.dumps([{'vid_file': request.files['vid_file']}])
 
 
 if DEBUG:
