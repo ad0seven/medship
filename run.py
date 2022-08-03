@@ -5,11 +5,10 @@ from apps import create_app, db
 from flask_migrate import Migrate
 from apps.config import config_dict
 from github import Github
-import github
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
-# import os
+import os
 import cv2
 import json
 import numpy as np
@@ -40,8 +39,8 @@ model = model_from_json(open("ml/facial_expression_model_structure.json", "r").r
 model.load_weights('ml/facial_expression_model_weights.h5')
 
 # Accessing Github
-g = Github("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")
-repository = github.get_user().get_repo('medship')
+g = Github(str(os.getenv('GH_SECRET')))
+repository = g.get_user().get_repo('medship')
 
 @app.route('/ml_upload', methods=['POST', 'GET'])
 def upload_file():
