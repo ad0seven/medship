@@ -69,8 +69,11 @@ def upload_vid_frames():
         print(request.files)
         # print(f)
         print(np.frombuffer(f, np.uint8))
-        print('trying to create a file')
-        repository.create_file('apps/heroku-files/vid_file.webm', 'upload', f)
+        print('trying to read original file')
+        file = repository.get_contents('apps/heroku-files/vid_file.webm')
+        print('sha ', file.sha)
+        print('trying to update a file')
+        repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
         return 'apps/heroku-files/vid_file.webm'
 
         # npimg = np.fromstring(f, np.uint8)
