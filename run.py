@@ -74,7 +74,7 @@ def upload_vid_frames():
         print('sha ', file.sha)
         print('trying to update a file')
         repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
-        return 'apps/heroku-files/vid_file.webm'
+        return '/heroku-files/vid_file.webm'
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)

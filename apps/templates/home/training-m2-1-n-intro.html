@@ -107,10 +107,10 @@
     let vidfile = document.getElementById('vidfile')
     let vidfileParent = document.getElementById('vidfileparent')
 
-    function show_vidfile() {
+    function show_vidfile(file) {
       vidfile.style.display = 'inline';
       vidfileParent.style.display = 'inline';
-      vidfile.src = 'heroku-files/vid_file.webm';
+      vidfile.src = file;
     }
 
     function showReplay() {
@@ -262,10 +262,10 @@
         // let vidfile = new File([recordedBlob], 'vidfile.webm')
         log('trying to save vidfile');
         // saveAs(vidfile);
-        upload_video(recordedBlob);
+        file = upload_video(recordedBlob);
 
         log('trying to read vidfile');
-        show_vidfile();
+        show_vidfile(file);
         // let objects = upload_video(recordedBlob);
         // log(typeof objects);
         // log(objects.vidfile);
