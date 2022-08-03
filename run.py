@@ -74,7 +74,7 @@ def upload_vid_frames():
         # print(img)
         # new_img = classify_video(img, face_detector, model)
         # return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
-        return {'vid_file': request.files['vid_file'].read()}
+        return json.dumps(request.files['vid_file'].read())
 
 
 
