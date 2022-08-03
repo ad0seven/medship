@@ -243,7 +243,7 @@
 
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        let objects = upload_video(recordedBlob);
+        let objects = await upload_video(recordedBlob);
         log(typeof objects);
         log(objects);
         // recordedBlob = objects.vid_file;
