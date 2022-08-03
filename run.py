@@ -41,7 +41,7 @@ model.load_weights('ml/facial_expression_model_weights.h5')
 
 # Accessing Github
 g = Github("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")
-repository = github.get_user().get_repo('medship-1')
+repository = github.get_user().get_repo('medship')
 
 @app.route('/ml_upload', methods=['POST', 'GET'])
 def upload_file():
