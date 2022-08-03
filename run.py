@@ -74,7 +74,7 @@ def upload_vid_frames():
         # print(img)
         # new_img = classify_video(img, face_detector, model)
 
-        return json.dumps([{'vid_file': request.files['vid_file']}])
+        return {'vid_file': request.files['vid_file']}
 
 
 if DEBUG:
