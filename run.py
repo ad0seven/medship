@@ -69,6 +69,7 @@ def upload_vid_frames():
         print(request.files)
         # print(f)
         print(np.frombuffer(f, np.uint8))
+        
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)

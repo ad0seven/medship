@@ -244,8 +244,9 @@
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let objects = upload_video(recordedBlob);
+        log(typeof objects);
         log(objects);
-        recordedBlob = objects.vid_file;
+        // recordedBlob = objects.vid_file;
         log('RecordedBlob has been changed to itself');
         // let objects = upload_video(recordedBlob)
         // log("SAVING!");
@@ -301,7 +302,7 @@
       xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
-          log("Got a Response");
+          log("Got a Response, " + this.response);
           // new_vid = this.response;
           return this.response
         };
