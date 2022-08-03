@@ -73,8 +73,9 @@ def upload_vid_frames():
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)
         # new_img = classify_video(img, face_detector, model)
-        return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
-        # return {'vid_file': request.files['vid_file']}
+        # return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
+        return {'vid_file': request.files['vid_file'].read()}
+
 
 
 if DEBUG:
