@@ -4,6 +4,7 @@ from decouple import config
 from apps import create_app, db
 from flask_migrate import Migrate
 from apps.config import config_dict
+from github import Github, get_user
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
@@ -37,11 +38,9 @@ face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_front
 model = model_from_json(open("ml/facial_expression_model_structure.json", "r").read())
 model.load_weights('ml/facial_expression_model_weights.h5')
 
-# media_set = UploadSet('media', ('mp4'))
-
-# app.config["UPLOADED_PHOTOS_DEST"] = os.getcwd()
-# app.config["SECRET_KEY"] = os.urandom(24)
-# configure_uploads(app, media_set)
+# Accessing Github
+g = Github("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")
+repository = get_user().get_repo('medship-1')
 
 @app.route('/ml_upload', methods=['POST', 'GET'])
 def upload_file():
@@ -70,18 +69,16 @@ def upload_vid_frames():
         print(request.files)
         # print(f)
         print(np.frombuffer(f, np.uint8))
-        print('trying to read vidfile.webm')
-        try:
-            cv2.imread('vidfile.webm')
-            print('yep')
-        except:
-            print('nope')
+        print('trying to create a file')
+        fl = repository.create_file('heroku-files/vid_file.webm', 'upload', np.frombuffer(f, np.uint8))
+
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
         # print(img)
         # new_img = classify_video(img, face_detector, model)
         # return Response(np.frombuffer(f, np.uint8), mimetype='video/webm')
-        return json.dumps({'vidfile': request.files['vid_file'].read().decode('utf-8')})
+        return
+        # return json.dumps({'vidfile': request.files['vid_file'].read()})
 
 
 

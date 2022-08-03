@@ -60,6 +60,10 @@
         </div>
         </div>
       </div>
+      <div id="vidfileparent" class ="card-body text-center" style="display: none">
+        <iframe class="video" controls=0 id="vidfile" style="width: 90%; height: 32vw; object-fit: cover;">
+        </iframe>
+      </div>
     </div>
 </div>
 
@@ -100,6 +104,14 @@
     let downloadButton = document.getElementById("showReplay");
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
+    let vidfile = document.getElementById('vidfile')
+    let vidfileParent = document.getElementById('vidfileparent')
+
+    function show_vidfile() {
+      vidfile.style.display = 'inline';
+      vidfileParent.style.display = 'inline';
+      vidfile.src = 'heroku-files/vid_file.webm';
+    }
 
     function showReplay() {
       parents.style.display = "none";
@@ -247,10 +259,13 @@
 
         // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        let vidfile = new File([recordedBlob], 'vidfile.webm')
+        // let vidfile = new File([recordedBlob], 'vidfile.webm')
         log('trying to save vidfile');
-        saveAs(vidfile);
+        // saveAs(vidfile);
         upload_video(recordedBlob);
+
+        log('trying to read vidfile');
+        show_vidfile();
         // let objects = upload_video(recordedBlob);
         // log(typeof objects);
         // log(objects.vidfile);
