@@ -7,7 +7,7 @@ from apps.config import config_dict
 from flask import request
 # from flask_bootstrap import Bootstrap
 # from flask_wtf.csrf import CSRFProtect
-# from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename
  
 # from flask_mail import Mail
 from ml.s3 import *
@@ -16,6 +16,8 @@ from ml.s3 import *
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
+import random
+import string
 import os
 import cv2
 import json
@@ -106,14 +108,15 @@ def upload_vid_frames():
         # repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
 
         print('trying to upload to S3')
-        client.upload_fileobj(f, 'medship', 'vid_file.webm')
+        fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)))
+        client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn)
         # client.put_object(Body=f,
         #                   Bucket='medship',
         #                   Key='vid_file.webm',
         #                   ContentType='video/webm')
         print('uploaded to s3')
 
-        return 'vid_file.webm'
+        return fn
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
