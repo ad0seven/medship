@@ -8,6 +8,7 @@
 <!-- https://cdnjs.com/libraries/FileSaver.js -->
 <!-- https://github.com/eligrey/FileSaver.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.179.0.min.js"></script>
 
 {% endblock stylesheets %}
 
@@ -61,9 +62,12 @@
         </div>
       </div>
       <div id="vidfileparent" class ="card-body text-center" style="display: none">
-        <iframe class="video" controls=0 id="vidfile" style="width: 90%; height: 32vw; object-fit: cover;">
+        <iframe class="video"  style="width: 90%; height: 32vw; object-fit: cover;">
         </iframe>
       </div>
+      <video controls="controls" controlsList=”nodownload” width="640" height="360">
+        <source src="https://medship.s3.amazonaws.com/svwdvkdqox.webm" type="video/webm">
+      </video>
     </div>
 </div>
 
@@ -289,6 +293,27 @@
           // log(error);
         }
       });
+    }
+
+    function myCtrl($scope, $timeout) {    
+        AWS.config.update({
+            accessKeyId: AWSACCESS, 
+            secretAccessKey: AWSSECRET
+        });
+        AWS.config.region = AWSREGION;
+        
+        var bucket = new AWS.S3({params: {Bucket: 'YOUR_BUCKET'}});
+        
+        bucket.getObject({Key: 'happy-face.jpg'}, function(err,file){
+            $timeout(function(){
+                $scope.s3url = "data:image/jpeg;base64," + encode(file.Body);
+            }, 1);
+        });
+    }
+
+    function encode(data) {
+        var str = data.reduce(function(a,b){ return a+String.fromCharCode(b) },'');
+        return btoa(str).replace(/.{76}(?=.)/g,'$&\n');
     }
 
     function stopListener() {
