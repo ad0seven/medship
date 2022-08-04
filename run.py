@@ -1,10 +1,18 @@
 from sys import exit
-from tempfile import TemporaryFile
 from decouple import config
 from apps import create_app, db
 from flask_migrate import Migrate
 from apps.config import config_dict
-from github import Github
+
+from flask import request
+# from flask_bootstrap import Bootstrap
+# from flask_wtf.csrf import CSRFProtect
+# from werkzeug.utils import secure_filename
+ 
+# from flask_mail import Mail
+from ml.s3 import *
+
+# from github import Github
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
@@ -12,8 +20,8 @@ import os
 import cv2
 import json
 import numpy as np
-from flask import request, Response
-from ml.classifier import classify, classify_video
+from flask import request
+from ml.classifier import classify
 from keras.models import model_from_json
 
 # WARNING: Don't run with debug turned on in production!
@@ -39,8 +47,30 @@ model = model_from_json(open("ml/facial_expression_model_structure.json", "r").r
 model.load_weights('ml/facial_expression_model_weights.h5')
 
 # Accessing Github
-g = Github(str(os.getenv('GH_SECRET')))
-repository = g.get_user().get_repo('medship')
+# g = Github(str(os.getenv('GH_SECRET')))
+# repository = g.get_user().get_repo('medship')
+
+ALLOWED_EXTENSIONS = set(['webm', 'mp4'])
+
+client = boto3.client(
+    's3',
+    aws_access_key_id = str(os.getenv('AWS_ACCESS')),
+    aws_secret_access_key = str(os.getenv('AWS_SECRET')),
+    region_name = 'us-east-1'
+)
+    
+# Creating the high level object oriented interface
+resource = boto3.resource(
+    's3',
+    aws_access_key_id = str(os.getenv('AWS_ACCESS')),
+    aws_secret_access_key = str(os.getenv('AWS_SECRET')),
+    region_name = 'us-east-1'
+)
+ 
+ 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/ml_upload', methods=['POST', 'GET'])
 def upload_file():
@@ -69,12 +99,20 @@ def upload_vid_frames():
         print(request.files)
         # print(f)
         print(np.frombuffer(f, np.uint8))
-        print('trying to read original file')
-        file = repository.get_contents('apps/heroku-files/vid_file.webm')
-        print('sha ', file.sha)
-        print('trying to update a file')
-        repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
-        return '/heroku-files/vid_file.webm'
+        # print('trying to read original file')
+        # file = repository.get_contents('apps/heroku-files/vid_file.webm')
+        # print('sha ', file.sha)
+        # print('trying to update a file')
+        # repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
+
+        print('trying to upload to S3')
+        client.put_object(Body=f,
+                          Bucket='medship',
+                          Key='vid_file.webm',
+                          ContentType='video/webm')
+        print('uploaded to s3')
+
+        return 'vid_file.webm'
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
@@ -84,7 +122,40 @@ def upload_vid_frames():
         
         # return json.dumps({'vidfile': request.files['vid_file'].read()})
 
-
+# @app.route('/upload_files_to_s3', methods=['GET', 'POST'])
+# def upload_files_to_s3():
+#     if request.method == 'POST':
+ 
+#         # No file selected
+#         if 'file' not in request.files:
+#             flash(f' *** No files Selected', 'danger')
+ 
+#         file_to_upload = request.files['file']
+#         content_type = request.mimetype
+ 
+#         # if empty files
+#         if file_to_upload.filename == '':
+#             flash(f' *** No files Selected', 'danger')
+ 
+#         # file uploaded and check
+#         if file_to_upload and allowed_file(file_to_upload.filename):
+ 
+ 
+#             file_name = secure_filename(file_to_upload.filename)
+ 
+#             print(f" *** The file name to upload is {file_name}")
+#             print(f" *** The file full path  is {file_to_upload}")
+ 
+#             bucket_name = "medship"
+ 
+#             s3_upload_small_files(file_to_upload, bucket_name, file_name,content_type )
+#             flash(f'Success - {file_to_upload} Is uploaded to {bucket_name}', 'success')
+ 
+#         else:
+#             flash(f'Allowed file type are - webm - mp4.Please upload proper formats...', 'danger')
+ 
+#     return ''
+#     # return redirect(url_for('index'))
 
 if DEBUG:
     app.logger.info('DEBUG       = ' + str(DEBUG))

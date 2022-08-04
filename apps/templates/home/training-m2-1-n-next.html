@@ -2,12 +2,7 @@
 
 {% block title %} Module 2 - Intro Neutral {% endblock %} 
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-
-<!-- https://cdnjs.com/libraries/FileSaver.js -->
-<!-- https://github.com/eligrey/FileSaver.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 {% endblock stylesheets %}
 
@@ -104,14 +99,6 @@
     let downloadButton = document.getElementById("showReplay");
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
-    let vidfile = document.getElementById('vidfile')
-    let vidfileParent = document.getElementById('vidfileparent')
-
-    function show_vidfile(file) {
-      vidfile.style.display = 'inline';
-      vidfileParent.style.display = 'inline';
-      vidfile.src = file;
-    }
 
     function showReplay() {
       parents.style.display = "none";
@@ -152,46 +139,11 @@
 
     let timeInterval = null;
 
-    function reps() {
-      streamParent.toBlob(upload, "image/jpeg");
-    }
-
-    function blobToDataURL(blob, callback) {
-        var a = new FileReader();
-        a.onload = function(e) {callback(e.target.result);}
-        a.readAsDataURL(blob);
-    }
-
     function startRecording(stream, lengthInMS) {
       let recorder = new MediaRecorder(stream);
       let data = [];
-
-      // recorder.ondataavailable = function(e) {
-      //   log('1');
-      //   let dt = e.data;
-      //   // log('2');
-      //   // let obj = document.createElement('a');
-      //   log('3');
-      //   let urlblob = URL.createObjectURL(dt);
-      //   log(urlblob)
-      //   // let eblob = await fetch(urlblob).then(r => r.blob());
-      //   // blobToDataURL(dt, function(dataurl){
-      //   //   // obj.href = dataurl;
-      //   //   let eblob = await fetch(dataurl).then(r => r.blob());
-      //   // });
-      //   // log('4');
-      //   // obj.toBlob(function(bb){
-      //   //   let eblob = bb;
-      //   // }, 'image/jpeg')
-      //   log('4');
-      //   // data.push(eblob);
-      // }
-      
       recorder.ondataavailable = event => data.push(event.data);
-      // log(data);
-      // log(blobevents);
       recorder.start();
-      // vid.play();
       vid.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
 
       let stopped = new Promise((resolve, reject) => {
@@ -223,76 +175,14 @@
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
-        // log("Sending video blob to upload");
-        // recordedChunks.forEach((element, index) => {
-        //   log("Iteration");
-        //   // bt = new Blob(element, {type: 'image/jpeg'});
-        //   // recordedChunks[index] = upload_video(new Blob(element, {type: 'image/jpeg'}));
-        //   log(element);
-        //   log("Got a Blob");
-        //   // let blobf = new Blob(element, {type: 'image/jpeg'});
-        //   let fd = new FormData();
-        //   log("Form1");
-        //   // let bb = new Blob(element, {type: 'image/jpeg'});
-        //   log("type of element : " + typeof element);
-        //   let bb = new Blob(element.data, {type: 'image/jpeg'});
-        //   log("create image blob : " + bb)
-        //   // log("blob type : " + bb.prototype.type)
-        //   // log("blob buffer : " + bb.prototype.arrayBuffer())
-        //   fd.append("vid_file", bb);
-        //   log("Form");
-        //   let xhr = new XMLHttpRequest();
-        //   xhr.open("POST", "/ml_upload_vid_frames", true);
-        //   log("Upload");
-        //   xhr.onload = function () {
-        //       log(this.status);
-        //       if (this.status == 200) {
-        //         log("Sending Blob to Python");
-        //         new_img = this.response;
-        //         log("Sending Objects to JS");
-        //     }
-        //   };
-        //   xhr.send(fd);
-        //   recordedChunks[index] = new_img;
-        // })
-        // log("DONE");
-
-        // let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        // let vidfile = new File([recordedBlob], 'vidfile.webm')
-        log('trying to save vidfile');
-        // saveAs(vidfile);
-        file = upload_video(recordedBlob);
-        print('file received ' + file)
-        // log('trying to read vidfile');
-        // show_vidfile(file);
-        // let objects = upload_video(recordedBlob);
-        // log(typeof objects);
-        // log(objects.vidfile);
-        // recordedBlob = objects.vid_file;
-        log('RecordedBlob has been changed to itself');
-        // let objects = upload_video(recordedBlob)
-        // log("SAVING!");
         recording.src = URL.createObjectURL(recordedBlob);
-        // log("SAVED!");
         downloadButton.href = recording.src;
-        // log("File located at  " + URL.createObjectURL(recordedBlob));
         downloadButton.download = "RecordedVideo.webm";
-
-        // log("Successfully recorded " + recordedBlob.size + " bytes of " +
-        //     recordedBlob.type + " media.");
-      })
-      .catch((error) => {
-        if (error.name === "NotFoundError") {
-          // log("Camera or microphone not found. Can't record.");
-        } else {
-          // log(error);
-        }
       });
     }
 
     function stopListener() {
-      // log("Stopped Listening");
       stop(preview.srcObject);
     }
 
@@ -314,25 +204,6 @@
       xhr.send(fd);
     }
 
-    function upload_video(blob) {
-      log("Got a Blob");
-      var fd = new FormData();
-      // var file = new File([blob], "blobvid.webm");
-      // fd.append("vid_file", file, 'blobvid.webm');
-      fd.append('vid_file', blob);
-      var xhr = new XMLHttpRequest();
-      log('Sending to python');
-      xhr.open("POST", "/ml_upload_vid_frames", true);
-      xhr.onload = function () {
-        if (this.status == 200) {
-          log("Got a Response, " + this.response);
-          // new_vid = this.response;
-          return this.response
-        };
-      }
-      xhr.send(fd);
-    }
-
     let adjustedCanvas = false;
 
     function adjustCanvas(bool) {
@@ -346,12 +217,10 @@
     }
 
     function drawBoxes(objects) {
-      // log("Got the Objects");
       objects.forEach(object => {
         let label = object.label;
         let score = Number(object.score);
         let x = Number(object.x);
-        // log('X is ', x);
         let y = Number(object.y);
         let width = Number(object.width);
         let height = Number(object.height);
