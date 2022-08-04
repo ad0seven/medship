@@ -106,10 +106,11 @@ def upload_vid_frames():
         # repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
 
         print('trying to upload to S3')
-        client.put_object(Body=f,
-                          Bucket='medship',
-                          Key='vid_file.webm',
-                          ContentType='video/webm')
+        client.upload_fileobj(f, 'medship', 'vid_file.webm')
+        # client.put_object(Body=f,
+        #                   Bucket='medship',
+        #                   Key='vid_file.webm',
+        #                   ContentType='video/webm')
         print('uploaded to s3')
 
         return 'vid_file.webm'
