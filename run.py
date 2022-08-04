@@ -108,8 +108,9 @@ def upload_vid_frames():
         # repository.update_file(path = 'apps/heroku-files/vid_file.webm', message = 'upload', content = f, sha = file.sha)
 
         print('trying to upload to S3')
-        fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)))
-        client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn) 
+        fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.webm')
+        # client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn) 
+        resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
         # client.put_object(Body=f,
         #                   Bucket='medship',
         #                   Key='vid_file.webm',
