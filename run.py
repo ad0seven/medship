@@ -109,7 +109,7 @@ def upload_vid_frames():
 
         print('trying to upload to S3')
         fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)))
-        client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn)
+        client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn) 
         # client.put_object(Body=f,
         #                   Bucket='medship',
         #                   Key='vid_file.webm',
