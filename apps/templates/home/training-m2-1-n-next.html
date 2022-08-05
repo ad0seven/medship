@@ -60,20 +60,21 @@
   <script>
     let parents = document.getElementById("parents");
     let streamParent = document.getElementById('streamParent');
+    let preview = document.getElementById("stream");
     let vidParent = document.getElementById('vidParent');
     let vid = document.getElementById("vid");
-    let replayParent = document.getElementById("replayParent");
+    // let replayParent = document.getElementById("replayParent");
     let recordingTimeMS = 8000;
-    let preview = document.getElementById("stream");
-    let recording = document.getElementById("replay");
+    
+    // let recording = document.getElementById("replay");
     let startButton = document.getElementById("startRecord");
     let downloadButton = document.getElementById("showReplay");
     let downloadButtonDis = document.getElementById("showReplayDisabled");
-    let logElement = document.getElementById("log");
-    let drSuperParent = document.getElementById("drSuperParent");
-    let drSuperVid = document.getElementById("drSuperVid");
+    // let logElement = document.getElementById("log");
+    // let drSuperParent = document.getElementById("drSuperParent");
+    // let drSuperVid = document.getElementById("drSuperVid");
     let promptText = document.getElementById('promptText');
-    let parents2 = documen.getElementById('parents2');
+    // let parents2 = documen.getElementById('parents2');
     let filename = null;
 
     function enableButton() {
@@ -81,22 +82,22 @@
       downloadButtonDis.style.display = 'none';
     }
 
-    function showReplay() {
-      parents.style.display = "none";
-      promptText.style.display = "none";
-      replayParent.style.display = "inline";
-      drSuperParent.style.display = "inline";
-      startButton.style.display = "none";
-      downloadButton.style.display = "none";
-      parents2.style.display = 'inline';
-      recording.style.display = 'inline';
-      drSuperVid.style.display = 'inline';
-      getfilename();
-    }
+    // function showReplay() {
+    //   parents.style.display = "none";
+    //   promptText.style.display = "none";
+    //   replayParent.style.display = "inline";
+    //   drSuperParent.style.display = "inline";
+    //   startButton.style.display = "none";
+    //   downloadButton.style.display = "none";
+    //   parents2.style.display = 'inline';
+    //   recording.style.display = 'inline';
+    //   drSuperVid.style.display = 'inline';
+    //   getfilename();
+    // }
 
-    function log(msg) {
-      logElement.innerHTML += msg + "\n";
-    }
+    // function log(msg) {
+    //   logElement.innerHTML += msg + "\n";
+    // }
 
 
     function wait(delayInMS) {
@@ -134,17 +135,17 @@
     }
 
 
-    function getfilename() {
-      localStorage.setItem("filename", filename);
-      recording.src = filename;
-    }
+    // function getfilename() {
+    //   localStorage.setItem("filename", filename);
+    //   recording.src = filename;
+    // }
 
 
     function startListener() {
       navigator.mediaDevices.getUserMedia({video: true, audio: true})
       .then(stream => {
         preview.srcObject = stream;
-        downloadButton.href = stream;
+        // downloadButton.href = stream;
         preview.captureStream = preview.captureStream || preview.mozCaptureStream;
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
