@@ -63,7 +63,7 @@ def upload_file():
 
         return json.dumps(face_properties)
 
-@app.route('/ml_upload_vid_frames', methods=['POST', 'GET'])
+@app.route('/ml_upload_vid', methods=['POST', 'GET'])
 def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
         print('PYTHON HAS BEEN REACHED')

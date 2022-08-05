@@ -25,7 +25,7 @@
           </div>
           <div class="col">
             <div id="vidParent" class ="card-body text-center">
-              <video id="vid" controls="controls" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
+              <video id="vid" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
                 <source src="https://medship.s3.amazonaws.com/Intro.Neutral.Pt.mp4" type="video/mp4">
               </video>
             </div>
@@ -35,7 +35,7 @@
           <video id="replay" style="width: 90%; height: 32vw; object-fit: cover;" controls></video>
         </div> 
         <div id="drSuperParent" class ="card-body text-center" style="display: none">
-          <video id="drSuperVid" controls="controls" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
+          <video id="drSuperVid" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
             <source src="https://medship.s3.amazonaws.com/SplitClips.Superstar+3.MOV" type="video/quicktime">
           </video>
         </div> 
@@ -55,10 +55,6 @@
         </div>
         </div>
       </div>
-      <video id='testvid' controls="controls" controlsList=”nodownload” width="640" height="360">
-        <source src="https://medship.s3.amazonaws.com/svwdvkdqox.webm" type="video/webm">
-      </video>
-      <pre id="log"></pre>
     </div>
 </div>
 
@@ -81,18 +77,17 @@
     let drSuperButton = document.getElementById("drSuperButton");
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
-    let testvid = document.getElementById('testvid');
     let promptText = document.getElementById('promptText');
+    let filename = null;
 
 
     function showReplay() {
       parents.style.display = "none";
       promptText.style.display = "none";
       replayParent.style.display = "inline";
+      drSuperButton.style.display = "inline";
       startButton.style.display = "none";
-      // stopButton.style.display = "none";
       downloadButton.style.display = "none";
-      // restartButton.style.display = "inline";
       getfilename();
     }
 
@@ -142,13 +137,12 @@
       stream.getTracks().forEach(track => track.stop());
     }
 
-    let filename = null;
 
     function getfilename() {
-      log('filename ' + filename);
-      localStorage.setItem("filename",filename);
+      localStorage.setItem("filename", filename);
       recording.src = filename;
     }
+
 
     function startListener() {
       navigator.mediaDevices.getUserMedia({video: true, audio: true})
@@ -169,12 +163,11 @@
       var fd = new FormData();
       fd.append('vid_file', blob);
       var xhr = new XMLHttpRequest();
-      xhr.open("POST", "/ml_upload_vid_frames", true);
+      xhr.open("POST", "/ml_upload_vid", true);
       xhr.onload = function () {
         if (this.status == 200) {
           objects = JSON.parse(this.response);
           filename = objects[0].fn;
-          // return this.response
         };
       }
       xhr.send(fd);
