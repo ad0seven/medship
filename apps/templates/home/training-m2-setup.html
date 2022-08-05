@@ -53,6 +53,7 @@
           </a>
         </div>
       </div>
+      <pre id="log"></pre>
     </div>
   </div>
 
@@ -111,6 +112,12 @@
       drawCtx.fillStyle = "red";
       adjustedCanvas = true;
     }
+  }
+
+  let logElement = document.getElementById("log");
+
+  function log(msg) {
+      logElement.innerHTML += msg + "\n";
   }
 
   function startCamera() {
@@ -196,6 +203,7 @@
     xhr.onload = function () {
       if (this.status == 200) {
         objects = JSON.parse(this.response);
+        log('objects ' + objects);
         drawBoxes(objects);
       }
     };
