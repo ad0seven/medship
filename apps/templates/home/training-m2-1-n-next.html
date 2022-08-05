@@ -149,10 +149,12 @@
         preview.captureStream = preview.captureStream || preview.mozCaptureStream;
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
-      .then(recordedChunks => {
+      .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        return upload_video(recordedBlob)})
+        filename = upload_video(recordedBlob);
+        return new Promise(resolve => resolve(filename))})
       .then(filename => {
+        log('got filename from promise, ' + filename)
         localStorage.setItem("filename",filename);
         recording.src = filename;
       })
@@ -165,16 +167,14 @@
     }
 
 
-    async function upload_video(blob) {
+    function upload_video(blob) {
       var fd = new FormData();
       fd.append('vid_file', blob);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
-          const promise = new Promise(resolve => resolve(this.response));
-          const fn = await promise;
-          return fn;
+          return this.response
         };
       }
       xhr.send(fd);
