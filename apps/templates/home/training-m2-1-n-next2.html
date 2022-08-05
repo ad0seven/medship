@@ -19,7 +19,7 @@
         <div id="parents2" class="row row-cols-1 row-cols-md-2 g-4">
           <div class="col">
             <div id="replayParent" class ="card-body text-center">
-              <video id="replay" style="width: 100%; height: 32vw; object-fit: cover" controls ></video>
+              <video id="replay" style="width: 100%; height: 32vw; object-fit: cover" ></video>
             </div> 
           </div>
           <div class="col">
@@ -30,7 +30,6 @@
             </div> 
           </div>
         </div>
-        <pre id="log"></pre>
       <div class="row">
         <div class="col-6">
           <a class="nav-link" href="training-m2-1-n-next.html">
@@ -53,20 +52,11 @@
 {% block javascripts %}
 
   <script>
-    // let parents2 = documen.getElementById('parents2');
-    // let replayParent = document.getElementById("replayParent");
     let replayVid = document.getElementById("replay");
-    let logElement = document.getElementById("log");
-    // let drSuperParent = document.getElementById("drSuperParent");
     let drSuperVid = document.getElementById("drSuperVid");
-    // log('filename found ' + localStorage.getItem("filename"));
     let filename = localStorage.getItem("filename");
 
     replayVid.src = filename;
-
-    function log(msg) {
-        logElement.innerHTML += msg + "\n";
-    }
 
     function play() {
         replayVid.play();

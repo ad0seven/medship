@@ -33,7 +33,6 @@
         <div class="card-body text-center">
           <p class="display-5" id='promptText' style="color: #B31B1B">Introduce yourself. Ask their name and pronouns.</p>
         </div>
-      <pre id="log"></pre>
       <div class="row">
         <div class="col-6">
           <a class="nav-link" href="training-m2-clinical.html">
@@ -61,38 +60,14 @@
     let preview = document.getElementById("stream");
     let vidParent = document.getElementById('vidParent');
     let vid = document.getElementById("vid");
-    // let replayParent = document.getElementById("replayParent");
     let recordingTimeMS = 8000;
-    
-    // let recording = document.getElementById("replay");
     let startButton = document.getElementById("startRecord");
     let nextButton = document.getElementById("next");
-    let logElement = document.getElementById("log");
-    // let drSuperParent = document.getElementById("drSuperParent");
-    // let drSuperVid = document.getElementById("drSuperVid");
-    let promptText = document.getElementById('promptText');
-    // let parents2 = documen.getElementById('parents2');
     let filename = null;
+
 
     function enableButton() {
       nextButton.style.display = 'inline';
-    }
-
-    // function showReplay() {
-    //   parents.style.display = "none";
-    //   promptText.style.display = "none";
-    //   replayParent.style.display = "inline";
-    //   drSuperParent.style.display = "inline";
-    //   startButton.style.display = "none";
-    //   downloadButton.style.display = "none";
-    //   parents2.style.display = 'inline';
-    //   recording.style.display = 'inline';
-    //   drSuperVid.style.display = 'inline';
-    //   getfilename();
-    // }
-
-    function log(msg) {
-      logElement.innerHTML += msg + "\n";
     }
 
 
@@ -134,7 +109,6 @@
     function getfilename() {
       localStorage.setItem("filename", filename);
       enableButton();
-      log('filename set ' + localStorage.getItem("filename"));
     }
 
 
@@ -142,15 +116,12 @@
       navigator.mediaDevices.getUserMedia({video: true, audio: true})
       .then(stream => {
         preview.srcObject = stream;
-        // downloadButton.href = stream;
         preview.captureStream = preview.captureStream || preview.mozCaptureStream;
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
-        // wait(3000);
-        // enableButton();
       })
     }
 
