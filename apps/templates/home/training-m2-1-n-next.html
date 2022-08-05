@@ -149,15 +149,19 @@
         preview.captureStream = preview.captureStream || preview.mozCaptureStream;
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
-      .then (recordedChunks => {
+      .then(recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        filename = upload_video(recordedBlob);
+        return upload_video(recordedBlob)})
+      .then(filename => {
         localStorage.setItem("filename",filename);
-        // wait(5000);
-        // testvid.src = filename;
-        // recording.src = URL.createObjectURL(recordedBlob);
         recording.src = filename;
       })
+      //   localStorage.setItem("filename",filename);
+      //   // wait(5000);
+      //   // testvid.src = filename;
+      //   // recording.src = URL.createObjectURL(recordedBlob);
+      //   recording.src = filename;
+      // })
     }
 
 
