@@ -152,7 +152,7 @@
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         filename = upload_video(recordedBlob);
-        return new Promise(resolve => resolve(filename))})
+        return await new Promise(resolve => resolve(filename))})
       .then(filename => {
         log('got filename from promise, ' + filename)
         localStorage.setItem("filename",filename);
