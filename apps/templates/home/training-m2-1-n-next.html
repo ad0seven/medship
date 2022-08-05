@@ -13,9 +13,7 @@
         <div class ="card-body text-center">
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
-            <button class="btn btn-dark" type="button" id="startRecord" onclick="getfilename()">Save</button>
-            <button class="btn btn-primary" type="button" id="showReplayDisabled" disabled="" >Next</button>
-            <button class="btn btn-primary nav-link" href="training-m2-1-n-next2.html" type="button" id="showReplay" style="display: none">Next</button>
+            <button class="btn btn-dark" type="button" id="save" onclick="getfilename()">Save</button>
           </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
@@ -43,9 +41,9 @@
           </a>
         </div>
         <div class="col-6 text-end">
-          <a class="nav-link" href="training-landing.html">
-          <button class="btn btn-dark" type="button">Finish</button>
-          </a>
+          <a class="nav-link" href="training-m2-1-n-next2.html">
+            <button class="btn btn-primary" type="button" id="next" style="display: none">Next</button>
+          </a>  
         </div>
         </div>
       </div>
@@ -68,8 +66,7 @@
     
     // let recording = document.getElementById("replay");
     let startButton = document.getElementById("startRecord");
-    let downloadButton = document.getElementById("showReplay");
-    let downloadButtonDis = document.getElementById("showReplayDisabled");
+    let nextButton = document.getElementById("next");
     let logElement = document.getElementById("log");
     // let drSuperParent = document.getElementById("drSuperParent");
     // let drSuperVid = document.getElementById("drSuperVid");
@@ -78,8 +75,7 @@
     let filename = null;
 
     function enableButton() {
-      downloadButton.style.display = 'inline';
-      downloadButtonDis.style.display = 'none';
+      nextButton.style.display = 'inline';
     }
 
     // function showReplay() {
