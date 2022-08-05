@@ -53,7 +53,6 @@
           </a>
         </div>
       </div>
-      <pre id="log"></pre>
     </div>
   </div>
 
@@ -113,13 +112,7 @@
       adjustedCanvas = true;
     }
   }
-
-  let logElement = document.getElementById("log");
-
-  function log(msg) {
-      logElement.innerHTML += msg + "\n";
-  }
-
+  
   function startCamera() {
     if (navigator.mediaDevices) {
       navigator.mediaDevices.getUserMedia({ video: true, audio: false })

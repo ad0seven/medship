@@ -159,22 +159,9 @@
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
-        let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+        let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
       })
-      //   wait(3000);
-      //   return new Promise(resolve => resolve(filename))})
-      // .then(filename => {
-      //   log('got filename from promise, ' + filename)
-      //   localStorage.setItem("filename",filename);
-      //   recording.src = filename;
-      // })
-      //   localStorage.setItem("filename",filename);
-      //   // wait(5000);
-      //   // testvid.src = filename;
-      //   // recording.src = URL.createObjectURL(recordedBlob);
-      //   recording.src = filename;
-      // })
     }
 
 
