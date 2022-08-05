@@ -13,10 +13,9 @@
         <div class ="card-body text-center">
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
+            <button class="btn btn-dark" type="button" id="startRecord" onclick="getfilename()">Save</button>
             <button class="btn btn-primary" type="button" id="showReplayDisabled" disabled="" >Next</button>
-            <a class="nav-link" href="training-m2-1-n-next2.html">
-              <button class="btn btn-primary" type="button" id="showReplay" style="display: none">Next</button>
-            </a>
+            <button class="btn btn-primary nav-link" href="training-m2-1-n-next2.html" type="button" id="showReplay" style="display: none">Next</button>
           </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
@@ -136,10 +135,11 @@
     }
 
 
-    // function getfilename() {
-    //   localStorage.setItem("filename", filename);
-    //   recording.src = filename;
-    // }
+    function getfilename() {
+      localStorage.setItem("filename", filename);
+      enableButton();
+      log('filename set ' + localStorage.setItem("filename", filename));
+    }
 
 
     function startListener() {
@@ -153,8 +153,8 @@
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
-        wait(3000);
-        enableButton();
+        // wait(3000);
+        // enableButton();
       })
     }
 
@@ -168,8 +168,6 @@
         if (this.status == 200) {
           objects = JSON.parse(this.response);
           filename = objects[0].fn;
-          localStorage.setItem("filename", filename);
-          log('filename set ' + localStorage.setItem("filename", filename));
         };
       }
       xhr.send(fd);
