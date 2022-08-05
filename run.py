@@ -16,6 +16,7 @@ from werkzeug.utils import secure_filename
 # from flask_uploads import UploadSet, configure_uploads
 # from werkzeug.utils import secure_filename
 
+import boto3
 import random
 import string
 import os
