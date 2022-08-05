@@ -33,13 +33,13 @@
         </div>
         <div id="parents2" class="row row-cols-1 row-cols-md-2 g-4" style="display: none">
           <div class="col">
-            <div id="replayParent" class ="card-body text-center">
-              <video id="replay" style="width: 100%; height: 32vw; object-fit: cover;" controls></video>
+            <div id="replayParent" class ="card-body text-center" style="display: none">
+              <video id="replay" style="width: 100%; height: 32vw; object-fit: cover; display: none" controls ></video>
             </div> 
           </div>
           <div class="col">
-            <div id="drSuperParent" class ="card-body text-center">
-              <video id="drSuperVid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
+            <div id="drSuperParent" class ="card-body text-center" style="display: none">
+              <video id="drSuperVid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover; display: none">
                 <source src="https://medship.s3.amazonaws.com/SplitClips.Superstar+3.MOV" type="video/quicktime">
               </video>
             </div> 
@@ -83,6 +83,7 @@
     let downloadButtonDis = document.getElementById("showReplayDisabled");
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
+    let drSuperVid = document.getElementById("drSuperVid");
     let promptText = document.getElementById('promptText');
     let parents2 = documen.getElementById('parents2');
     let filename = null;
@@ -100,6 +101,8 @@
       startButton.style.display = "none";
       downloadButton.style.display = "none";
       parents2.style.display = 'inline';
+      recording.style.display = 'inline';
+      drSuperVid.style.display = 'inline';
       getfilename();
     }
 
