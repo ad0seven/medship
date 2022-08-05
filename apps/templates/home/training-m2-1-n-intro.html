@@ -266,7 +266,7 @@
         // let vidfile = new File([recordedBlob], 'vidfile.webm')
         log('trying to save vidfile');
         // saveAs(vidfile);
-        file = await upload_video(recordedBlob, callback);
+        file = upload_video(recordedBlob, callback);
         log('file received ' + file)
         log('file from other tab ' + localStorage.getItem("filename"));
         // log('trying to read vidfile');

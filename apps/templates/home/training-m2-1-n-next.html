@@ -151,7 +151,7 @@
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        filename = await upload_video(recordedBlob);
+        filename = upload_video(recordedBlob);
         localStorage.setItem("filename",filename);
         // wait(5000);
         // testvid.src = filename;
