@@ -186,7 +186,7 @@
       xhr.onload = function () {
         if (this.status == 200) {
           objects = JSON.parse(this.response);
-          filename = objects.fn;
+          filename = objects[0].fn;
           // return this.response
         };
       }
