@@ -266,7 +266,7 @@
         // let vidfile = new File([recordedBlob], 'vidfile.webm')
         log('trying to save vidfile');
         // saveAs(vidfile);
-        file = upload_video(recordedBlob);
+        file = await upload_video(recordedBlob, callback);
         log('file received ' + file)
         log('file from other tab ' + localStorage.getItem("filename"));
         // log('trying to read vidfile');
@@ -340,7 +340,7 @@
       xhr.send(fd);
     }
 
-    function upload_video(blob) {
+    async function upload_video(Blob) {
       log("Got a Blob");
       var fd = new FormData();
       // var file = new File([blob], "blobvid.webm");
@@ -352,8 +352,9 @@
       xhr.onload = function () {
         if (this.status == 200) {
           log("Got a Response, " + this.response);
-          // new_vid = this.response;
-          return this.response
+          const promise = new Promise(resolve => resolve(this.response));
+          const fn = await promise;
+          return fn;
         };
       }
       xhr.send(fd);

@@ -151,7 +151,7 @@
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        filename = upload_video(recordedBlob);
+        filename = await upload_video(recordedBlob);
         localStorage.setItem("filename",filename);
         // wait(5000);
         // testvid.src = filename;
@@ -161,14 +161,16 @@
     }
 
 
-    function upload_video(blob) {
+    async function upload_video(blob) {
       var fd = new FormData();
       fd.append('vid_file', blob);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
-          return this.response
+          const promise = new Promise(resolve => resolve(this.response));
+          const fn = await promise;
+          return fn;
         };
       }
       xhr.send(fd);
