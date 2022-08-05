@@ -36,6 +36,7 @@
         <div class="card-body text-center">
           <p class="display-5" id='promptText' style="color: #B31B1B">Introduce yourself. Ask their name and pronouns.</p>
         </div>
+      <pre id="log"></pre>
       <div class="row">
         <div class="col-6">
           <a class="nav-link" href="training-m2-clinical.html">
@@ -70,7 +71,7 @@
     let startButton = document.getElementById("startRecord");
     let downloadButton = document.getElementById("showReplay");
     let downloadButtonDis = document.getElementById("showReplayDisabled");
-    // let logElement = document.getElementById("log");
+    let logElement = document.getElementById("log");
     // let drSuperParent = document.getElementById("drSuperParent");
     // let drSuperVid = document.getElementById("drSuperVid");
     let promptText = document.getElementById('promptText');
@@ -95,9 +96,9 @@
     //   getfilename();
     // }
 
-    // function log(msg) {
-    //   logElement.innerHTML += msg + "\n";
-    // }
+    function log(msg) {
+      logElement.innerHTML += msg + "\n";
+    }
 
 
     function wait(delayInMS) {
@@ -153,7 +154,6 @@
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
         wait(3000);
-        localStorage.setItem("filename", filename);
         enableButton();
       })
     }
@@ -168,6 +168,8 @@
         if (this.status == 200) {
           objects = JSON.parse(this.response);
           filename = objects[0].fn;
+          localStorage.setItem("filename", filename);
+          log('filename set ' + localStorage.setItem("filename", filename));
         };
       }
       xhr.send(fd);
