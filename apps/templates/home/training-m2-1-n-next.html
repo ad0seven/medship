@@ -160,7 +160,7 @@
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
-        filename = upload_video(recordedBlob);
+        upload_video(recordedBlob);
       })
       //   wait(3000);
       //   return new Promise(resolve => resolve(filename))})
@@ -185,7 +185,9 @@
       xhr.open("POST", "/ml_upload_vid_frames", true);
       xhr.onload = function () {
         if (this.status == 200) {
-          return this.response
+          objects = JSON.parse(this.response);
+          filename = objects.fn;
+          // return this.response
         };
       }
       xhr.send(fd);

@@ -118,8 +118,8 @@ def upload_vid_frames():
         #                   Key='vid_file.webm',
         #                   ContentType='video/webm')
         print('uploaded to s3')
-
-        return 'https://medship.s3.amazonaws.com/{}'.format(fn)
+        full_fn = 'https://medship.s3.amazonaws.com/{}'.format(fn)
+        return json.dumps([{'fn': full_fn}])
 
         # npimg = np.fromstring(f, np.uint8)
         # img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
