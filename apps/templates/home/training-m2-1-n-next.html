@@ -84,7 +84,7 @@
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
     let promptText = document.getElementById('promptText');
-    let parents2 = documen.getElementById('parents2')
+    let parents2 = documen.getElementById('parents2');
     let filename = null;
 
     function enableButton() {
@@ -95,7 +95,8 @@
     function showReplay() {
       parents.style.display = "none";
       promptText.style.display = "none";
-      // replayParent.style.display = "inline";
+      replayParent.style.display = "inline";
+      drSuperParent.style.display = "inline";
       startButton.style.display = "none";
       downloadButton.style.display = "none";
       parents2.style.display = 'inline';
