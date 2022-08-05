@@ -13,32 +13,38 @@
         <div class ="card-body text-center">
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
-            <button class="btn btn-dark" type="button" id='drSuperButton' onclick="drSuper()" style="display: none" >Show Dr. Superstar</p>
-            <button class="btn btn-primary" type="button" id="showReplay" onclick="showReplay()">Next</button>
+            <button class="btn btn-primary" type="button" id="showReplayDisabled" disabled="" >Next</button>
+            <button class="btn btn-primary" type="button" id="showReplay" onclick="showReplay()" style="display: none">Next</button>
           </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
           <div class="col">
             <div id="streamParent" class ="card-body text-center">
-              <video id="stream" style="width: 100%; height: 25vw; object-fit: cover;" autoplay="" muted=""></video>
+              <video id="stream" style="width: 100%; height: 32vw; object-fit: cover;" autoplay="" muted=""></video>
             </div> 
           </div>
           <div class="col">
             <div id="vidParent" class ="card-body text-center">
-              <video id="vid" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
+              <video id="vid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
                 <source src="https://medship.s3.amazonaws.com/Intro.Neutral.Pt.mp4" type="video/mp4">
               </video>
             </div>
           </div>
         </div>
-        <div id="replayParent" class ="card-body text-center" style="display: none">
-          <video id="replay" style="width: 90%; height: 32vw; object-fit: cover;" controls></video>
-        </div> 
-        <div id="drSuperParent" class ="card-body text-center" style="display: none">
-          <video id="drSuperVid" controlsList=”nodownload” style="width: 90%; height: 32vw; object-fit: cover;">
-            <source src="https://medship.s3.amazonaws.com/SplitClips.Superstar+3.MOV" type="video/quicktime">
-          </video>
-        </div> 
+        <div id="parents2" class="row row-cols-1 row-cols-md-2 g-4" style="display: none">
+          <div class="col">
+            <div id="replayParent" class ="card-body text-center">
+              <video id="replay" style="width: 100%; height: 32vw; object-fit: cover;" controls></video>
+            </div> 
+          </div>
+          <div class="col">
+            <div id="drSuperParent" class ="card-body text-center">
+              <video id="drSuperVid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
+                <source src="https://medship.s3.amazonaws.com/SplitClips.Superstar+3.MOV" type="video/quicktime">
+              </video>
+            </div> 
+          </div>
+        </div>
         <div class="card-body text-center">
           <p class="display-5" id='promptText' style="color: #B31B1B">Introduce yourself. Ask their name and pronouns.</p>
         </div>
@@ -74,29 +80,27 @@
     let recording = document.getElementById("replay");
     let startButton = document.getElementById("startRecord");
     let downloadButton = document.getElementById("showReplay");
-    let drSuperButton = document.getElementById("drSuperButton");
+    let downloadButtonDis = document.getElementById("showReplayDisabled");
     let logElement = document.getElementById("log");
     let drSuperParent = document.getElementById("drSuperParent");
     let promptText = document.getElementById('promptText');
+    let parents2 = documen.getElementById('parents2')
     let filename = null;
 
+    function enableButton() {
+      downloadButton.style.display = 'inline';
+      downloadButtonDis.style.display = 'none';
+    }
 
     function showReplay() {
       parents.style.display = "none";
       promptText.style.display = "none";
-      replayParent.style.display = "inline";
-      drSuperButton.style.display = "inline";
+      // replayParent.style.display = "inline";
       startButton.style.display = "none";
       downloadButton.style.display = "none";
+      parents2.style.display = 'inline';
       getfilename();
     }
-
-
-    function drSuper() {
-      replayParent.style.display = "none";
-      drSuperParent.style.display = "inline";
-    }
-
 
     function log(msg) {
       logElement.innerHTML += msg + "\n";
@@ -155,6 +159,7 @@
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
+        enableButton();
       })
     }
 
