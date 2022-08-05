@@ -152,6 +152,7 @@
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         filename = upload_video(recordedBlob);
+        localStorage.setItem("filename",filename);
         // wait(5000);
         // testvid.src = filename;
         // recording.src = URL.createObjectURL(recordedBlob);

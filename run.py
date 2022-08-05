@@ -10,7 +10,7 @@ from flask import request
 from werkzeug.utils import secure_filename
  
 # from flask_mail import Mail
-from ml.s3 import *
+# from ml.s3 import *
 
 # from github import Github
 # from flask_uploads import UploadSet, configure_uploads
@@ -110,6 +110,7 @@ def upload_vid_frames():
         print('trying to upload to S3')
         fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.webm')
         # client.upload_fileobj(f, str(os.getenv('AWS_BUCKET')), fn) 
+        print(fn)
         resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
         # client.put_object(Body=f,
         #                   Bucket='medship',
