@@ -4,15 +4,18 @@ import numpy as np
 import tensorflow as tf
 import ffmpeg
 import imageio.v3 as iio
+import os
 
 def process_video(f):
     # vid = cv2.VideoCapture(f)
     # w, h = vid.get(3), vid.get(4)
     file = 'tempfile.mp4'
     # ffmpeg.output(f, file)
-    frames = iio.imread(f, index=None, format_hint='.mp4')
-    iio.imwrite(file, frames)
-    subprocess.run(['FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
+    with iio.imread(f, index=None, extension='.mp4') as frames:
+        iio.imwrite(file, frames)
+        print('working directory ', os.getcwd())
+        subprocess.run([os.getcwd() + 'FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
+        subprocess.run(['rm', file])
     return f
 
 
