@@ -11,11 +11,11 @@ def process_video(f):
     # w, h = vid.get(3), vid.get(4)
     file = 'tempfile.mp4'
     # ffmpeg.output(f, file)
-    with iio.imread(f, index=None, extension='.mp4') as frames:
-        iio.imwrite(file, frames)
-        print('working directory ', os.getcwd())
-        subprocess.run([os.getcwd() + 'FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
-        subprocess.run(['rm', file])
+    frames = iio.imread(f, index=None, extension='.mp4')
+    iio.imwrite(file, frames)
+    print('working directory ', os.getcwd())
+    subprocess.run([os.getcwd() + 'FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
+    subprocess.run(['rm', file])
     return f
 
 
