@@ -3,12 +3,15 @@ import subprocess
 import numpy as np
 import tensorflow as tf
 import ffmpeg
+import imageio.v3 as iio
 
 def process_video(f):
     # vid = cv2.VideoCapture(f)
     # w, h = vid.get(3), vid.get(4)
     file = 'tempfile.mp4'
-    ffmpeg.output(f, file)
+    # ffmpeg.output(f, file)
+    frames = iio.imread(f, index=None, format_hint='.mp4')
+    iio.write(file, frames)
     subprocess.run(['FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
     return f
 
