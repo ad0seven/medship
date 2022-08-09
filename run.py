@@ -68,7 +68,7 @@ def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
         print('PYTHON HAS BEEN REACHED')
         f = request.files['vid_file'].read()
-        f = process_video(f)
+        f = process_video(f, face_detector, model)
         print(request.files)
         print(np.frombuffer(f, np.uint8))
         print('trying to upload to S3')
