@@ -12,7 +12,7 @@ def process_video(f, face_detector, model):
     # file = 'tempfile.mp4'
     # ffmpeg.output(f, file)
     frames = []
-    print('shape of video: ', iio.imread(f, index=None, extension='.mp4'))
+    print('shape of video: ', iio.imread(f, index=None, extension='.mp4').shape)
     # w = iio.get_writer('my_video.mp4', format='FFMPEG', mode='I', fps=1,
     #                    codec='h264_vaapi',
     #                    output_params=['-vaapi_device',
@@ -23,7 +23,7 @@ def process_video(f, face_detector, model):
     for frame in iio.imread(f, index=None, extension='.mp4'):
         frames.append(classify_frame(frame, face_detector, model))
     frames = np.hstack(frames)
-    print('shape of stack: ', frames)
+    print('shape of stack: ', frames.shape)
     # iio.imwrite(file, frames)
     # subprocess.run(['chmod', '+x', 'ml/FaceLandmarkVid.exe'])
     # subprocess.run(['ml/FaceLandmarkVid.exe', '-f', file, '-mloc', 'ml/main_clm_general.txt'])
@@ -31,6 +31,8 @@ def process_video(f, face_detector, model):
     return iio.imwrite("<bytes>", frames, extension=".mp4")
 
 def classify_frame(frame, face_detector, model):
+
+    print(frame.shape)
 
     emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
     gray = frame
