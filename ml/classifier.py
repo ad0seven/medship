@@ -13,8 +13,7 @@ def process_video(f):
     # ffmpeg.output(f, file)
     frames = iio.imread(f, index=None, extension='.mp4')
     iio.imwrite(file, frames)
-    print('working directory ', os.getcwd())
-    subprocess.run([os.getcwd() + 'FaceLandmarkVid.exe', '-f', file, '-mloc', 'main_clm_general.txt'])
+    subprocess.run(['/app/ml/FaceLandmarkVid.exe', '-f', file, '-mloc', os.getcwd() + '/app/ml/main_clm_general.txt'])
     subprocess.run(['rm', file])
     return f
 
