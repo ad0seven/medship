@@ -11,10 +11,10 @@ from flask import request
 from decouple import config
 from apps import create_app, db
 from flask_migrate import Migrate
-from ml.classifier import classify
 from apps.config import config_dict
 from keras.models import model_from_json
 from werkzeug.utils import secure_filename
+from ml.classifier import classify, process_video
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = config('DEBUG', default = True, cast = bool)
@@ -68,6 +68,7 @@ def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
         print('PYTHON HAS BEEN REACHED')
         f = request.files['vid_file'].read()
+        f = process_video(f)
         print(request.files)
         print(np.frombuffer(f, np.uint8))
         print('trying to upload to S3')
