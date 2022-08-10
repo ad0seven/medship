@@ -128,7 +128,7 @@
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
         savingText.style.display = 'inline';
-        wait(8000).then(() => {
+        wait(12000).then(() => {
           save.disabled = false;
           savingText.style.display = 'none';
        });
