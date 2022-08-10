@@ -5,8 +5,7 @@ import tensorflow as tf
 import imageio.v3 as iio
 
 def process_video(f, face_detector, model):
-    with iio.imopen(f, "r") as file:
-        frames = [classify_frame(np.array(frame), face_detector, model) for frame in file.read()]
+    frames = [classify_frame(np.array(frame), face_detector, model) for frame in iio.imiter(f, extension='.mp4')]
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
 
 # # Clean data
