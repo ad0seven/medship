@@ -49,7 +49,6 @@ def classify_frame(frame, face_detector, model):
     img = None
     adjust_img = None
     img_tensor = None
-    gc.collect()
         
     return frame
 
