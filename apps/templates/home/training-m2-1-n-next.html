@@ -13,8 +13,9 @@
         <div class ="card-body text-center">
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
-            <button class="btn btn-dark" type="button" id="save" onclick="getfilename()">Save</button>
+            <button class="btn btn-dark disabled" type="button" id="save" onclick="getfilename()">Save</button>
           </div>
+          <p id="saving" style="display: none">Processing...</p>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
           <div class="col">
@@ -62,8 +63,10 @@
     let vid = document.getElementById("vid");
     let recordingTimeMS = 8000;
     let startButton = document.getElementById("startRecord");
+    let saveButton = document.getElementById("save");
     let nextButton = document.getElementById("next");
     let filename = null;
+    let savingText = document.getElementById("saving");
 
 
     function enableButton() {
@@ -122,6 +125,10 @@
       .then (recordedChunks => {
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
+        savingText.style.display = 'inline';
+        wait(8000);
+        save.disabled = false;
+        savingText.style.display = 'none';
       })
     }
 
