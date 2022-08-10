@@ -15,7 +15,9 @@
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
             <button class="btn btn-dark" type="button" id="save" onclick="getfilename()" disabled="true">Save</button>
           </div>
-          <p id="saving" style="display: none">Processing...</p>
+          <div class ="card-body text-center">
+            <p id="saving" style="display: none" >Processing...</p>
+          </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
           <div class="col">
@@ -126,9 +128,10 @@
         let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
         upload_video(recordedBlob);
         savingText.style.display = 'inline';
-        wait(8000);
-        save.disabled = false;
-        savingText.style.display = 'none';
+        wait(8000).then(() => {
+          save.disabled = false;
+          savingText.style.display = 'none';
+       });
       })
     }
 
