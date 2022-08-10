@@ -12,7 +12,7 @@ def process_video(f, face_detector, model):
 
     for frame in iio.imiter(f, extension=".mp4"):
         frame = np.array(frame)
-
+        print('FRAME SHAPE', frame.shape)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         detected_faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=10, minSize=(5, 5), flags=cv2.CASCADE_SCALE_IMAGE)
 
@@ -40,20 +40,19 @@ def process_video(f, face_detector, model):
 
         frames.append(frame)
 
-    # Clean data
-    del gray 
-    del img
-    del adjust_img
-    del img_tensor
-    del frame
-    del emotions
-    del detected_faces
-    del label
-    del confidence
-    del predictions
+        # Clean data
+        del gray 
+        del img
+        del adjust_img
+        del img_tensor
+        del frame
+        del detected_faces
+        del label
+        del confidence
+        del predictions
+        gc.collect()
 
-    # Clean data
-    gc.collect()
+    del emotions
 
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
 
