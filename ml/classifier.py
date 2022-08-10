@@ -58,6 +58,7 @@ def process_video(f, face_detector, model):
 
 def classify_frame(frame, face_detector, model):
 
+    #
     emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     detected_faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=10, minSize=(5, 5), flags=cv2.CASCADE_SCALE_IMAGE)
