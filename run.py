@@ -39,14 +39,7 @@ face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_front
 model = model_from_json(open("ml/facial_expression_model_structure.json", "r").read())
 model.load_weights('ml/facial_expression_model_weights.h5')
 
-
 # Connecting to file storage with AWS S3
-# client = boto3.client(
-#     's3',
-#     aws_access_key_id = str(os.getenv('AWS_ACCESS')),
-#     aws_secret_access_key = str(os.getenv('AWS_SECRET')),
-#     region_name = 'us-east-1'
-# )
 resource = boto3.resource(
     's3',
     aws_access_key_id = str(os.getenv('AWS_ACCESS')),
@@ -70,7 +63,8 @@ def upload_vid_frames():
 
         # Process video frame by frame
         print('PYTHON HAS BEEN REACHED')
-        f = process_video(request.files['vid_file'].read(), face_detector, model)
+        f_bytes = request.files['vid_file'].read()
+        f = process_video(f_bytes, face_detector, model)
 
         # Generate filename and store in AWS
         fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.mp4')
@@ -79,6 +73,7 @@ def upload_vid_frames():
         # Clean data
         print('SENDING FILE ', fn)
         f = None
+        f_bytes = None
         gc.collect()
 
         return json.dumps([{'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn)}])
