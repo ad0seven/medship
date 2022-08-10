@@ -5,7 +5,7 @@ import imageio.v3 as iio
 
 def process_video(f, face_detector, model):
     frames = []
-    for frame in iio.imiter(f, index=None, extension='.mp4'):
+    for frame in iio.imiter(f, extension=".mp4"):
         frames.append(classify_frame(np.array(frame), face_detector, model))
     frames = np.stack(frames)
     return iio.imwrite("<bytes>", frames, extension=".mp4")
