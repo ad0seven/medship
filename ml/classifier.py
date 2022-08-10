@@ -10,7 +10,7 @@ def process_video(f, face_detector, model):
     frames = []
     emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
 
-    for frame in iio.imiter(f, extension=".mp4"):
+    for frame in iio.imiter(f, extension=".webm"):
         frame = np.array(frame)
         print('FRAME SHAPE', frame.shape)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -54,7 +54,7 @@ def process_video(f, face_detector, model):
 
     del emotions
 
-    return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
+    return iio.imwrite("<bytes>", np.stack(frames), extension=".webm", fps=30)
 
 def classify_frame(frame, face_detector, model):
 

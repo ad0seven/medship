@@ -125,7 +125,7 @@
         return new Promise(resolve => preview.onplaying = resolve)})
       .then(() => startRecording(stream.captureStream(), recordingTimeMS))
       .then (recordedChunks => {
-        let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
+        let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
         upload_video(recordedBlob);
         savingText.style.display = 'inline';
         wait(12000).then(() => {
