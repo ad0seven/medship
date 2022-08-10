@@ -67,7 +67,7 @@ def upload_vid_frames():
         f = process_video(f_bytes, face_detector, model)
 
         # Generate filename and store in AWS
-        fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.webm')
+        fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.mp4')
         resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
 
         # Clean data
