@@ -8,8 +8,49 @@ def process_video(f, face_detector, model):
     
     # Process frame by frame
     frames = []
+    emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
+
     for frame in iio.imiter(f, extension=".mp4"):
-        frames.append(classify_frame(np.array(frame), face_detector, model))
+        frame = np.array(frame)
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        detected_faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=10, minSize=(5, 5), flags=cv2.CASCADE_SCALE_IMAGE)
+
+        if len(detected_faces) > 0:
+
+            for (x, y, w, h) in detected_faces:
+                frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                img = cv2.rectangle(gray, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+                adjust_img = img[y:y+h, x:x+w]
+                adjust_img = cv2.resize(adjust_img, (48, 48))
+
+                img_tensor = tf.keras.utils.img_to_array(adjust_img)
+                img_tensor = np.expand_dims(img_tensor, axis=0)
+
+                img_tensor /= 255
+
+                predictions = model.predict(img_tensor)
+                label = emotions[np.argmax(predictions)]
+
+                confidence = np.max(predictions)
+                confidence *= 100
+                
+                cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+        frames.append(frame)
+
+    # Clean data
+    del gray 
+    del img
+    del adjust_img
+    del img_tensor
+    del frame
+    del emotions
+    del detected_faces
+    del label
+    del confidence
+    del predictions
 
     # Clean data
     gc.collect()

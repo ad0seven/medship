@@ -72,8 +72,8 @@ def upload_vid_frames():
 
         # Clean data
         print('SENDING FILE ', fn)
-        f = None
-        f_bytes = None
+        del f
+        del f_bytes
         gc.collect()
 
         return json.dumps([{'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn)}])
