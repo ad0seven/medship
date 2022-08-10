@@ -21,7 +21,7 @@ def process_video(f, face_detector, model):
     #                                   'format=gray|nv12,hwupload'],
     #                    pixelformat='vaapi_vld')
     for frame in iio.imread(f, index=None, extension='.mp4'):
-        frames.append(classify_frame(np.array(frame)[0], face_detector, model))
+        frames.append(classify_frame(np.array(frame)[:, :, 0], face_detector, model))
     frames = np.stack(frames)
     print('shape of stack: ', frames.shape)
     # iio.imwrite(file, frames)
@@ -32,7 +32,7 @@ def process_video(f, face_detector, model):
 
 def classify_frame(frame, face_detector, model):
 
-    print(frame.shape)
+    # print(frame.shape)
 
     emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
     gray = frame
