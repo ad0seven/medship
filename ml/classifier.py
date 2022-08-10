@@ -32,7 +32,7 @@ def process_video(f, face_detector, model):
 
 def classify_frame(frame, face_detector, model):
 
-    # print(frame.shape)
+    print(frame.shape)
 
     emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
     gray = frame
@@ -71,6 +71,8 @@ def classify_frame(frame, face_detector, model):
             print(face_prop)
             
             cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+    print('new frame shape ', frame.shape)
         
     return frame
 
