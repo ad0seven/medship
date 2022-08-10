@@ -1,4 +1,5 @@
 import os
+import gc
 import cv2
 import json
 import boto3
@@ -40,12 +41,12 @@ model.load_weights('ml/facial_expression_model_weights.h5')
 
 
 # Connecting to file storage with AWS S3
-client = boto3.client(
-    's3',
-    aws_access_key_id = str(os.getenv('AWS_ACCESS')),
-    aws_secret_access_key = str(os.getenv('AWS_SECRET')),
-    region_name = 'us-east-1'
-)
+# client = boto3.client(
+#     's3',
+#     aws_access_key_id = str(os.getenv('AWS_ACCESS')),
+#     aws_secret_access_key = str(os.getenv('AWS_SECRET')),
+#     region_name = 'us-east-1'
+# )
 resource = boto3.resource(
     's3',
     aws_access_key_id = str(os.getenv('AWS_ACCESS')),
@@ -66,18 +67,21 @@ def upload_file():
 @app.route('/ml_upload_vid', methods=['POST', 'GET'])
 def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
+
+        # Process video frame by frame
         print('PYTHON HAS BEEN REACHED')
-        f = request.files['vid_file'].read()
-        f = process_video(f, face_detector, model)
-        print(request.files)
-        print(np.frombuffer(f, np.uint8))
-        print('trying to upload to S3')
+        f = process_video(request.files['vid_file'].read(), face_detector, model)
+
+        # Generate filename and store in AWS
         fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.mp4')
-        print(fn)
         resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
-        print('uploaded to s3')
-        full_fn = 'https://medship.s3.amazonaws.com/{}'.format(fn)
-        return json.dumps([{'fn': full_fn}])
+
+        # Clean data
+        print('SENDING FILE ', fn)
+        f = None
+        gc.collect()
+
+        return json.dumps([{'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn)}])
 
 if DEBUG:
     app.logger.info('DEBUG       = ' + str(DEBUG))
