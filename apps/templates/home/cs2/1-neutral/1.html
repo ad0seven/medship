@@ -11,12 +11,13 @@
   <div class="body flex-grow-1 px-3" >
     <div class="container-lg">
         <div class ="card-body text-center">
+            <p class="display-5" style="color: #B31B1B">Level 1: Neutral</p>
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
             <button class="btn btn-dark" type="button" id="save" onclick="getfilename()" disabled="true">Save</button>
           </div>
           <div class ="card-body text-center">
-            <p id="saving" style="display: none" >Processing...</p>
+            <p id="saving" style="display: none" ><span class="spinner-border" role="status"></span>Processing Video...</p>
           </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
@@ -28,22 +29,22 @@
           <div class="col">
             <div id="vidParent" class ="card-body text-center">
               <video id="vid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
-                <source src="https://medship.s3.amazonaws.com/Intro.Neutral.Pt.mp4" type="video/mp4">
+                <source src="https://medship.s3.amazonaws.com/cs2/1/neutral/pt.mp4" type="video/mp4">
               </video>
             </div>
           </div>
         </div>
         <div class="card-body text-center">
-          <p class="display-5" id='promptText' style="color: #B31B1B">Introduce yourself. Ask their name and pronouns.</p>
+          <p class="display-5" id='promptText' style="color: #B31B1B">Another area that I’d like to ask you about is regarding your social history. Is that okay?</p>
         </div>
       <div class="row">
         <div class="col-6">
-          <a class="nav-link" href="training-m2-clinical.html">
+          <a class="nav-link" href="/cs2/3.html">
           <button class="btn btn-dark" type="button">Back</button>
           </a>
         </div>
         <div class="col-6 text-end">
-          <a class="nav-link" href="training-m2-1-n-next2.html">
+          <a class="nav-link" href="/cs2/1-neutral/2.html">
             <button class="btn btn-primary" type="button" id="next" style="display: none">Next</button>
           </a>  
         </div>
