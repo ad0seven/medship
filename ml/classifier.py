@@ -49,6 +49,7 @@ def classify(frame, face_detector, model):
     if len(detected_faces) > 0:
 
         for (x, y, w, h) in detected_faces:
+            frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             img = cv2.rectangle(gray, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
             adjust_img = img[y:y+h, x:x+w]
@@ -72,6 +73,8 @@ def classify(frame, face_detector, model):
             detect['y'] = str(y)
             detect['width'] = str(w)
             detect['height'] = str(h)
+            
+            cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
             face_prop.append(detect)
 
