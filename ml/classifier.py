@@ -10,17 +10,6 @@ def process_video(unp_fn, face_detector, model):
         del frame
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
 
-def apply_properties(frame, properties):
-    x = properties['x']
-    y = properties['y']
-    w = properties['w']
-    h = properties['h']
-    label = properties['label']
-    confidence = properties['confidence']
-    frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-    cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-    return frame
-
 def classify_frame(frame, face_detector, model):
     try:
         emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
@@ -60,7 +49,6 @@ def classify(frame, face_detector, model):
     if len(detected_faces) > 0:
 
         for (x, y, w, h) in detected_faces:
-            frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
             img = cv2.rectangle(gray, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
             adjust_img = img[y:y+h, x:x+w]
@@ -86,8 +74,5 @@ def classify(frame, face_detector, model):
             detect['height'] = str(h)
 
             face_prop.append(detect)
-            print(face_prop)
-            
-            cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     return face_prop
