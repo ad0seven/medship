@@ -1,0 +1,156 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Training {% endblock %} 
+
+{% block stylesheets %}
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.179.0.min.js"></script>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3" >
+    <div class="container-lg">
+        <div class ="card-body text-center">
+            <p class="display-5" style="color: #B31B1B">Task 2 - Level 3: Optimistic</p>
+          <div class="start-stop">
+            <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
+            <button class="btn btn-dark" type="button" id="save" onclick="getfilename()" disabled="true">Save</button>
+          </div>
+          <div class ="card-body text-center">
+            <p id="saving" style="display: none" ><span class="spinner-border" role="status"></span>Processing Video...</p>
+          </div>
+        </div>
+        <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
+          <div class="col">
+            <div id="streamParent" class ="card-body text-center">
+              <video id="stream" style="width: 100%; height: 32vw; object-fit: cover;" autoplay="" muted=""></video>
+            </div> 
+          </div>
+          <div class="col">
+            <div id="vidParent" class ="card-body text-center">
+              <video id="vid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
+                <source src="https://medship.s3.amazonaws.com/cs2/2/optimistic/pt.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="card-body text-center">
+          <p class="display-5" id='promptText' style="color: #B31B1B">Could you tell me a little bit about what you do during the day?</p>
+        </div>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="cs2-2-angry-1.html">
+          <button class="btn btn-dark" type="button">Back</button>
+          </a>
+        </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="cs2-2-optimistic-2.html">
+            <button class="btn btn-primary" type="button" id="next" style="display: none">Next</button>
+          </a>  
+        </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script>
+    
+    let parents = document.getElementById("parents");
+    let streamParent = document.getElementById('streamParent');
+    let preview = document.getElementById("stream");
+    let vidParent = document.getElementById('vidParent');
+    let vid = document.getElementById("vid");
+    let recordingTimeMS = 8000;
+    let startButton = document.getElementById("startRecord");
+    let saveButton = document.getElementById("save");
+    let nextButton = document.getElementById("next");
+    let filename = null;
+    let savingText = document.getElementById("saving");
+
+
+    function enableButton() {
+      nextButton.style.display = 'inline';
+    }
+
+
+    function wait(delayInMS) {
+      return new Promise(resolve => setTimeout(resolve, delayInMS));
+    }
+
+
+    function startRecording(stream, lengthInMS) {
+      let recorder = new MediaRecorder(stream);
+      let data = [];
+    
+      recorder.ondataavailable = event => data.push(event.data);
+      recorder.start();
+      vid.play();
+
+      let stopped = new Promise((resolve, reject) => {
+        recorder.onstop = resolve;
+        recorder.onerror = event => reject(event.name);
+      });
+
+      let recorded = wait(lengthInMS).then(
+        () => recorder.state == "recording" && recorder.stop()
+      );
+
+      return Promise.all([
+        stopped,
+        recorded
+      ])
+      .then(() => data);
+    }
+
+
+    function stop(stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+
+    function getfilename() {
+      localStorage.setItem("filename", filename);
+      enableButton();
+    }
+
+
+    function startListener() {
+      navigator.mediaDevices.getUserMedia({video: true, audio: true})
+      .then(stream => {
+        preview.srcObject = stream;
+        preview.captureStream = preview.captureStream || preview.mozCaptureStream;
+        return new Promise(resolve => preview.onplaying = resolve)})
+      .then(() => startRecording(stream.captureStream(), recordingTimeMS))
+      .then (recordedChunks => {
+        let recordedBlob = new Blob(recordedChunks, { type: "video/mp4" });
+        upload_video(recordedBlob);
+        savingText.style.display = 'inline';
+        wait(12000).then(() => {
+          save.disabled = false;
+          savingText.style.display = 'none';
+       });
+      })
+    }
+
+
+    function upload_video(blob) {
+      var fd = new FormData();
+      fd.append('vid_file', blob);
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/ml_upload_vid", true);
+      xhr.onload = function () {
+        if (this.status == 200) {
+          objects = JSON.parse(this.response);
+          filename = objects[0].fn;
+        };
+      }
+      xhr.send(fd);
+    }
+  </script>
+
+{% endblock javascripts %}

@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Clinical Scenario {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3" >
+    <div class="container-lg">
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h4 class="card-title text-center" style="color: #E7751D"><strong>Clinical Scenario 2</strong></h4>
+              <p class="card-text">
+                You are working a shift in the Emergency Room. It’s nine o’clock in the evening and you just
+saw a patient for a left forearm abscess that resulted from an untreated wound infection
+secondary to injecting drug use.
+              </p>
+              <p class="card-text">
+                Mr. Tamari is a 36 year old transgender man with a past medical history of focal segmental
+glomerulonephritis (managed well with corticosteroids), and hypertension (on lisinopril). He
+reports having a close family support system, which includes his wife of the past five years. He
+states he drinks socially and does not smoke any tobacco products. He has used heroin for the
+past 2 years on and off.
+              </p>
+              <p class="card-text">
+                Begin the encounter.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <img src="/static/assets/img/patient2.png" alt="Clinic" style="width: 90%; height: 25vw; object-fit: cover;">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="cs2-b.html">
+          <button class="btn btn-dark" type="button">Back</button>
+          </a>
+        </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="cs2-1-neutral-1.html">
+          <button class="btn btn-dark" type="button">Continue</button>
+          </a>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %}
