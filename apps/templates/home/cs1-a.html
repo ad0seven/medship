@@ -112,7 +112,7 @@
       adjustedCanvas = true;
     }
   }
-  
+
   function startCamera() {
     if (navigator.mediaDevices) {
       navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -196,7 +196,6 @@
     xhr.onload = function () {
       if (this.status == 200) {
         objects = JSON.parse(this.response);
-        log('objects ' + objects);
         drawBoxes(objects);
       }
     };
