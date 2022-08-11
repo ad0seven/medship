@@ -62,7 +62,7 @@ def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
 
         print('TEST')
-        del request.files
+        # del request.files
         print(test_stream())
 
         # # Process video frame by frame
