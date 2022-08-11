@@ -15,7 +15,7 @@ from flask_migrate import Migrate
 from apps.config import config_dict
 from keras.models import model_from_json
 from werkzeug.utils import secure_filename
-from ml.classifier import classify, process_video, test_stream
+from ml.classifier import classify, process_video
 
 # WARNING: Don't run with debug turned on in production!
 DEBUG = config('DEBUG', default = True, cast = bool)
@@ -61,25 +61,32 @@ def upload_file():
 def upload_vid_frames():
     if request.method == 'POST' and 'vid_file' in request.files:
 
-        print('TEST')
-        # del request.files
-        print(test_stream())
+        # Process video frame by frame
+        print('PYTHON HAS BEEN REACHED')
 
-        # # Process video frame by frame
-        # print('PYTHON HAS BEEN REACHED')
-        # f_bytes = request.files['vid_file'].read()
-        # f = process_video(f_bytes, face_detector, model)
-
-        # # Generate filename and store in AWS
+        # Secure a filename
         fn = secure_filename(''.join(random.choices(string.ascii_lowercase, k=10)) + '.mp4')
-        # resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
+        unp_fn = 'unprocessed_' + fn
 
-        # # Clean data
-        # print('SENDING FILE ', fn)
-        # del f
-        # del f_bytes
-        # gc.collect()
+        # Upload unprocessed version
+        f_bytes = request.files['vid_file'].read()
+        resource.Object(str(os.getenv('AWS_BUCKET')), unp_fn).put(Body=f_bytes)
 
+        # Free memory
+        del f_bytes
+        del request.files
+        
+        # Process video frame by frame
+        f = process_video(unp_fn, face_detector, model)
+
+        # Upload processed version
+        resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
+
+        # Free memory
+        del f
+        gc.collect()
+
+        print('SENDING FILE ', fn)
         return json.dumps([{'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn)}])
 
 if DEBUG:

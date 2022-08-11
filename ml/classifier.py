@@ -3,13 +3,8 @@ import numpy as np
 import tensorflow as tf
 import imageio.v3 as iio
 
-def test_stream():
-    for i in iio.imiter('https://medship.s3.amazonaws.com/cs2/1/agitated/pt.mp4', extension='.mp4'):
-        print(i)
-        break
-
-def process_video(f, face_detector, model):
-    frames = [classify_frame(np.array(frame), face_detector, model) for frame in iio.imread(f, extension='.mp4')]
+def process_video(unp_fn, face_detector, model):
+    frames = [classify_frame(np.array(frame), face_detector, model) for frame in iio.imiter(f'https://medship.s3.amazonaws.com/{unp_fn}', extension='.mp4')]
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
 
 def apply_properties(frame, properties):
