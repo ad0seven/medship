@@ -14,29 +14,36 @@ def process_video(unp_fn, face_detector, model):
         'surprise': 0,
         'neutral': 0,
     }
+    angry= 0
+    disgust= 0
+    fear= 0
+    happy= 0
+    sad= 0
+    surprise= 0
+    neutral= 0
     for frame in iio.imiter(f'https://medship.s3.amazonaws.com/{unp_fn}', extension='.mp4'):
         frame, result = classify_frame(np.array(frame), face_detector, model)
         frames.append(frame)
         if result == 'angry':
-            results['angry'] += 1
+            angry += 1
         elif result == 'disgust':
-            results['disgust'] += 1
+            disgust += 1
         elif result == 'fear':
-            results['fear'] += 1
+            fear += 1
         elif result == 'happy':
-            results['happy'] += 1
+            happy += 1
         elif result == 'sad':
-            results['sad'] += 1
+            sad += 1
         elif result == 'surprise':
-            results['surprise'] += 1
+            surprise += 1
         elif result == 'neutral':
-            results['neutral'] += 1
+            neutral += 1
         else:
             pass
         del frame
-    # sum_amt = angry + disgust + fear + happy + sad + surprise + neutral
-    # results = [angry, disgust, fear, happy, sad, surprise, neutral]
-    # results = [int(r/sum_amt*100) for r in results]
+    sum_amt = angry + disgust + fear + happy + sad + surprise + neutral
+    results = [angry, disgust, fear, happy, sad, surprise, neutral]
+    results = [int(r/sum_amt*10) for r in results]
     print(results)
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30), results
 

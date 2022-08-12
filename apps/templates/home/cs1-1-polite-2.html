@@ -75,7 +75,7 @@
 
       var ctx = document.getElementById('myChart');
       let results = localStorage.getItem("results");
-      data = new Array(results.angry, results.disgust, results.fear, results.happy, results.sad, results.surprise,  results.neutral);
+      // data = new Array(results.angry, results.disgust, results.fear, results.happy, results.sad, results.surprise,  results.neutral);
       const config = {
         type: 'polarArea',
         data: {
@@ -83,7 +83,7 @@
             datasets: [
               {
                 label: 'Dataset',
-                data: data,
+                data: results,
                 backgroundColor: [
                   'rgba(255, 99, 132, 0.5)',
                   'rgba(54, 162, 235, 0.5)',
