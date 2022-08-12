@@ -81,39 +81,18 @@
             labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
             datasets: [
               {
-                label: 'Angry',
-                data: 1,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5)
-              },
-              {
-                label: 'Disgust',
-                data: 2,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.green, 0.5)
-              },
-              {
-                label: 'Fear',
-                data: 3,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.purple, 0.5)
-              },
-              {
-                label: 'Happy',
-                data: 4,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.yellow, 0.5)
-              },
-              {
-                label: 'Surprise',
-                data: 5,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.orange, 0.5)
-              },
-              {
-                label: 'Sad',
-                data: 6,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5)
-              },
-              {
-                label: 'Neutral',
-                data: 7,
-                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.black, 0.5)
+                label: 'Dataset',
+                data: [1, 2, 3, 4, 5, 6 , 7],
+                backgroundColor: [
+                  Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.green, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.purple, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.yellow, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.orange, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+                  Utils.transparentize(Utils.CHART_COLORS.black, 0.5)
+                ],
+                hoverOffset: 4
               }
             ]
           },
