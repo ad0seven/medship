@@ -78,11 +78,19 @@
       const config = {
         type: 'polarArea',
         data: {
-            labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
+            // labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
             datasets: [
               {
                 label: 'Dataset',
-                data: results,
+                data: [
+                  {id:'Angry', nested: {value: results[0]}},
+                  {id:'Disgust', nested: {value: results[1]}},
+                  {id:'Fear', nested: {value: results[2]}},
+                  {id:'Happy', nested: {value: results[3]}},
+                  {id:'Sad', nested: {value: results[4]}},
+                  {id:'Surprise', nested: {value: results[5]}},
+                  {id:'Neutral', nested: {value: results[6]}}
+                ],
                 backgroundColor: [
                   'rgba(255, 99, 132, 0.5)',
                   'rgba(54, 162, 235, 0.5)',
@@ -104,6 +112,9 @@
           //     max: 100
           //   }
           // },
+          parsing: {
+              key: 'nested.value'
+          },
           plugins: {
             title: {
               display: true,
