@@ -91,17 +91,23 @@
                   'rgba(54, 162, 45, 0.5)',
                   'rgba(27, 206, 86, 0.5)',
                   'rgba(35, 92, 192, 0.5)'
-                ],
-                hoverOffset: 4
+                ]
               }
             ]
           },
         options: {
           responsive: false,
+          scale: {
+            reverse: false,
+            ticks: {
+              min: 0,
+              max: 100
+            }
+          },
           plugins: {
             title: {
               display: true,
-              text: 'Expressions Detected'
+              text: 'Expressions Detected, Percent'
             }
           }
         },
