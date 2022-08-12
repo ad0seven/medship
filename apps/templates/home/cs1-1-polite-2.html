@@ -78,28 +78,20 @@
       const config = {
         type: 'polarArea',
         data: {
-            // labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
+            labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
             datasets: [
               {
                 label: 'Dataset',
-                data: [
-                  {id:'Angry', nested: {value: results.angry}},
-                  {id:'Disgust', nested: {value: results.disgust}},
-                  {id:'Fear', nested: {value: results.fear}},
-                  {id:'Happy', nested: {value: results.happy}},
-                  {id:'Sad', nested: {value: results.sad}},
-                  {id:'Surprise', nested: {value: results.surprise}},
-                  {id:'Neutral', nested: {value: results.neutral}}
+                data: [results.angry, results.disgust, results.fear, results.happy, results.sad, results.surprise,  results.neutral],
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.5)',
+                  'rgba(54, 162, 235, 0.5)',
+                  'rgba(255, 206, 86, 0.5)',
+                  'rgba(75, 23, 192, 0.5)',
+                  'rgba(54, 162, 45, 0.5)',
+                  'rgba(27, 206, 86, 0.5)',
+                  'rgba(35, 92, 192, 0.5)'
                 ]
-                // backgroundColor: [
-                //   'rgba(255, 99, 132, 0.5)',
-                //   'rgba(54, 162, 235, 0.5)',
-                //   'rgba(255, 206, 86, 0.5)',
-                //   'rgba(75, 23, 192, 0.5)',
-                //   'rgba(54, 162, 45, 0.5)',
-                //   'rgba(27, 206, 86, 0.5)',
-                //   'rgba(35, 92, 192, 0.5)'
-                // ]
               }
             ]
           },
@@ -112,9 +104,6 @@
           //     max: 100
           //   }
           // },
-          parsing: {
-              key: 'nested.value'
-          },
           plugins: {
             title: {
               display: true,
