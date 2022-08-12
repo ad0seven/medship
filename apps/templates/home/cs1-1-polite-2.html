@@ -75,7 +75,6 @@
 
       var ctx = document.getElementById('myChart');
       let results = localStorage.getItem("results");
-      // data = new Array(results.angry, results.disgust, results.fear, results.happy, results.sad, results.surprise,  results.neutral);
       const config = {
         type: 'polarArea',
         data: {
@@ -98,13 +97,6 @@
           },
         options: {
           responsive: false,
-          // scale: {
-          //   reverse: false,
-          //   ticks: {
-          //     min: 0,
-          //     max: 100
-          //   }
-          // },
           plugins: {
             title: {
               display: true,

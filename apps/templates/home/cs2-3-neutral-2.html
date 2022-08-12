@@ -57,7 +57,49 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/js/charts.js"></script>
+
   <script>
+
+    function loadResults() {
+
+      var ctx = document.getElementById('myChart');
+      let results = localStorage.getItem("results");
+      const config = {
+        type: 'polarArea',
+        data: {
+            labels: ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral'],
+            datasets: [
+              {
+                label: 'Dataset',
+                data: results,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.5)',
+                  'rgba(54, 162, 235, 0.5)',
+                  'rgba(255, 206, 86, 0.5)',
+                  'rgba(75, 23, 192, 0.5)',
+                  'rgba(54, 162, 45, 0.5)',
+                  'rgba(27, 206, 86, 0.5)',
+                  'rgba(35, 92, 192, 0.5)'
+                ]
+              }
+            ]
+          },
+        options: {
+          responsive: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Expressions Detected'
+            }
+          }
+        },
+      };
+      var myChart = new Chart(ctx, config);
+    }
+
     let replayVid = document.getElementById("replay");
     let drSuperVid = document.getElementById("drSuperVid");
     let filename = localStorage.getItem("filename");
@@ -67,6 +109,7 @@
     function play() {
         replayVid.play();
         drSuperVid.play();
+        loadResults();
     }
 
     function pause() {
