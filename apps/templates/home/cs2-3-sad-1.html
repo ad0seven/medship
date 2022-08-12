@@ -149,6 +149,7 @@
         if (this.status == 200) {
           objects = JSON.parse(this.response);
           filename = objects[0].fn;
+          results = objects[0].results;
         };
       }
       xhr.send(fd);
