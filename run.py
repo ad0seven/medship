@@ -77,7 +77,7 @@ def upload_vid_frames():
         del request.files
         
         # Process video frame by frame
-        f = process_video(unp_fn, face_detector, model)
+        f, results = process_video(unp_fn, face_detector, model)
 
         # Upload processed version
         resource.Object(str(os.getenv('AWS_BUCKET')), fn).put(Body=f)
@@ -87,7 +87,10 @@ def upload_vid_frames():
         gc.collect()
 
         print('SENDING FILE ', fn)
-        return json.dumps([{'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn)}])
+        return json.dumps([{
+            'fn': 'https://medship.s3.amazonaws.com/{}'.format(fn),
+            'results': results
+        }])
 
 if DEBUG:
     app.logger.info('DEBUG       = ' + str(DEBUG))

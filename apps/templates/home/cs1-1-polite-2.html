@@ -74,7 +74,7 @@
     function loadResults() {
 
       var ctx = document.getElementById('myChart');
-      // let results = localStorage.getItem("results");
+      let results = localStorage.getItem("results");
       const config = {
         type: 'polarArea',
         data: {
@@ -82,7 +82,7 @@
             datasets: [
               {
                 label: 'Dataset',
-                data: [1, 2, 3, 4, 5, 6 , 7],
+                data: results,
                 backgroundColor: [
                   'rgba(255, 99, 132, 0.5)',
                   'rgba(54, 162, 235, 0.5)',

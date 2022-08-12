@@ -70,6 +70,7 @@
     let saveButton = document.getElementById("save");
     let nextButton = document.getElementById("next");
     let filename = null;
+    let results = null;
     let savingText = document.getElementById("saving");
 
 
@@ -115,6 +116,7 @@
 
     function getfilename() {
       localStorage.setItem("filename", filename);
+      localStorage.setItem('results', results)
       enableButton();
     }
 
@@ -147,6 +149,7 @@
         if (this.status == 200) {
           objects = JSON.parse(this.response);
           filename = objects[0].fn;
+          results = objects[0].results;
         };
       }
       xhr.send(fd);

@@ -5,11 +5,35 @@ import imageio.v3 as iio
 
 def process_video(unp_fn, face_detector, model):
     frames = []
-    # results = {}
+    angry = 0 
+    disgust = 0
+    fear = 0
+    happy = 0
+    sad = 0
+    surprise = 0
+    neutral = 0
     for frame in iio.imiter(f'https://medship.s3.amazonaws.com/{unp_fn}', extension='.mp4'):
-        frames.append(classify_frame(np.array(frame), face_detector, model))
+        frame, result = classify_frame(np.array(frame), face_detector, model)
+        frames.append(frame)
+        if result == 'angry':
+            angry += 1
+        elif result == 'disgust':
+            disgust += 1
+        elif result == 'fear':
+            fear += 1
+        elif result == 'happy':
+            happy += 1
+        elif result == 'sad':
+            sad += 1
+        elif result == 'surprise':
+            surprise += 1
+        elif result == 'neutral':
+            neutral += 1
+        else:
+            pass
         del frame
-    return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30)
+    results = [angry, disgust, fear, happy, sad, surprise, neutral]
+    return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30), results
 
 def classify_frame(frame, face_detector, model):
     try:
@@ -34,10 +58,10 @@ def classify_frame(frame, face_detector, model):
         confidence = np.max(predictions)*100
         
         cv2.putText(frame, label + " : " + str(confidence), (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-        return frame
+        return frame, label
 
     except:
-        return frame
+        return frame, None
 
 
 def classify(frame, face_detector, model):
