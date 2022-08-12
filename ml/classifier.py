@@ -5,6 +5,7 @@ import imageio.v3 as iio
 
 def process_video(unp_fn, face_detector, model):
     frames = []
+    # results = {}
     for frame in iio.imiter(f'https://medship.s3.amazonaws.com/{unp_fn}', extension='.mp4'):
         frames.append(classify_frame(np.array(frame), face_detector, model))
         del frame
