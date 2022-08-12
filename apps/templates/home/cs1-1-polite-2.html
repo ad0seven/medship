@@ -73,7 +73,7 @@
 
     function loadResults() {
 
-      let ctx = document.getElementById('myChart');
+      var ctx = document.getElementById('myChart');
       // let results = localStorage.getItem("results");
       const config = {
         type: 'polarArea',
@@ -84,24 +84,21 @@
                 label: 'Dataset',
                 data: [1, 2, 3, 4, 5, 6 , 7],
                 backgroundColor: [
-                  Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.green, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.purple, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.yellow, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.orange, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
-                  Utils.transparentize(Utils.CHART_COLORS.black, 0.5)
+                  'rgba(255, 99, 132, 0.5)',
+                  'rgba(54, 162, 235, 0.5)',
+                  'rgba(255, 206, 86, 0.5)',
+                  'rgba(75, 23, 192, 0.5)',
+                  'rgba(54, 162, 45, 0.5)',
+                  'rgba(27, 206, 86, 0.5)',
+                  'rgba(35, 92, 192, 0.5)'
                 ],
                 hoverOffset: 4
               }
             ]
           },
         options: {
-          responsive: true,
+          responsive: false,
           plugins: {
-            legend: {
-              position: 'top',
-            },
             title: {
               display: true,
               text: 'Expressions Detected'
@@ -109,7 +106,7 @@
           }
         },
       };
-      let myChart = new Chart(ctx, config);
+      var myChart = new Chart(ctx, config);
     }
 
     let replayVid = document.getElementById("replay");
