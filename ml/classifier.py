@@ -34,7 +34,8 @@ def process_video(unp_fn, face_detector, model):
         del frame
     sum_amt = angry + disgust + fear + happy + sad + surprise + neutral
     results = [angry, disgust, fear, happy, sad, surprise, neutral]
-    results = [r/sum_amt*100 for r in results]
+    results = [int(r/sum_amt*100) for r in results]
+    print(results)
     return iio.imwrite("<bytes>", np.stack(frames), extension=".mp4", fps=30), results
 
 def classify_frame(frame, face_detector, model):
