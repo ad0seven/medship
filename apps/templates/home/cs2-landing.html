@@ -1,0 +1,77 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Clinical Scenario 2 {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <div class="card mb-4"> 
+        <div class="card-body">
+          <h4 class="card-title text-center" style="color: #E7751D"><strong>Level Selection</strong></h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3 ">
+            <div class="card-header">Level 1</div>
+            <div class="card-body">
+              <h5 class="card-title">Neutral</h5>
+              <a href="cs1-2-neutral-1.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Level 2</div>
+            <div class="card-body">
+              <h5 class="card-title">Agitated</h5>
+              <a href="cs2-1-agitated-1.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-header">Level 3</div>
+              <div class="card-body">
+                <h5 class="card-title">Variable</h5>
+                <a href="cs2-2-optimistic-1.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="cs1-c.html">
+          <button class="btn btn-dark" type="button">Back</button>
+          </a>
+        </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="training-landing.html">
+          <button class="btn btn-dark" type="button">Finish Clinical Scenario 1</button>
+          </a>
+        </div>
+        </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+
+{% endblock javascripts %}
