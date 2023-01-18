@@ -12,26 +12,17 @@
 {% block content %}
       <div class="body flex-grow-1 px-3">
         <div class="container-lg">
-          <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-center" style="color: #E7751D"><strong>Expression Karaoke - Sad Emoji</strong></h4>
-                <p class="card-text">
-                  Match your face to the emoji! Click "Start Camera" to show your video.
-                </p>
-              </div>
-          </div>
-          <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
-              <div class ="card-body text-center">
+          <div class ="card-body text-center">
+            <p class="display-5" style="color: #B31B1B">Expression Karaoke: Compassionate Face</p>
+                <p class="card-text"> Match your face to the emoji! Click "Start Camera" to show your video. </p>
                 <div class="start-stop">
                   <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
                   <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
                 </div>
               </div>
-            </div>
-            <div class ="col"></div>
+            <div class="row">
             <div class="col">
-                <div class = "card" style = "padding: 0px" id="canvas-parent" width="100%" height="100%">
+                <div class = "card" style = "padding: 2px" id="canvas-parent">
                   <canvas id="drawCanvas"></canvas>
                   <video contrls id="videoElement" onloadeddata="startup()"></video>
                   <canvas id="captureCanvas"></canvas>
