@@ -9,56 +9,42 @@
 
 {% endblock stylesheets %}
 
-{% block content %}
-      <div class="body flex-grow-1 px-3">
-        <div class="container-lg">
-          <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-center" style="color: #E7751D"><strong>Listening expression</strong></h4>
-                <p class="card-text">
-                  Let's practice how your facial expression when you listen to your patients. Click "Start Camera" to show your video.
-                </p>
-              </div>
-          </div>
-          <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
-              <div class="center">
-              <div class ="card-body text-center">
-                <div class="start-stop">
-                  <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
-                  <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
-                </div>
-              </div>
-              </div>
-            </div>
-            <div class ="col"></div>
-            <div class="row">
-            <div class="col">
-                <div class = "card" style = "padding: 0px" id="canvas-parent" width="100%" height="100%">
-                  <canvas id="drawCanvas"></canvas>
-                  <video contrls id="videoElement" onloadeddata="startup()"></video>
-                  <canvas id="captureCanvas"></canvas>
-                </div>
-            </div>
-            <div class="col">
-              <div class = "card" style = "padding: 0px" width="100%" height="100%">
-              <img src="/static/assets/img/listening.gif" alt="Listening Emoji" style="width: 80%; height: 25vw; object-fit: cover;">
+{% block content %} 
+
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <div class ="card-body text-center">
+        <p class="display-5" style="color: #B31B1B">Listening expression</p>
+            <p class="card-text">  Let's practice how your facial expression when you listen to your patients. Match your face to the emoji! Click "Start Camera" to show your video.</p>
+            <div class="start-stop">
+              <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
+              <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
             </div>
           </div>
-          </div>
-          </div>
-          <br>
-      <div class="row">
-          <div class="col-6">
-            <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
-          </div>
-          <div class="col-6 text-end">
-            <a class="nav-link" href="karaoke-happy.html">
-            <button class="btn btn-dark" type="button">Compassionate expression</button>
-            </a>
-          </div>
+        <div class="row">
+        <div class="col">
+            <div class = "card" style = "padding: 2px" id="canvas-parent">
+              <canvas id="drawCanvas"></canvas>
+              <video contrls id="videoElement" onloadeddata="startup()"></video>
+              <canvas id="captureCanvas"></canvas>
+            </div>
+        </div>
+        <div class="col">
+          <img src="/static/assets/img/listening.gif" alt="Listening Emoji" style="object-fit: contain">
+        </div>
       </div>
-    </div>
+      <br>
+  <div class="row">
+      <div class="col-6">
+        <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
+      </div>
+      <div class="col-6 text-end">
+        <a class="nav-link" href="karaoke-happy.html">
+        <button class="btn btn-dark" type="button">Compassionate expression</button>
+        </a>
+      </div>
+  </div>
+  </div>
   </div>
 
 {% endblock content %}
