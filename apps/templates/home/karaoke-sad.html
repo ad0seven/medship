@@ -1,6 +1,7 @@
+
 {% extends "layouts/base.html" %}
 
-{% block title %} Sad Emoji {% endblock %} 
+{% block title %} Compassionate Expression {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -14,7 +15,7 @@
         <div class="container-lg">
           <div class ="card-body text-center">
             <p class="display-5" style="color: #B31B1B">Expression Karaoke: Compassionate Face</p>
-                <p class="card-text"> Match your face to the emoji! Click "Start Camera" to show your video. </p>
+                <p class="card-text"> Let's practice how you react when patients talk about their problems. Match your face to the emoji! Click "Start Camera" to see your face. </p>
                 <div class="start-stop">
                   <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
                   <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
@@ -29,7 +30,7 @@
                 </div>
             </div>
             <div class="col">
-              <img src="/static/assets/img/sad.png" alt="Concerned Emoji" style="width: 80%; height: 25vw; object-fit: cover;">
+              <img src="/static/assets/img/compassion.jpg" alt="Compassionate Emoji" style="object-fit: cover">
             </div>
           </div>
           <br>
@@ -39,7 +40,7 @@
           </div>
           <div class="col-6 text-end">
             <a class="nav-link" href="karaoke-happy.html">
-            <button class="btn btn-dark" type="button">Happy Emoji</button>
+            <button class="btn btn-dark" type="button">Welcoming Expression</button>
             </a>
           </div>
       </div>
