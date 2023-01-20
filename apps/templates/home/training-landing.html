@@ -11,38 +11,85 @@
 
 {% block content %}
 
-  <div class="body flex-grow-1 px-3">
+  <div class="body flex-grow-1 px-3" >
     <div class="container-lg">
-      <div class="card mb-4"> 
+      <div class="card mb-4">
         <div class="card-body">
-          <h4 class="card-title text-center" style="color: #E7751D"><strong>Module Selection</strong></h4>
-          <p> <strong style="color: #E7751D">Medship</strong> is composed of several modules,
-          each one portraying a unique clinical vignette of interest, that focuses on specific and actionable training points. Click on the a tile below to 
-          train. </p>
+          <h4 class="card-title text-center" style="color: #E7751D"><strong>Trauma-Informed Care</strong></h4>
+          <p class="card-text">
+            The majority of persons who inject opioids have a history of trauma either inflicted by others (e.g.
+            physical, psychological, sexual, or emotional abuse, neglect, war, poverty, racism) or self-inflicted (i.e.
+            physical trauma secondary to repeated drug use). The medical sequelae (e.g. skin abscess, endocarditis,
+            cellulitis) and trauma (e.g. overdose, withdrawal) associated with injection drug use lead many PWID to
+            seek care in hospital.
+          </p>
+          <p class="card-text">
+            Trauma-informed care (TIC) is an approach that clinicians might use in order to respectfully meet these
+            patients where they are regarding their comfort, trust, and openness toward their healthcare
+            experience. One study demonstrated improvements in medical students’ perceived knowledge and
+            comfort in treating sexual assault survivors following completion of a TIC module. Another study found
+            patients reported a more trusting partnership with physicians who underwent TIC training compared to
+            physicians who did not.
+          </p>
+          <p class="card-text">
+            TIC involves five core principles: patient empowerment, choice, collaboration, safety, and
+            trustworthiness.
+          </p>
+          <p>
+            <div class="row">
+              <div class = "column">
+                <div class ="card">
+                  <div class="card-body text-center">
+                    <h4 class="card-title" style="color: #E7751D" >Patient Empowerment</h4>
+                    <p class="card-text">Using individuals' strengths to empower them in the development of their treatment.</p>
+                  </div>
+                </div>
+              </div>
+              <div class = "column">
+                <div class ="card">
+                  <div class="card-body text-center">
+                    <h4 class="card-title" style="color: #E7751D">Patient Choice</h4>
+                    <p class="card-text">Informing patients regarding treatment options so they can choose the options they prefer.</p>
+                  </div>
+                </div>
+              </div>
+              <div class = "column">
+                <div class ="card">
+                  <div class="card-body text-center">
+                    <h4 class="card-title" style="color: #E7751D">Collaboration</h4>
+                    <p class="card-text">Maximizing collaboration among health care staff, patients, and their families in organizational and treatment planning.</p>
+                  </div>
+                </div>
+              </div>
+              <div class = "column">
+                <div class ="card">
+                  <div class="card-body text-center">
+                    <h4 class="card-title" style="color: #E7751D">Safety</h4>
+                    <p class="card-text">Developing health care settings and activities that ensure patients’ physical and emotional safety.</p>
+                  </div>
+                </div>
+              </div>
+              <div class = "column">
+                <div class ="card">
+                  <div class="card-body text-center">
+                    <h4 class="card-title" style="color: #E7751D">Trustworthiness</h4>
+                    <p class="card-text">Creating clear expectations with patients about what proposed treatments entail, who will provide services, and how care will be provided.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p>
         </div>
       </div>
       <div class="row">
-        <div class="col-xl-4">
-          <div class="card text-white bg-primary mb-3 ">
-            <div class="card-header">Module 1</div>
-            <div class="card-body">
-              <h5 class="card-title">Trauma-Informed Introduction</h5>
-              <a href="cs1-a.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-4">
-          <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Module 2</div>
-            <div class="card-body">
-              <h5 class="card-title">Meeting the Patient Where They Are At</h5>
-              <a href="cs2-a.html" class="btn btn-primary stretched-link"><p class="card-text">Click here to proceed to the training.</p></a>
-            </div>
-          </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="cs1-landing.html">
+          <button class="btn btn-dark" type="button">Continue</button>
+          </a>
         </div>
       </div>
     </div>
-  </div>
+</div>
 
 {% endblock content %}
 
