@@ -6,7 +6,17 @@
 {% block stylesheets %}
     
     <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
-
+    .column {
+      float: left;
+    }
+    
+    .left {
+      width: 25%;
+    }
+    
+    .right {
+      width: 75%;
+    }
 {% endblock stylesheets %}
 
 {% block content %}
@@ -14,13 +24,24 @@
         <div class="container-lg">
           <div class="card-body text-center">
             <div>
+              <div class="row">
+                <div class="column">
+                  <div style="text-align: center;">
               <br><br><br><br><br>
-              <p class="display-4" style="color: #B31B1B"> How might your future patients experience you? </p>
-              <p>
+              <h4 class="card-title text-center" style="color: #B31B1B"><strong>How might your future patients experience you?</strong>
+              </h4>
                 <a class="nav-link" href="home-base.html">
                   <button class="btn btn-dark"  type="button">Continue</button>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="text-align: center;">
+                  <img src="/static/assets/img/stigma.jpeg" alt="Stigma vector" style=" object-fit: contain;">
+                  </div>
+                </div>
                 </a>
               </p>
+              </div>
             </div>
           </div>
         </div>
