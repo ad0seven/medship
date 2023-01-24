@@ -13,14 +13,13 @@
 
   <div class="body flex-grow-1 px-3">
     <div class="container-lg">
-      <div class ="card-body text-center">
+      <div class ="card-body">
         <p class="display-5" style="color: #B31B1B">Expression Karaoke: Active Listening</p>
-            <p class="card-text">  Let's practice your facial expression in situations when you need to show patients you are listening to them. 
-              <br>
+            <p class="card-text"> 
               Depending on the background of the patient, there might be differences in faith, family, language, gender norms, and expectations of self and others in society. Cultural competence is the ability of a clinical team to provide care to patients who have diverse beliefs, values, needs, and behaviors. It enables patients to feel validated, supported, comforted, and trusting of the medical care they receive. It requires patience, active listening, clarification, and willingness to learn on the part of the clinician. Treatment teams can improve their cultural competency by increasing the diversity of their staff members and creating individualized treatment plans for their patients.
-              <br>
-              Click "Start Camera" to see your face and try to match your face to the emoji!</p>
-            <div class="start-stop">
+              <br> <br>
+              <strong>  Let's practice your facial expression when you interact with a patient and need to show you are listening to them. Click "Start Camera" to see your face and try to match your face to the emoji!</strong></p>
+            <div class="start-stop text-center">
               <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
               <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
             </div>
@@ -33,7 +32,7 @@
               <canvas id="captureCanvas"></canvas>
             </div>
         </div>
-        <div class="col">
+        <div class="col"  style="display: flex; justify-content: center; align-items: center;">
           <img src="/static/assets/img/listening.png" alt="Listening Emoji" class="center" style="object-fit: contain" width="400" height="300">
         </div>
       </div>
@@ -43,7 +42,7 @@
         <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
       </div>
       <div class="col-6 text-end">
-        <a class="nav-link" href="karaoke-happy.html">
+        <a class="nav-link" href="training-landing.html">
         <button class="btn btn-dark" type="button">Next</button>
         </a>
       </div>
