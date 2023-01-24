@@ -13,29 +13,28 @@
 {% block content %}
       <div class="body flex-grow-1 px-3">
         <div class="container-lg">
-          <div class ="card-body text-center">
+          <div class ="card-body">
             <p class="display-5" style="color: #B31B1B">Expression Karaoke: Compassion</p>
-                <p class="card-text"> Let's practice your facial expression in situations when patients talk about their problems. 
+                <p class="card-text"> 
+                  Addiction is often considered an illness characterized by “loss of free will”. In other words, the neurobiological systems become rewired to depend on the substance, in such a way that guides behaviors and cognitions to maintain usage at all costs, and it becomes very difficult to modulate over time. The brain circuits affected by addiction include those involved with impulse executive functioning (i.e. decision-making), control, memory, reward, and stress. Over time, there are changes in brain functioning which is the cause of one's risk in using substances or continuously craving it during recovery. This knowledge can help counteract the belief that individuals with addiction are choosing to engage in destructive behaviors. Viewing OUD illness as a medical disease promotes greater compassion for our patients.
                   <br>
-                  Addiction is often considered an illness characterized by “loss of free will”. In other words, the neurobiological systems become rewired to depend on the substance, in such a way that guides behaviors and cognitions to maintain usage at all costs, and it becomes very difficult to modulate over time (Volkow & Boyle, 2018). The brain circuits affected by addiction include those involved with impulse executive functioning (i.e. decision-making), control, memory, reward, and stress (Volkow & Baler, 2013). Over time, there are changes in brain functioning which is the cause of one's risk in using substances or continuously craving it during recovery. This knowledge can help counteract the belief that individuals with addiction are choosing to engage in destructive behaviors. Viewing OUD illness as a medical disease promotes greater compassion for our patients.
-                  <br>
-                  Click "Start Camera" to see your face and try to match your face to the emoji!</p>
-                <div class="start-stop">
+                  <strong> Let's practice your facial expression in situations when patients talk about their problems. Click "Start Camera" to see your face and try to match your face to the emoji! </strong> </p>
+                <div class="start-stop text-center">
                   <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
                   <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
                 </div>
               </div>
             <div class="row">
-            <div class="col">
+             <div class="col">
                 <div class = "card" style = "padding: 2px" id="canvas-parent">
                   <canvas id="drawCanvas"></canvas>
                   <video contrls id="videoElement" onloadeddata="startup()"></video>
                   <canvas id="captureCanvas"></canvas>
                 </div>
-            </div>
-            <div class="col">
-              <img src="/static/assets/img/compassionate.png" alt="Compassionate Emoji" class="center" style="object-fit: contain" width="400" height="300">
-            </div>
+             </div>
+             <div class="col" style="display: flex; justify-content: center; align-items: center;">
+              <img src="/static/assets/img/compassionate.png" alt="Compassionate Emoji" style="object-fit: contain" width="400" height="300">
+             </div>
           </div>
           <br>
       <div class="row">
