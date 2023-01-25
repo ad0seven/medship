@@ -13,20 +13,22 @@
 
 <div class="body flex-grow-1 px-3">
   <div class="container-lg">
+    <div class="card"></div>
     <div class ="card-body">
-      <p class="display-6" style="color: #B31B1B">Expression Karaoke: Welcoming</p>
+      <h3 style="color: #B31B1B">Expression Karaoke: Welcoming</h3>
           <p class="card-text">
-            According to the World Health Organization, drug addiction is the number one most stigmatized social problem, even over poverty, incarceration, homelessness, mental illness, and alcoholism. Defined as an attribute, behavior, or condition that is socially discrediting, stigma stands as one of the largest barriers to individual recovery. One way to prevent such destructiveness is to identify and eradicate its foundations.
+            While expressions of friendliness, affiliation or kindness may communicate openness, non-judgement and approachability (all important elements when it comes to the communication with patients), there may be a tendency to confuse kindness with happiness, which, in the presence of distress, may be experienced as invalidating and aversive to individuals. This concern is substantiated from research showing that smiling faces are less positively experienced when the viewer is in physical pain. On the other hand, welcoming face, which is usually shown with <strong> a warm, welcoming smile, and soft, fully open yet relaxed eyes</strong>, should provide a patient the feeling of safety and acceptance. 
             <br> <br>
-            <strong>Let's practice your facial expression when you meet new patients. Click "Start Camera" to see your face and try to match your face to the emoji!</strong></p>
+            <strong>Let's practice your facial expression when you meet a new patient. Click "Start Camera" to see your face and try to match your face to the emoji!</strong></p>
           <div class="start-stop text-center">
             <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
             <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
           </div>
         </div>
+      </div>
       <div class="row">
       <div class="col">
-          <div class = "card" style = "padding: 2px" id="canvas-parent">
+          <div class = "card" style = "padding: 1px" id="canvas-parent">
             <canvas id="drawCanvas"></canvas>
             <video contrls id="videoElement" onloadeddata="startup()"></video>
             <canvas id="captureCanvas"></canvas>
