@@ -13,21 +13,23 @@
 {% block content %}
       <div class="body flex-grow-1 px-3">
         <div class="container-lg">
+          <div class="card">
           <div class ="card-body">
             <h3 style="color: #B31B1B"> Expression Karaoke: Compassion</h3>
                 <p class="card-text"> 
                   Compassion is typically defined as a sensitivity to the suffering of the self and others with a desire and commitment to try to alleviate and prevent that suffering. The compassion motive requires a range of competencies including empathy, distress tolerance, perspective taking, sympathy, and wise action. <br>
-                  What might compassionate facial expressions look like? It might be communicated with an open, unjudging expression with features denoting affiliation, approach behaviour and kindness (e.g. a gentle smile) or a worried expression denoting concern for another. Facial expressions of sympathy is sometimes characterized by “eyebrows pulled down flat and forward over the bridge of the nose, furrowing in the centre of the brow…, eyelids not pulled in tight or raised, head and body oriented forward, bottom eyelids sometimes raised slightly, and lower face relaxed”.
+                  What might compassionate facial expressions look like? It might be communicated with an open, unjudging expression with features denoting affiliation, approach behaviour and kindness (e.g. a gentle smile) or a worried expression denoting concern for another. Facial expressions of sympathy is sometimes characterized by <strong>“eyebrows pulled down flat and forward over the bridge of the nose, furrowing in the centre of the brow…, eyelids not pulled in tight or raised, head and body oriented forward, bottom eyelids sometimes raised slightly, and lower face relaxed”.</strong>
                   <br> <br>
-                  <strong> Let's practice your compassionate facial expression. Click "Start Camera" to see your face and try to match your face to the emoji! </strong> </p>
+                  Let's practice your compassionate facial expression. Click "Start Camera" to see your face and try to match your face to the emoji! </p>
                 <div class="start-stop text-center">
                   <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
                   <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
                 </div>
               </div>
+            </div>
             <div class="row">
              <div class="col">
-                <div class = "card" style = "padding: 2px" id="canvas-parent">
+                <div class = "card" style = "padding: 1px" id="canvas-parent">
                   <canvas id="drawCanvas"></canvas>
                   <video contrls id="videoElement" onloadeddata="startup()"></video>
                   <canvas id="captureCanvas"></canvas>
