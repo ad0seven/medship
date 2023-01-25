@@ -11,7 +11,10 @@
   <div class="body flex-grow-1 px-3" >
     <div class="container-lg">
         <div class ="card-body text-center">
-            <p class="display-5" style="color: #B31B1B">Level 1: Anxious</p>
+            <p class="display-6" style="color: #B31B1B">Level 1: Anxious</p>
+            <div class="card-body text-center">
+             <h5> You just introduced yourself, and asked their full name and preferred pronouns. Click on "Start Camera" below to listen to what the patient tells next and to start the recording. When the patient stops talking, please click on "Save" and proceed to the next page to see your results.</h5> 
+            </div>
           <div class="start-stop">
             <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
             <button class="btn btn-dark" type="button" id="save" onclick="getfilename()" disabled="true">Save</button>
@@ -21,11 +24,7 @@
           </div>
         </div>
         <div id="parents" class="row row-cols-1 row-cols-md-2 g-4">
-          <div class="col">
-            <div id="streamParent" class ="card-body text-center">
-              <video id="stream" style="width: 100%; height: 32vw; object-fit: cover;" autoplay="" muted=""></video>
-            </div> 
-          </div>
+          <div class ="card">
           <div class="col">
             <div id="vidParent" class ="card-body text-center">
               <video id="vid" controlsList=”nodownload” style="width: 100%; height: 32vw; object-fit: cover;">
@@ -33,9 +32,11 @@
               </video>
             </div>
           </div>
-        </div>
-        <div class="card-body text-center">
-          <p class="display-5" id='promptText' style="color: #B31B1B">You just introduced yourself, and asked their full name and preferred pronouns.</p>
+          <div class="col">
+            <div id="streamParent" class ="card-body text-center">
+              <video id="stream" style="width: 100%; height: 32vw; object-fit: cover;" autoplay="" muted=""></video>
+            </div> 
+          </div>
         </div>
       <div class="row">
         <div class="col-6">
@@ -47,6 +48,7 @@
           <a class="nav-link" href="cs1-1-polite-2.html">
             <button class="btn btn-primary" type="button" id="next" style="display: none">Next</button>
           </a>  
+        </div>
         </div>
         </div>
       </div>
