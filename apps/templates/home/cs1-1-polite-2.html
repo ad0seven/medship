@@ -11,24 +11,26 @@
 <div class="body flex-grow-1 px-3">
   <div class="container-lg">
     <div class="card-body">
-      <p class="display-6" style="color: #B31B1B">Level 1: Anxious Patient</p>
       <div class="row">
         <div class="col">
+          <h4 style="color: #B31B1B">Level 1: Anxious Patient</h4>
           <p class="card-text">
-          Let's take a closer look at what has just happened in the previous step. The chart on the right shows the facial expressions detected while you were listening to the patient. 
-           <br> 
-           When interacting with an anxious patient, apart from using <strong> compassionate and listening expressions we covered in the Expression Practice section</strong>, we suggest to try the following: <br>
+          Let's take a closer look on your reaction in the previous step. The chart on the right shows the facial expressions detected while you were listening to the patient. <br>
+          Is it different from what you expected it to be?
+          <br> <br> <br>
+           When interacting with an anxious patient, apart from using <strong> compassionate and listening facial expressions we covered in the Expression Practice section</strong>, we suggest to try the following: <br>
            1) Speak clearly, slowly, and at an appropriate volume <br>
            2) Appear engaged, pleasant and calm <br>
            3) Maintain appropriate eye contact <br>
            4) Sit/stand at eye level with the patient <br>
-           5) Avoid sudden movements ■ Pay attention to patient cues (i.e. tensing muscles, fidgeting, breathing quickly, flushing, crying, trembling, appearing distracted or spaced out) <br>
-           Click on "Play" below to watch the recording of your interaction with the patient, and compare it to the reaction of Dr.Compassion, who knows everything about the trauma-informed care.
+           5) Avoid sudden movements <br>
+           6) Pay attention to patient cues (i.e. tensing muscles, fidgeting, breathing quickly, flushing, crying, trembling, appearing distracted or spaced out) <br> <br>
+           Click on "Play" below to watch the recording of your interaction with the patient, and compare it to the reaction of Dr.Compassion, who knows everything about trauma-informed care.
           </p> 
           </div>
         <div class="col">
          <div class="card text-center" style="padding: 1px">
-          <canvas id="myChart" width="500" height="500" style="display: inline; box-sizing: border-box; height: 100%; width: 100%"></canvas>
+          <canvas id="myChart" width="600" height="600" style="display: inline; box-sizing: border-box; height: 100%; width: 100%"></canvas>
          </div> 
         </div>
         </div>
@@ -106,7 +108,7 @@ Window.onload = loadResults();
             ]
           },
         options: {
-          responsive: false,
+          responsive: true,
           plugins: {
             title: {
               display: true,
