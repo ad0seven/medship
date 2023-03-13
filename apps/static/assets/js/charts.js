@@ -117,24 +117,6 @@ const pieChart = new Chart(document.getElementById('canvas-5'), {
   }
 }); // eslint-disable-next-line no-unused-vars
 
-const bubbleChart = new Chart(document.getElementById('canvas-7'), {
-  type: 'bubble',
-  data: {
-    label: 'First Dataset',
-    data: [{
-      x: 20,
-      y: 30,
-      r: 15
-    }, {
-      x: 40,
-      y: 10,
-      r: 10
-    }],
-    backgroundColor: 'rgb(255, 99, 132)'
-  },
-  options: {}
-}); // eslint-disable-next-line no-unused-vars
-
 const polarAreaChart = new Chart(document.getElementById('canvas-6'), {
   type: 'polarArea',
   data: {
@@ -147,5 +129,25 @@ const polarAreaChart = new Chart(document.getElementById('canvas-6'), {
   options: {
     responsive: true
   }
-});
+});// eslint-disable-next-line no-unused-vars
+
+const bubbleChart = new Chart(document.getElementById('canvas-7'), {
+  type: 'bubble',
+  data: {
+    datasets: [{
+    label: 'First Dataset',
+    data: [{
+      x: 20,
+      y: 30,
+      r: 15
+    }, {
+      x: 40,
+      y: 10,
+      r: 10
+    }],
+    backgroundColor: 'rgb(255, 99, 132)'
+  }]
+  },
+  options: {}
+}); 
 //# sourceMappingURL=charts.js.map
