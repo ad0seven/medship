@@ -59,7 +59,7 @@
   --cui-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --cui-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --cui-body-font-family: var(--cui-font-sans-serif);
-  --cui-body-font-size: 2rem;
+  --cui-body-font-size: 1.2rem;
   --cui-body-font-weight: 400;
   --cui-body-line-height: 1.5;
   --cui-body-color: rgba(44, 56, 74, 0.95);
