@@ -48,6 +48,8 @@
 {% block javascripts %}
 
 <script>
+
+
        // SDK Needs to create video and canvas nodes in the DOM in order to function
       // Here we are adding those nodes a predefined div.
       var divRoot = $("#affdex_elements")[0];
@@ -75,6 +77,15 @@
         $(node_name).append("<span>" + msg + "</span><br />")
       }
 
+      navigator.mediaDevices.getUserMedia({ video: true })
+     .then(function(stream) {
+     /* use the stream */
+  })
+  .catch(function(err) {
+    /* handle the error */
+    console.log('Webcam access denied:', err);
+  });
+   
       //function executes when Start button is pushed.
       function onStart() {
         if (detector && !detector.isRunning) {
