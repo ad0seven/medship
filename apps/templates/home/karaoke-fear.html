@@ -10,50 +10,37 @@
 {% endblock stylesheets %}
 
 {% block content %}
-      <div class="body flex-grow-1 px-3">
-        <div class="container-lg">
-          <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-center" style="color: #E7751D"><strong>Expression Karaoke - Fear Emoji</strong></h4>
-                <p class="card-text">
-                  Match your face to the emoji! Click "Start Camera" to show your video.
-                </p>
-              </div>
-          </div>
-          <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
-              <div class ="card-body text-center">
-                <div class="start-stop">
-                  <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">Start Camera</button>
-                  <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Stop Camera</button>
-                </div>
-              </div>
-            </div>
-            <div class ="col"></div>
-            <div class="col">
-                <div class = "card" style = "padding: 0px" id="canvas-parent" width="100%" height="100%">
-                  <canvas id="drawCanvas"></canvas>
-                  <video contrls id="videoElement" onloadeddata="startup()"></video>
-                  <canvas id="captureCanvas"></canvas>
-                </div>
-            </div>
-            <div class="col">
-              <img src="/static/assets/img/fear.png" alt="Concerned Emoji" style="width: 80%; height: 25vw; object-fit: cover;">
-            </div>
-          </div>
-          <br>
-      <div class="row">
-        <div class="col-6">
-          <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8" id="affdex_elements" style="width:680px;height:480px;"></div>
+      <div class="col-md-4">
+        <div style="height:25em;">
+          <strong>EMOTION TRACKING RESULTS</strong>
+          <div id="results" style="word-wrap:break-word;"></div>
         </div>
-        <div class="col-6 text-end">
-          <a class="nav-link" href="karaoke-landing.html">
-          <button class="btn btn-dark" type="button">Landing</button>
-          </a>
+        <div>
+          <strong>DETECTOR LOG MSGS</strong>
         </div>
+        <div id="logs"></div>
       </div>
     </div>
+    <div>
+      <button id="start" onclick="onStart()">Start</button>
+      <button id="stop" onclick="onStop()">Stop</button>
+      <button id="reset" onclick="onReset()">Reset</button>
+      <h3>Affectiva JS SDK CameraDetector to track different emotions.</h3>
+      <p>
+        <strong>Instructions</strong>
+        </br>
+        Press the start button to start the detector.
+        <br/> When a face is detected, the probabilities of the different emotions are written to the DOM.
+        <br/> Press the stop button to end the detector.
+      </p>
+    </div>
   </div>
+</body>
+
 
 {% endblock content %}
 
@@ -61,161 +48,117 @@
 {% block javascripts %}
 
 <script>
-  let video = null;
-  let streamRef = null;
-  let adjustedCanvas = false;
-  let drawCanvas = null;
-  let drawCtx = null;
-  let captureCanvas = null;
-  let captureCtx = null;
-  let timeInterval = null;
-  let startedup = null;
-  let constraints = null;
-  let analytics = {
-    "angry": 0,
-    "disgust": 0,
-    "fear": 0,
-    "happy": 0,
-    "sad": 0,
-    "surprise": 0,
-    "neutral": 0,
-  }
+       // SDK Needs to create video and canvas nodes in the DOM in order to function
+      // Here we are adding those nodes a predefined div.
+      var divRoot = $("#affdex_elements")[0];
+      var width = 640;
+      var height = 480;
+      var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
+      //Construct a CameraDetector and specify the image width / height and face detector mode.
+      var detector = new affdex.CameraDetector(divRoot, width, height, faceMode);
 
-  function startup() {
-    if (!startedup) {
-      startCamera();
-      drawCanvas.width = drawCanvas.width;
-      drawCanvas.width = video.videoWidth || drawCanvas.width;
-      drawCanvas.height = video.videoHeight || drawCanvas.height;
-      captureCanvas.width = video.videoWidth || captureCanvas.width;
-      captureCanvas.height = video.videoHeight || captureCanvas.height;
-      drawCtx.lineWidth = "5";
-      drawCtx.strokeStyle = "blue";
-      drawCtx.font = "20px Verdana";
-      drawCtx.fillStyle = "red";
-      startedup = true;
-    }
-  }
+      //Enable detection of all Expressions, Emotions and Emojis classifiers.
+      detector.detectAllEmotions();
+      detector.detectAllExpressions();
+      detector.detectAllEmojis();
+      detector.detectAllAppearance();
 
-  function adjustCanvas(bool) {
-    if (!adjustedCanvas || bool) {
-      drawCanvas.width = drawCanvas.width;
-      drawCanvas.width = video.videoWidth || drawCanvas.width;
-      drawCanvas.height = video.videoHeight || drawCanvas.height;
-      captureCanvas.width = video.videoWidth || captureCanvas.width;
-      captureCanvas.height = video.videoHeight || captureCanvas.height;
-      drawCtx.lineWidth = "5";
-      drawCtx.strokeStyle = "blue";
-      drawCtx.font = "20px Verdana";
-      drawCtx.fillStyle = "red";
-      adjustedCanvas = true;
-    }
-  }
+      //Add a callback to notify when the detector is initialized and ready for runing.
+      detector.addEventListener("onInitializeSuccess", function() {
+        log('#logs', "The detector reports initialized");
+        //Display canvas instead of video feed because we want to draw the feature points on it
+        $("#face_video_canvas").css("display", "block");
+        $("#face_video").css("display", "none");
+      });
 
-  function startCamera() {
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(function onSuccess(stream) {
-        const video = document.getElementById('videoElement');
-        streamRef = stream; 
-        video.autoplay = true;
-        video.srcObject = stream;
-        timeInterval = setInterval(grab, 400);
-      })
-    } else {
-        alert('getUserMedia is not supported in this browser.'); 
-    }
-  }
-
-  function updateAnalytics() {
-    let labels = ['angry', 'sad', 'happy', 'fear', 'disgust', 'surprise', 'neutral'];
-    labels.forEach(label => {
-      document.getElementById(label).textContent = analytics[label];
-    });
-  }
-
-  function stopInterval() {
-    clearInterval(timeInterval);
-  }
-
-  function stopCamera() {
-    if (streamRef === null) {
-      console.log("Stop Stream: Stream not started/stopped.");
-    }
-    else if (streamRef.active) {
-      video.pause();
-      streamRef.getTracks()[0].stop();
-      video.srcObject = null;
-      stopInterval();
-      adjustCanvas();
-      updateAnalytics();
-    }
-  }
-
-  function downloadFrame() {
-    var link = document.createElement('a');
-    link.download = 'frame.jpeg';
-    link.href = document.getElementById('myCanvas').toDataURL("image/jpeg", 1);
-    link.click();
-  }
-
-  document.onreadystatechange = () => {
-    if (document.readyState === "complete") {
-      String.prototype.capitalize = function () {
-        return this.charAt(0).toUpperCase() + this.slice(1);
+      function log(node_name, msg) {
+        $(node_name).append("<span>" + msg + "</span><br />")
       }
-      video = document.querySelector("#videoElement");
-      captureCanvas = document.getElementById("captureCanvas");
-      captureCtx = captureCanvas.getContext("2d");
-      drawCanvas = document.getElementById("drawCanvas");
-      drawCtx = drawCanvas.getContext("2d");
-    }
-  };
 
-  function grab() {
-    captureCtx.drawImage(
-      video,
-      0,
-      0,
-      video.videoWidth,
-      video.videoHeight,
-      0,
-      0,
-      video.videoWidth,
-      video.videoHeight,
-    );
-    captureCanvas.toBlob(upload, "image/jpeg");
-  }
-
-  function upload(blob) {
-    var fd = new FormData();
-    fd.append("file", blob);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/ml_upload", true);
-    xhr.onload = function () {
-      if (this.status == 200) {
-        objects = JSON.parse(this.response);
-        drawBoxes(objects);
+      //function executes when Start button is pushed.
+      function onStart() {
+        if (detector && !detector.isRunning) {
+          $("#logs").html("");
+          detector.start();
+        }
+        log('#logs', "Clicked the start button");
       }
-    };
-    xhr.send(fd);
-  }
 
-  function drawBoxes(objects) {
-    objects.forEach(object => {
-      let label = object.label;
-      let score = Number(object.score);
-      let x = Number(object.x);
-      let y = Number(object.y);
-      let width = Number(object.width);
-      let height = Number(object.height);
-      analytics[label] += 1;
-      adjustCanvas(true);
-      drawCtx.fillText(label + " - " + score, x + 5, y + 20);
-      drawCtx.strokeRect(x, y, width, height);
-    });
-  }
-  
+      //function executes when the Stop button is pushed.
+      function onStop() {
+        log('#logs', "Clicked the stop button");
+        if (detector && detector.isRunning) {
+          detector.removeEventListener();
+          detector.stop();
+        }
+      };
+
+      //function executes when the Reset button is pushed.
+      function onReset() {
+        log('#logs', "Clicked the reset button");
+        if (detector && detector.isRunning) {
+          detector.reset();
+
+          $('#results').html("");
+        }
+      };
+
+      //Add a callback to notify when camera access is allowed
+      detector.addEventListener("onWebcamConnectSuccess", function() {
+        log('#logs', "Webcam access allowed");
+      });
+
+      //Add a callback to notify when camera access is denied
+      detector.addEventListener("onWebcamConnectFailure", function() {
+        log('#logs', "webcam denied");
+        console.log("Webcam access denied");
+      });
+
+      //Add a callback to notify when detector is stopped
+      detector.addEventListener("onStopSuccess", function() {
+        log('#logs', "The detector reports stopped");
+        $("#results").html("");
+      });
+
+      //Add a callback to receive the results from processing an image.
+      //The faces object contains the list of the faces detected in an image.
+      //Faces object contains probabilities for all the different expressions, emotions and appearance metrics
+      detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
+        $('#results').html("");
+        log('#results', "Timestamp: " + timestamp.toFixed(2));
+        log('#results', "Number of faces found: " + faces.length);
+        if (faces.length > 0) {
+          log('#results', "Appearance: " + JSON.stringify(faces[0].appearance));
+          log('#results', "Emotions: " + JSON.stringify(faces[0].emotions, function(key, val) {
+            return val.toFixed ? Number(val.toFixed(0)) : val;
+          }));
+          log('#results', "Expressions: " + JSON.stringify(faces[0].expressions, function(key, val) {
+            return val.toFixed ? Number(val.toFixed(0)) : val;
+          }));
+          log('#results', "Emoji: " + faces[0].emojis.dominantEmoji);
+          if($('#face_video_canvas')[0] != null)
+          	drawFeaturePoints(image, faces[0].featurePoints);
+        }
+      });
+
+      //Draw the detected facial feature points on the image
+      function drawFeaturePoints(img, featurePoints) {
+        var contxt = $('#face_video_canvas')[0].getContext('2d');
+
+        var hRatio = contxt.canvas.width / img.width;
+        var vRatio = contxt.canvas.height / img.height;
+        var ratio = Math.min(hRatio, vRatio);
+
+        contxt.strokeStyle = "#FFFFFF";
+        for (var id in featurePoints) {
+          contxt.beginPath();
+          contxt.arc(featurePoints[id].x,
+            featurePoints[id].y, 2, 0, 2 * Math.PI);
+          contxt.stroke();
+
+        }
+      }
+
 </script>
 
 {% endblock javascripts %}
