@@ -1,218 +1,78 @@
-
 {% extends "layouts/base.html" %}
 
-{% block title %} Compassionate Expression {% endblock %} 
+{% block title %} Compassionate Expression {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-    
-    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+<link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+<link href="/static/assets/css/karaoke.css" rel="stylesheet">
 
 {% endblock stylesheets %}
 
 {% block content %}
-      <div class="body flex-grow-1 px-3">
-        <div class="container-lg">
-          <div class="card">
-          <div class ="card-body">
-            <p class="font-monospace fs-4 fw-bolder" style="color: #B31B1B"> Expression Karaoke: Let's try making a compassionate facial expression </p>
-            <div class="row">
-             <div class="col">
-                <div class = "card" style = "padding: 1px" id="canvas-parent">
-                  <canvas id="drawCanvas"></canvas>
-                  <video contrls id="videoElement" onloadeddata="startup()"></video>
-                  <canvas id="captureCanvas"></canvas>
-                </div>
-             </div>
-             <div class="col" style="display: flex; justify-content: center; align-items: center;">
-              <img src="/static/assets/img/compassionate.png" alt="Compassionate Emoji" style="object-fit: contain" width="500" height="500">
+<div class="body flex-grow-1 px-3">
+  <div class="container-lg">
+    <div class="card">
+      <div class="card-body">
+        <p class="font-monospace fs-4 fw-bolder" style="color: #B31B1B"> Expression Karaoke: Let's try making a
+          compassionate facial expression </p>
+        <div class="row">
+          <div class="col">
+            <div class="card" style="padding: 1px" id="canvas-parent">
+              <canvas id="drawCanvas"></canvas>
+              <video contrls id="videoElement" onloadeddata="startup()"></video>
+              <canvas id="captureCanvas"></canvas>
             </div>
           </div>
-          <div class="start-stop text-center">
-            <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">I'm ready!</button>
-            <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Nailed it</button>
+          <div class="col" style="display: flex; justify-content: center; align-items: center;">
+            <img src="/static/assets/img/compassionate.png" alt="Compassionate Emoji" style="object-fit: contain"
+              width="500" height="500">
           </div>
-          <br>
-          <p class="card-text fs-5"> Note: emotion recognition works the best when you position your face in the center of the frame, reduce background clutter, and keep bright lights out of frame. 
-            If a box identifies your face and expression, everything is working! If not, click <a href="mailto:aidana@mit.edu?subject=Medship is not recognizing my facial expression correctly:(" target="_blank">here</a>, and leave a short description of your situation.</p>
-          </div>
-          </div>
-            <div class="row">
-          <div class="col-6">
-            <a class="nav-link" href="karaoke-landing.html">
-              <button class="btn btn-dark" type="button">Back</button>
-              </a>
-          </div>
-          <div class="col-6 text-end">
-            <a class="nav-link" href="karaoke-happy.html">
-            <button class="btn btn-dark" type="button">Next</button>
-            </a>
-          </div>
+        </div>
+        <div class="start-stop text-center">
+          <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">I'm ready!</button>
+          <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Nailed it</button>
+        </div>
+        <br>
+        <p class="card-text fs-5"> Note: emotion recognition works the best when you position your face in the center of
+          the frame, reduce background clutter, and keep bright lights out of frame.
+          If a box identifies your face and expression, everything is working! If not, click <a
+            href="mailto:aidana@mit.edu?subject=Medship is not recognizing my facial expression correctly:("
+            target="_blank">here</a>, and leave a short description of your situation.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <a class="nav-link" href="karaoke-landing.html">
+          <button class="btn btn-dark" type="button">Back</button>
+        </a>
+      </div>
+      <div class="col-6 text-end">
+        <a class="nav-link" href="karaoke-happy.html">
+          <button class="btn btn-dark" type="button">Next</button>
+        </a>
       </div>
     </div>
   </div>
+</div>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
+<script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
+
+<script type="text/javascript" src="/static/assets/js/karaoke-sad.js"></script>
+
+
+<!-- <script type="text/javascript" src="/static/assets/vendors/affdex/affdex.js"></script> -->
+
 <script>
-  let video = null;
-  let streamRef = null;
-  let adjustedCanvas = false;
-  let drawCanvas = null;
-  let drawCtx = null;
-  let captureCanvas = null;
-  let captureCtx = null;
-  let timeInterval = null;
-  let startedup = null;
-  let constraints = null;
-  let analytics = {
-    "angry": 0,
-    "disgust": 0,
-    "fear": 0,
-    "happy": 0,
-    "sad": 0,
-    "surprise": 0,
-    "neutral": 0,
-  }
 
-  function startup() {
-    if (!startedup) {
-      startCamera();
-      drawCanvas.width = drawCanvas.width;
-      drawCanvas.width = video.videoWidth || drawCanvas.width;
-      drawCanvas.height = video.videoHeight || drawCanvas.height;
-      captureCanvas.width = video.videoWidth || captureCanvas.width;
-      captureCanvas.height = video.videoHeight || captureCanvas.height;
-      drawCtx.lineWidth = "5";
-      drawCtx.strokeStyle = "blue";
-      drawCtx.font = "20px Verdana";
-      drawCtx.fillStyle = "red";
-      startedup = true;
-    }
-  }
 
-  function adjustCanvas(bool) {
-    if (!adjustedCanvas || bool) {
-      drawCanvas.width = drawCanvas.width;
-      drawCanvas.width = video.videoWidth || drawCanvas.width;
-      drawCanvas.height = video.videoHeight || drawCanvas.height;
-      captureCanvas.width = video.videoWidth || captureCanvas.width;
-      captureCanvas.height = video.videoHeight || captureCanvas.height;
-      drawCtx.lineWidth = "5";
-      drawCtx.strokeStyle = "blue";
-      drawCtx.font = "20px Verdana";
-      drawCtx.fillStyle = "red";
-      adjustedCanvas = true;
-    }
-  }
-
-  function startCamera() {
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(function onSuccess(stream) {
-        const video = document.getElementById('videoElement');
-        streamRef = stream; 
-        video.autoplay = true;
-        video.srcObject = stream;
-        timeInterval = setInterval(grab, 400);
-      })
-    } else {
-        alert('getUserMedia is not supported in this browser.'); 
-    }
-  }
-
-  function updateAnalytics() {
-    let labels = ['angry', 'sad', 'happy', 'fear', 'disgust', 'surprise', 'neutral'];
-    labels.forEach(label => {
-      document.getElementById(label).textContent = analytics[label];
-    });
-  }
-
-  function stopInterval() {
-    clearInterval(timeInterval);
-  }
-
-  function stopCamera() {
-    if (streamRef === null) {
-      console.log("Stop Stream: Stream not started/stopped.");
-    }
-    else if (streamRef.active) {
-      video.pause();
-      streamRef.getTracks()[0].stop();
-      video.srcObject = null;
-      stopInterval();
-      adjustCanvas();
-      updateAnalytics();
-    }
-  }
-
-  function downloadFrame() {
-    var link = document.createElement('a');
-    link.download = 'frame.jpeg';
-    link.href = document.getElementById('myCanvas').toDataURL("image/jpeg", 1);
-    link.click();
-  }
-
-  document.onreadystatechange = () => {
-    if (document.readyState === "complete") {
-      String.prototype.capitalize = function () {
-        return this.charAt(0).toUpperCase() + this.slice(1);
-      }
-      video = document.querySelector("#videoElement");
-      captureCanvas = document.getElementById("captureCanvas");
-      captureCtx = captureCanvas.getContext("2d");
-      drawCanvas = document.getElementById("drawCanvas");
-      drawCtx = drawCanvas.getContext("2d");
-    }
-  };
-
-  function grab() {
-    captureCtx.drawImage(
-      video,
-      0,
-      0,
-      video.videoWidth,
-      video.videoHeight,
-      0,
-      0,
-      video.videoWidth,
-      video.videoHeight,
-    );
-    captureCanvas.toBlob(upload, "image/jpeg");
-  }
-
-  function upload(blob) {
-    var fd = new FormData();
-    fd.append("file", blob);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/ml_upload", true);
-    xhr.onload = function () {
-      if (this.status == 200) {
-        objects = JSON.parse(this.response);
-        drawBoxes(objects);
-      }
-    };
-    xhr.send(fd);
-  }
-
-  function drawBoxes(objects) {
-    objects.forEach(object => {
-      let label = object.label;
-      let score = Number(object.score);
-      let x = Number(object.x);
-      let y = Number(object.y);
-      let width = Number(object.width);
-      let height = Number(object.height);
-      analytics[label] += 1;
-      adjustCanvas(true);
-      drawCtx.fillText(label + " - " + score, x + 5, y + 20);
-      drawCtx.strokeRect(x, y, width, height);
-    });
-  }
-  
 </script>
 
 {% endblock javascripts %}
