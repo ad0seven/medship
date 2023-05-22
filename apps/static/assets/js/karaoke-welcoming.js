@@ -181,7 +181,7 @@ function drawAffdexStats(img, data) {
     const browRaise = data.expressions.browRaise.toFixed(2);
     const smile = data.expressions.smile.toFixed(2);
     const innerBrowRaise = data.expressions.innerBrowRaise.toFixed(2);
-    const lipPress = data.expressions.lipPress.toFixed(2);
+    const cheekRaise = data.expressions.cheekRaise.toFixed(2);
     const upperLipRaise = data.expressions.upperLipRaise.toFixed(2);
 
     const text = `Dominant Emoji: ${emoji}\nEmotion: ${emotionWithHighestScore}\nCheek Raise: ${cheekRaise}\nSmile: ${smile}\n`;
