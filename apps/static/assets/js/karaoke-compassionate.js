@@ -86,6 +86,7 @@ function stopCamera() {
         detector.stop();
 
         video.srcObject = null;
+        clearDrawCanvas();
         stopInterval();
         adjustCanvas();
         updateSpreadsheet();
@@ -270,6 +271,11 @@ function getEmotionWithHighestScore(emotions) {
   }
 
   return maxEmotion;
+}
+
+function clearDrawCanvas(){
+    let contxt = document.getElementById('drawCanvas').getContext('2d');
+    contxt.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 }
 
 //-------------------------------------------------------------
