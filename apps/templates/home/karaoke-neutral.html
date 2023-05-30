@@ -16,7 +16,8 @@
   <div class="container-lg">
     <div class="card">
       <div class="card-body">
-        <p class="font-monospace fs-4 fw-bolder" style="color: #B31B1B"> Expression Karaoke: Let's try making a listening facial expression</p>
+        <p class="font-monospace fs-4 fw-bolder" style="color: #B31B1B"> Expression Karaoke: Let's try making a
+          listening facial expression</p>
         <div class="row">
           <div class="col">
             <div class="card" style="padding: 1px" id="canvas-parent">
@@ -26,8 +27,8 @@
             </div>
           </div>
           <div class="col" style="display: flex; justify-content: center; align-items: center;">
-            <img src="/static/assets/img/listening.png" alt="Listening Emoji" style="object-fit: contain"
-              width="500" height="500">
+            <img src="/static/assets/img/listening.png" alt="Listening Emoji" style="object-fit: contain" width="500"
+              height="500">
           </div>
         </div>
         <div class="start-stop text-center">
@@ -64,10 +65,13 @@
 
 <script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 
-<script type="text/javascript" src="/static/assets/js/karaoke-listening.js"></script>
+<!-- <script type="text/javascript" src="/static/assets/js/karaoke-listening.js"></script> -->
 
-
-<!-- <script type="text/javascript" src="/static/assets/vendors/affdex/affdex.js"></script> -->
+<script>
+  const testType = 'karaoke-listening'
+  const dataColumns = ['timestamp', 'smile', 'browRaise', 'eyeWiden']
+</script>
+<script type="text/javascript" src="/static/assets/js/karaoke-global.js"></script>
 
 <script>
 

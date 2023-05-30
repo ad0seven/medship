@@ -101,8 +101,35 @@ from googleapiclient.discovery import build
 import time
 from flask_login import current_user
 
+from dotenv import find_dotenv, load_dotenv
+from os import environ as env
+
+# Loading env variables
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
+
 # load your service account credentials
-creds = Credentials.from_service_account_file('./sheet_creds.json')
+# creds = Credentials.from_service_account_file('./sheet_creds.json')
+
+# Load credentials from environment variables
+credentials_info = {
+    "type": env.get('G_SHEET_TYPE'),
+    "project_id": env.get('G_SHEET_PROJECT_ID'),
+    "private_key_id": env.get('G_SHEET_PRIVATE_KEY_ID'),
+    "private_key": env.get('G_SHEET_PRIVATE_KEY'),
+    "client_email": env.get('G_SHEET_CLIENT_EMAIL'),
+    "client_id": env.get('G_SHEET_CLIENT_ID'),
+    "auth_uri": env.get('G_SHEET_AUTH_URI'),
+    "token_uri": env.get('G_SHEET_TOKEN_URI'),
+    "auth_provider_x509_cert_url": env.get('G_SHEET_AUTH_PROVIDER_X509_CERT_URL'),
+    "client_x509_cert_url": env.get('G_SHEET_CLIENT_X509_CERT_URL')
+}
+
+# print('CREDENTIALS INFO: ', credentials_info)
+
+# Create credentials from the loaded information
+creds = Credentials.from_service_account_info(credentials_info)
 
 @app.route('/update-sheet', methods=['POST'])
 def update_sheet():
@@ -128,7 +155,7 @@ def update_sheet():
         test_type = data_json['test_type']
 
         # get the date in hh_mm_MM_DD_YYYY format 24 hour time + timezone
-        test_date = time.strftime("%H:%M_%m_%d/%Y/%Z") 
+        test_date = time.strftime("%H:%M_%m/%d/%Y_%Z") 
 
         sheet_title = username + '_' + test_type + "_" + test_date  # Create a unique title using the current timestamp
 

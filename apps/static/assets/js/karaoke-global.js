@@ -112,8 +112,8 @@ if (document.readyState === "complete") {
 }
 };
 
-const testType = 'karaoke-compassionate'
-const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress']
+// const testType = 'karaoke-compassionate'
+// const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress']
 var recordedData = [] //storing the spreadsheet data
 
 function grab() {
