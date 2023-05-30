@@ -145,7 +145,7 @@ def update_sheet():
             username = ''
 
         # The ID of your Google Sheets file
-        spreadsheet_id = '1K-w62wr4O4kaYkJZAqW2DqkpLRpzIB55ExnMNaMRG0w'
+        spreadsheet_id = env.get('SPREADSHEET_ID')
 
         service = build('sheets', 'v4', credentials=creds)
         sheet = service.spreadsheets()
