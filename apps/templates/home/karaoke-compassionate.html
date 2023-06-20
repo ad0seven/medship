@@ -1,0 +1,159 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Compassionate Expression {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+<link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+<link href="/static/assets/css/karaoke.css" rel="stylesheet">
+
+<link href="/static/assets/css/rating.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="body flex-grow-1 px-3">
+  <div class="container-lg">
+    <div class="card">
+      <div class="card-body">
+        <p class="font-monospace fs-4 fw-bolder" style="color: #B31B1B"> Expression Karaoke: Let's try making a
+          compassionate facial expression </p>
+        <div class="row">
+          <div class="col">
+            <div class="card" style="padding: 1px" id="canvas-parent">
+              <canvas id="drawCanvas"></canvas>
+              <video contrls id="videoElement" onloadeddata="startup()"></video>
+              <canvas id="captureCanvas"></canvas>
+            </div>
+          </div>
+          <div class="col" style="display: flex; justify-content: center; align-items: center;">
+            <img src="/static/assets/img/compassionate.png" alt="Compassionate Emoji" style="object-fit: contain"
+              width="500" height="500">
+          </div>
+        </div>
+        <div class="start-stop text-center">
+          <button class="btn btn-dark" type="button" id="startCamera">I'm ready!</button>
+          <button class="btn btn-primary" type="button" id="stopCamera">Nailed it</button>          
+        </div>
+        <br>
+        <p class="card-text fs-5"> Note: emotion recognition works the best when you position your face in the center of
+          the frame, reduce background clutter, and keep bright lights out of frame.</p>
+      </div>
+      <p class="card-text fs-4" style="text-align: center"> How accurate was the prediction?</p>
+      <div class="card-body" style="display: inline; justify-content: center; margin: auto">
+      <ul class="feedback">
+        <li class="angry">
+            <div>
+                <svg class="eye left">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="eye right">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="mouth">
+                    <use xlink:href="#mouth">
+                </svg>
+            </div>
+        </li>
+        <li class="sad">
+            <div>
+                <svg class="eye left">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="eye right">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="mouth">
+                    <use xlink:href="#mouth">
+                </svg>
+            </div>
+        </li>
+        <li class="ok">
+            <div></div>
+        </li>
+        <li class="good active">
+            <div>
+                <svg class="eye left">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="eye right">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="mouth">
+                    <use xlink:href="#mouth">
+                </svg>
+            </div>
+        </li>
+        <li class="happy">
+            <div>
+                <svg class="eye left">
+                    <use xlink:href="#eye">
+                </svg>
+                <svg class="eye right">
+                    <use xlink:href="#eye">
+                </svg>
+            </div>
+        </li>
+    </ul>
+    </div>
+            
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 4" id="eye">
+            <path d="M1,1 C1.83333333,2.16666667 2.66666667,2.75 3.5,2.75 C4.33333333,2.75 5.16666667,2.16666667 6,1"></path>
+        </symbol>
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 7" id="mouth">
+            <path d="M1,5.5 C3.66666667,2.5 6.33333333,1 9,1 C11.6666667,1 14.3333333,2.5 17,5.5"></path>
+        </symbol>
+    </svg>
+    </div>
+    
+    <div class="row">
+      <div class="col-6">
+        <a class="nav-link" href="karaoke-landing.html">
+          <button class="btn btn-dark" type="button">Back</button>
+        </a>
+      </div>
+      <div class="col-6 text-end">
+        <a class="nav-link" href="karaoke-welcoming.html">
+          <button class="btn btn-dark" type="button">Next</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
+    if(!entry.classList.contains('active')) {
+        document.querySelector('.feedback li.active').classList.remove('active');
+        entry.classList.add('active');
+    }
+    e.preventDefault();
+}));
+
+document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
+    if(!entry.classList.contains('active')) {
+        document.querySelector('.feedback li.active').classList.remove('active');
+        entry.classList.add('active');
+    }
+    e.preventDefault();
+}));
+</script>
+
+<script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
+<script type="text/javascript" src="/static/assets/js/karaoke-compassionate.js"></script>
+
+
+<!-- <script type="text/javascript" src="/static/assets/vendors/affdex/affdex.js"></script> -->
+
+<script>
+
+</script>
+
+{% endblock javascripts %}
