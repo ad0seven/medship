@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Profile {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title text-center" style="color: #E7751D"><strong>User Settings</strong></h4>
+          <form role="form" method="post" action="">
+
+            {{ form.hidden_tag() }} 
+
+              <div class="input-group mb-3"><span class="input-group-text" style="color: #B31B1B">
+                  <svg class="icon">
+                    <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-user"></use>
+
+                  </svg></span>
+                {{ form.username(placeholder="Username", class="form-control") }}
+              </div>
+
+              <div class="input-group mb-3"><span class="input-group-text" style="color: #B31B1B">
+                  <svg class="icon">
+                    <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
+                  </svg></span>
+                {{ form.email(placeholder="Email", class="form-control") }}
+              </div>
+
+              <div class="input-group mb-3"><span class="input-group-text" style="color: #B31B1B">
+                  <svg class="icon">
+                    <use xlink:href="/static/assets/vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
+                  </svg></span>
+                {{ form.password(placeholder="Password", class="form-control", type="password") }}
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <button class="btn btn-block btn-dark" type="submit" name="register">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+  <script>
+  </script>
+
+{% endblock javascripts %}

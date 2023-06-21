@@ -1,0 +1,80 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Clinical Scenario 1 {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3">
+    <div class="container-lg">
+      <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="column" style="width:70% ; float:left">
+            <p class="font-monospace fs-3 fw-bolder" style="color: #E7751D">Clinical Scenario</p>
+              <p class="card-text fs-4">  
+                You will soon meet a 22-year-old female patient who overdosed on opioids. You have never met her before. Her best friend told the nurse that she has experienced a lot of trauma. Your goal is to respond with empathy and sensitivity. 
+                <br> After your response, you will see a video of your interaction and a feedback on your facial expressions. </p>
+           </div>
+          <div class="column" style="width:30%; float:right; text-align:center">
+              <img src="/static/assets/img/trauma.jpg" alt="Trauma vector" style="object-fit:contain" width="300" height="300">
+              <a href="http://www.freepik.com"></a> 
+         </div>
+         <br>
+        </div>
+          <h3 class="card-title text-center" style="color: #E7751D">Choose your patient</h3>
+          <br>
+      <div class="row">
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3 ">
+            <div class="card-body">
+              <h5 class="card-title">Anxious patient</h5>
+              <a href="cs1-1-polite-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Suffers from excessive worry or fear and is easily irritated and frustrated</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Detached patient</h5>
+              <a href="cs1-1-sad-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Shows signs of reduced mental and physical activity, such as drowsiness and confusion</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Angry-Paranoid patient</h5>
+                <a href="cs1-1-agitated-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Shows signs of hostility or distrust and thinks that someone is trying to harm them</p></a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="training-landing.html">
+          <button class="btn btn-dark" type="button">Back</button>
+          </a>
+        </div>
+        </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+
+{% endblock javascripts %}

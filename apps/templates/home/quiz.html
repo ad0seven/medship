@@ -1,0 +1,228 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Landing {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+    
+    <link href="/static/assets/vendors/@coreui/chartjs/css/coreui-chartjs.css" rel="stylesheet">
+    <link href="/static/assets/css/quiz.css" rel="stylesheet">
+
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="body flex-grow-1 px-3" style="text-align: center;">
+  <h3>How well do you read other people?</h3>
+    <div id="quizContainer" style="text-align:left">
+      <div id="quiz">
+        <!-- Quiz will be generated here -->
+      </div>
+      <button id="submit" type="button" class="btn btn-dark">Submit</button>
+      <div id="result">
+        <!-- Result will be shown here -->
+      </div>
+      <button type="button" class="btn btn-dark" id="next" style="display: none;">Next</button>
+    </div>
+    <div id="score-container" style="display: none;">
+      <h3>Your Score: <span id="score"></span>/5</h3>
+      <button id="next-stage" class="btn btn-dark" style="display: none;">Next</button>
+  </div>
+  </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    window.onload = function() {
+    const quizContainer = document.getElementById('quiz');
+    const resultsContainer = document.getElementById('result');
+    const nextButton = document.getElementById('next');
+    const submitButton = document.getElementById('submit');
+    const scoreContainer = document.getElementById('score-container');
+    const scoreSpan = document.getElementById('score');
+    
+    let currentQuestionIndex = 0;
+    let score = 0;
+    
+    const questions = [
+      {
+        image: "/static/assets/img/q1i.jpg",
+        question: "This face is expressing...",
+        answers: {
+          a: "Embarassement",
+          b: "Fear",
+          c: "Sadness",
+          d: "Surprise"
+        },
+        correctAnswer: "b",
+        explanation: "The facial expression of fear is often confused with surprise. But when we’re surprised, our eyes open wider than when we’re afraid, and our mouth isn’t pulled sideways, like it is here; instead, our jaw drops and the mouth hangs open. Plus, our eyebrows are relatively flat when we’re afraid; they arch more when we’re surprised.",
+        explanationImage: "/static/assets/img/q1a.jpg"
+      },
+      {
+        image: "/static/assets/img/q2i.jpg",
+        question: "This face is expressing...",
+        answers: {
+          a: "Flirtatiousness",
+          b: "Interest",
+          c: "Happiness",
+          d: "Politeness"
+        },
+        correctAnswer: "c",
+        explanation: "This is a classic display of a genuine smile, called a Duchenne smile, which signals happiness. It’s defined by two muscle movements. The movement common to all smiles is the zygomatic major muscle pulling the lip corners up. But, critically, what reveals this as a genuine smile is what happens around the eyes: The muscles tighten, making those wrinkles, or crow’s feet, around the sides of the eyes and creating that pouching of the lower eyelid. When you see these signs, the person isn’t just smiling politely; he’s feeling genuine happiness.",
+        explanationImage: "/static/assets/img/q2a.jpg"
+      },
+      {
+        image: "/static/assets/img/q3i.jpg",
+        question: "This face is expressing...",
+        answers: {
+          a: "Embarrassment",
+          b: "Amusement",
+          c: "Shame",
+          d: "Sadness"
+        },
+        correctAnswer: "a",
+        explanation: "When people are embarrassed, they avert their gaze, which means they move their head down and to the side, exposing their neck. And the embarrassed smile is different from other smiles: The lips press together tightly, reflecting feelings of restraint or inhibition. Embarrassment can look like shame, but when we’re ashamed, our head moves straight down, not to the side, and we don’t smile.",
+        explanationImage: "/static/assets/img/q3a.jpg"
+      },
+      {
+        image: "/static/assets/img/q4i.jpg",
+        question: "This face is expressing...",
+        answers: {
+          a: "Happiness",
+          b: "Desire",
+          c: "Politeness",
+          d: "Compassion"
+        },
+        correctAnswer: "c",
+        explanation: "This is a non-Duchenne smile—a smile that doesn’t signal true happiness. It suggests that the person is trying to seem polite and cooperative, but they don’t genuinely feel happy. The zygomatic major muscle is pulling the lip corners up, but there are no signs of real joy around the eyes—no crow’s feet around the sides, no pouching of the lower eyelid, no raising of the cheek.",
+        explanationImage: "/static/assets/img/q4a.jpg"
+      },
+      {
+        image: "/static/assets/img/q5i.jpg",
+        question: "This face is expressing...",
+        answers: {
+          a: "Compassion",
+          b: "Sadness",
+          c: "Anger",
+          d: "Interest"
+        },
+        correctAnswer: "a",
+        explanation: "When people feel sympathy or compassion, the corrugator muscles pull the eyebrows in and up, their lips press together, and their head tilts forward slightly—a sign of social engagement. The expression of compassion is most often confused with sadness. The eyebrow movements are similar in sadness and compassion, but with compassion the lips press together; when we feel sad, our lips pull down.",
+        explanationImage: "/static/assets/img/q5a.jpg"
+      },
+    ];
+    
+    function showQuestion(questionIndex) {
+    const question = questions[questionIndex];
+    quizContainer.innerHTML = `
+      <img src="${question.image}">
+      <p>${question.question}</p>
+      ${Object.keys(question.answers).map(letter =>
+        `<label>
+            <input type="radio" name="answer" value="${letter}">
+            ${question.answers[letter]}
+         </label>`
+      ).join('')}
+    `;
+  }
+
+    
+submitButton.addEventListener('click', () => {
+  const answerContainers = quizContainer.querySelectorAll('label');
+  const selectedAnswer = Array.from(answerContainers).find(label => label.querySelector('input').checked);
+
+  if (!selectedAnswer) {
+    alert('Please select an answer before submitting.');
+    return;
+  }
+
+  if (questions[currentQuestionIndex].correctAnswer === selectedAnswer.querySelector('input').value) {
+    score++;
+  };
+
+
+  quizContainer.innerHTML = ''; // Here we clear the contents of the quiz container.
+
+  resultsContainer.innerHTML = `
+    <p>${selectedAnswer.querySelector('input').value === questions[currentQuestionIndex].correctAnswer ? "Correct" : "Incorrect"}</p>
+    <img src="${questions[currentQuestionIndex].explanationImage}">
+    <p>${questions[currentQuestionIndex].explanation}</p>
+  `;
+
+  nextButton.style.display = '';
+  submitButton.style.display = 'none';
+});
+    
+    nextButton.addEventListener('click', () => {
+      currentQuestionIndex++;
+    
+      if (currentQuestionIndex >= questions.length) {
+        scoreContainer.style.display = '';
+        scoreSpan.textContent = score;
+        nextButton.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        sendScoreToGoogleSheets(); // Call the function here.
+        return;
+      }
+    
+      showQuestion(currentQuestionIndex);
+      nextButton.style.display = 'none';
+      submitButton.style.display = '';
+      resultsContainer.innerHTML = '';
+    });
+    
+    showQuestion(currentQuestionIndex);
+    
+    let nextStageButton = document.getElementById('next-stage');
+
+function showNextStageButton() {
+    nextStageButton.style.display = '';
+}
+
+nextStageButton.addEventListener('click', function() {
+    // replace this with the actual URL of the next stage
+    window.location.href = 'karaoke-landing.html'; 
+});
+
+nextButton.addEventListener('click', () => {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex >= questions.length) {
+        scoreContainer.style.display = '';
+        scoreSpan.textContent = score;
+        nextButton.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        showNextStageButton();  // display the next stage button
+        sendScoreToGoogleSheets(); // Call the function here.
+        return;
+    }
+
+    showQuestion(currentQuestionIndex);
+    nextButton.style.display = 'none';
+    submitButton.style.display = '';
+    resultsContainer.innerHTML = '';
+});
+
+    function sendScoreToGoogleSheets() {
+      fetch('https://script.google.com/macros/s/AKfycbymk-fq4KkIeiysTUgpmDYKPP_kekHnORuAG4E0QCFftcQR4jtva2PHmNgAFzkiyCGq/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: 'user', score: score })
+      });
+    }
+    };
+    
+    </script>
+  <!-- Plugins and scripts required by this view-->
+  <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
+  <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+  <script src="/static/assets/vendors/@coreui/utils/js/coreui-utils.js"></script>
+  <script src="/static/assets/js/main.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+
+{% endblock javascripts %}

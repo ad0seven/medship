@@ -1,0 +1,85 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Home {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="body flex-grow-1 px-3" >
+    <div class="container-lg">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title" style="color: #E7751D"><strong>About Medship</strong></h4>
+          <p class="card-text">
+            Medship is an initiative between researchers at Weill Cornell Medicine and MIT Media Lab. Our
+            collaboration in Medship (like friendship) strives to create innovative ways for medical trainees to
+            understand their own emotional experiences and best engage with the experiences of their patients, in
+            ways that promote empathy, active listening, and compassionate dialogue.
+          </p>
+          <p class="card-text">
+            Persons who inject drugs might face negative health outcomes due to stigma from the medical
+            community, medical complications resulting from their use, and mutual mistrust with healthcare
+            providers. Attempting to address these wrongs through compassionate and person-centered care is
+            imperative for health justice, which we propose might be achieved through Medship – a greater
+            understanding of our relationship with our patients.
+          </p>
+          <p class="card-text">
+            Together, we are working toward a healthcare world that promotes the best therapeutic relationship
+            between medical professionals and their patients.     
+          </p>
+        </div>
+      </div>
+      <div class="card-group text-center">
+        <div class="card bg-white"><img class="card-img-top" src="assets/img/cornell.png" alt="">
+          <div class="card-body">
+            <a href="https://substanceusestigma.weill.cornell.edu/" style="text-decoration: none">
+              <img src="/static/assets/img/cornell.png" alt="Cornell" style="width: 100%">
+            </a>
+          </div>
+        </div>
+        <div class="card bg-white"><img class="card-img-top" src="assets/img/medialab.png" alt="">
+          <div class="card-body">
+            <a href="https://www.media.mit.edu/groups/affective-computing/overview/" style="text-decoration: none">
+              <img id='mlimg' src="/static/assets/img/medialab.png" alt="MediaLab" style="width: 40%; filter: invert(100%)">
+            </a>
+          </div>
+        </div>
+        <div class="card bg-white"><img class="card-img-top" src="assets/img/fore.png" alt="">
+          <div class="card-body">
+            <a href="https://forefdn.org/about-us/" style="text-decoration: none">
+              <img src="/static/assets/img/fore.png" alt="FORE" style="width: 35%;">
+            </a>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-6">
+          <a class="nav-link" href="index.html">
+          <button class="btn btn-dark" type="button">Back</button>
+          </a>
+        </div>
+        <div class="col-6 text-end">
+          <a class="nav-link" href="home-about.html">
+          <button class="btn btn-dark" type="button">Continue</button>
+          </a>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+
+</script>
+
+
+{% endblock javascripts %}
