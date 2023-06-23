@@ -25,7 +25,7 @@
     </div>
     <div id="score-container" style="display: none;">
       <h3>Your Score: <span id="score"></span>/5</h3>
-      <button id="next-stage" class="btn btn-dark" style="display: none;">Next</button>
+      <button id="next-stage" class="btn btn-dark">Next</button>
   </div>
   </div>
 
@@ -140,13 +140,13 @@ submitButton.addEventListener('click', () => {
 
   if (questions[currentQuestionIndex].correctAnswer === selectedAnswer.querySelector('input').value) {
     score++;
-  };
+  }
 
 
   quizContainer.innerHTML = ''; // Here we clear the contents of the quiz container.
 
   resultsContainer.innerHTML = `
-    <p>${selectedAnswer.querySelector('input').value === questions[currentQuestionIndex].correctAnswer ? "Correct" : "Incorrect"}</p>
+    <p>${selectedAnswer.querySelector('input').value === questions[currentQuestionIndex].correctAnswer ? "<br> Correct" : "Incorrect"}</p>
     <img src="${questions[currentQuestionIndex].explanationImage}">
     <p>${questions[currentQuestionIndex].explanation}</p>
   `;
@@ -177,33 +177,14 @@ submitButton.addEventListener('click', () => {
     
     let nextStageButton = document.getElementById('next-stage');
 
-function showNextStageButton() {
-    nextStageButton.style.display = '';
-}
-
-nextStageButton.addEventListener('click', function() {
-    // replace this with the actual URL of the next stage
-    window.location.href = 'karaoke-landing.html'; 
-});
-
-nextButton.addEventListener('click', () => {
-    currentQuestionIndex++;
-
-    if (currentQuestionIndex >= questions.length) {
-        scoreContainer.style.display = '';
-        scoreSpan.textContent = score;
-        nextButton.style.display = 'none';
-        resultsContainer.style.display = 'none';
-        showNextStageButton();  // display the next stage button
-        sendScoreToGoogleSheets(); // Call the function here.
-        return;
+    function showNextStageButton() {
+        nextStageButton.style.display = '';
     }
 
-    showQuestion(currentQuestionIndex);
-    nextButton.style.display = 'none';
-    submitButton.style.display = '';
-    resultsContainer.innerHTML = '';
-});
+    nextStageButton.addEventListener('click', function() {
+        // replace this with the actual URL of the next stage
+        window.location.href = 'karaoke-landing.html'; 
+    });
 
     function sendScoreToGoogleSheets() {
       fetch('https://script.google.com/macros/s/AKfycbymk-fq4KkIeiysTUgpmDYKPP_kekHnORuAG4E0QCFftcQR4jtva2PHmNgAFzkiyCGq/exec', {
@@ -215,9 +196,9 @@ nextButton.addEventListener('click', () => {
         body: JSON.stringify({ name: 'user', score: score })
       });
     }
-    };
-    
-    </script>
+  }
+  </script>
+
   <!-- Plugins and scripts required by this view-->
   <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
   <script src="/static/assets/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>

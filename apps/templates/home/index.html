@@ -12,24 +12,36 @@
 {% block content %}
 <div class="body flex-grow-1 px-3">
   <div class="container-lg">
-      <div class="column" style="width:70% ; float:left">
-       <br>
-       <br>
-       <br>
-       <br>
-       <p class="font-courier fs-1 fw-bolder" style="font: size 20px;"> Are we usually aware of our facial expressions? </p>
-       <p class="card-text lh-lg fs-4">We often fail to notice how our face reflects our emotions. We also don’t realize how much our expressions influence others around us. Let’s examine this further.</p>
-       <a href="quiz.html" class="nav-link" style="text-align:center">
-        <button type="button" class="btn btn-dark">Start</button>
-       </a>
-      </div>
-      <div class="column" style="width:30%; float:right; text-align:center">
-        <img src="/static/assets/img/index.jpg" alt="Mirror vector" style="object-fit:scale down">
+    <div class="row">
+      <div class="col-lg-7">
+        <br>
+        <br>
+        <br>
+        <br>
+        <p class="fs-1 fw-bolder">Are we usually aware of our facial expressions?</p>
+        <p class="card-text lh-lg fs-4">We often fail to notice how our face reflects our emotions. We also don’t realize how much our expressions influence others around us. Let’s examine this further.</p>
+        <div class="d-flex justify-content-center mb-5">
+          <a href="quiz.html" class="nav-link">
+            <button type="button" class="btn btn-dark">Start</button>
+          </a>
         </div>
       </div>
+      <div class="col-lg-5">
+        <div class="d-flex justify-content-start">
+          <img src="/static/assets/img/index.jpg" alt="Mirror vector" style="object-fit: scale-down; align-self: flex-start;">
+          </div>
+      </div>
     </div>
-  
+  </div>
+</div>
 
+  <div class="container-lg">
+      <div class="col">
+        <div class="d-flex justify-content-center">
+          <img src="/static/assets/img/icons-aff.png" alt="Company 1 Logo" style="object-fit: contain;">
+        </div>
+      </div>
+  </div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

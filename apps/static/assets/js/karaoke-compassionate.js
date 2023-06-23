@@ -114,6 +114,7 @@
         adjustCanvas();
         updateAnalytics();
         updateSpreadsheet();
+        clearDrawCanvas();
 
         startedup = false;
         detectorInit = false;
@@ -222,7 +223,14 @@
             lipPress: lipPress
         };
         
-        const compassion = checkCompassionDetected(compassionExpressions) ? 'Detected' : 'Not Detected';
+        const customThresholds = {
+            innerBrowRaise: 30,
+            smile: 15,
+            lipPress: 10
+          };
+
+
+        const compassion = checkCompassionDetected(compassionExpressions, customThresholds) ? 'Detected' : 'Not Detected';
         
         const text = `Compassion: ${compassion}\nInner Brow Raise: ${innerBrowRaise}\nLip Corners Pull: ${smile}\nLip Press: ${lipPress}\nDominant Emoji: ${emoji}`;
 
@@ -255,21 +263,25 @@
     return maxEmotion;
     }
 
-    function checkCompassionDetected(expressions) {
+    function checkCompassionDetected(expressions, thresholds) {
         const compassionExpressions = ['innerBrowRaise', 'smile', 'lipPress'];
         let compassionDetected = true;
-    
+
+      
         for (const expression of compassionExpressions) {
-        const score = expressions[expression];
-    
-        if (score <= 20) {
+          const score = expressions[expression];
+          const threshold = thresholds[expression];
+      
+          if (score <= threshold) {
             compassionDetected = false;
             break;
+          }
         }
-        }
-    
+      
         return compassionDetected ? 'compassionDetected' : null;
-    }
+      }
+
+      
     
     function clearDrawCanvas() {
         let contxt = document.getElementById("drawCanvas").getContext("2d");

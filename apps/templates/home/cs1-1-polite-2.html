@@ -87,122 +87,131 @@
 <script src="/static/assets/js/charts.js"></script>
 
 <script>
+  window.onload = function() {
+  loadResults();
+}
+  function loadResults() {
+    console.log('loadResults function called');
   
-function loadResults() {
-  const results = JSON.parse(localStorage.getItem("results"));
-  const timestamps = results.map(dataPoint => dataPoint[0]);
-  const labels = timestamps.map(timestamp => formatTimestamp(timestamp));
+    const resultsString = localStorage.getItem("results");
+    const results = JSON.parse(resultsString);
+    console.log("results: ", results);
 
-  const ctx = document.getElementById('myChart').getContext('2d');
-  const chart = new Chart(ctx, {
-    type: 'scatter',
-    data: {
-      labels: labels, // Update labels to use timestamps
-      datasets: [
-        {
-          label: 'Welcoming',
-          data: getDetectionData(results, 'welcoming'),
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          pointStyle: 'circle'
-        },
-        {
-          label: 'Listening',
-          data: getDetectionData(results, 'listening'),
-          backgroundColor: 'rgba(54, 162, 235, 0.5)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          pointStyle: 'circle'
-        },
-        {
-          label: 'Compassionate',
-          data: getDetectionData(results, 'compassion'),
-          backgroundColor: 'rgba(75, 192, 192, 0.5)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          pointStyle: 'circle'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Expressions Detected Over Time'
-        },
-        legend: {
-          display: true
-        }
-      },
-      scales: {
-        x: {
-          display: true,
-          title: {
-            display: true,
-            text: 'Time'
+    const timestamps = results.map(dataPoint => dataPoint.timestamp);
+    const labels = timestamps.map(timestamp => formatTimestamp(timestamp));
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    const chart = new Chart(ctx, {
+      type: 'scatter',
+      data: {
+        labels: labels, // Update labels to use timestamps
+        datasets: [
+          {
+            label: 'Welcoming',
+            data: getDetectionData(results, 'welcoming'),
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            pointStyle: 'circle'
           },
-          type: 'linear', // Set the X-axis type to linear
-          position: 'bottom'
-        },
-        y: {
-          display: true,
-          title: {
-            display: true,
-            text: 'Detection'
+          {
+            label: 'Listening',
+            data: getDetectionData(results, 'listening'),
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            pointStyle: 'circle'
           },
-          suggestedMin: 0,
-          suggestedMax: 1,
-          ticks: {
-            stepSize: 1
+          {
+            label: 'Compassionate',
+            data: getDetectionData(results, 'compassion'),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            pointStyle: 'circle'
           }
-        }
+        ]
       },
-      tooltips: {
-        callbacks: {
-          label: function (context) {
-            const dataPoint = results[context.dataIndex];
-            const timestamp = formatTimestamp(dataPoint[0]);
-            const detection = context.dataset.label;
-            return `${detection}: ${timestamp}`;
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Expressions Detected Over Time'
+          },
+          legend: {
+            display: true
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Time'
+            },
+            type: 'linear', // Set the X-axis type to linear
+            position: 'bottom'
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Detection'
+            },
+            suggestedMin: 0,
+            suggestedMax: 1,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function (context) {
+              const dataPoint = results[context.dataIndex];
+              const timestamp = formatTimestamp(dataPoint.timestamp);
+              const detection = context.dataset.label;
+              return `${detection}: ${timestamp}`;
+            }
           }
         }
       }
-    }
-  });
-}
+    });
+  }
 
-function getDetectionData(results, detectionType) {
-  return results.map(dataPoint => {
-    const detectionValue = dataPoint[1][detectionType];
-    return {
-      x: dataPoint[0], // Use 'unix_timestamp' for X-axis
-      y: detectionValue
-    };
-  });
-}
+  function getDetectionData(results, detectionType) {
+    return results.map(dataPoint => {
+      const detectionValue = dataPoint[detectionType] ? 1 : 0;
+      return {
+        x: dataPoint.timestamp, // Use 'timestamp' for X-axis
+        y: detectionValue
+      };
+    });
+  }
 
-function formatTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  return date.toLocaleTimeString(); // Update this line with your desired formatting logic
-}
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString(); // Update this line with your desired formatting logic
+  }
 
-const replayVid = document.getElementById("replay");
-const drSuperVid = document.getElementById("drSuperVid");
-const filename = localStorage.getItem("filename");
+  const replayVid = document.getElementById("replay");
+  const drSuperVid = document.getElementById("drSuperVid");
+  const filename = localStorage.getItem("filename");
 
-replayVid.src = filename;
-replayVid.load();
+  replayVid.src = filename;
+  replayVid.load();
 
-function play() {
-  replayVid.play();
-  drSuperVid.play();
-}
+  function play() {
+    replayVid.play();
+    drSuperVid.play();
+  }
 
-function pause() {
-  replayVid.pause();
-  drSuperVid.pause();
-}
+  function pause() {
+    replayVid.pause();
+    drSuperVid.pause();
+  }
 
-window.onload = loadResults;
+  window.onload = loadResults;
 </script>
 
 {% endblock javascripts %}

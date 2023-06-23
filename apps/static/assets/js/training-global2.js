@@ -23,6 +23,12 @@ let saveButton = document.getElementById("save");
 let nextButton = document.getElementById("next");
 let filename = null;
 let results = null;
+
+let welcoming = ""; // Initialize the variable with an empty string
+let listening = ""; // Initialize the variable with an empty string
+let compassion = ""; // Initialize the variable with an empty string
+
+
 let savingText = document.getElementById("saving");
 var drawCanvas = document.getElementById("drawCanvas");
 var drawCtx = drawCanvas.getContext("2d");
@@ -57,6 +63,9 @@ console.log("training-global.js loaded");
 var framePadding = null;
 
 let recordingRequestId;
+
+//get global unix timestamp (more flexible for data analysis)
+let unix_timestamp = new Date().getTime();
 
 /*
 anger
@@ -158,14 +167,10 @@ detector.addEventListener(
     var time_key = "Timestamp";
     var time_val = timestamp.toFixed(2);
 
-    //get global unix timestamp (more flexible for data analysis)
-    let unix_timestamp = new Date().getTime();
-
     if (verbose) {
       console.log("#results", "Timestamp: " + timestamp.toFixed(2));
       console.log("#results", "Number of faces found: " + faces.length);
       console.log("Number of faces found: " + faces.length);
-      console.log("Compassion " + compassionDetected);
     }
     if (faces.length > 0) {
       if (verbose) {
@@ -238,9 +243,9 @@ const listeningExpression = {
   engagement: engagement
 };
 
-const welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
-const listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
-const compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
+welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
 
 const text = `Compassonate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}\nDominant Emoji: ${emoji}`;
 
@@ -297,25 +302,20 @@ function stopRecordingFrames() {
 }
 
 function recordFrame() {
-  //instead of drawing the points each detector update,
-  // store the points in a variable,
-  //draw the video 30/24 times a second with whatever the current results are
-  //and then draw the points on top of the video
-
   if (startedUp && detectorInit && currentResults) {
-    //draw the video in the drawCanvas
+    // draw the video in the drawCanvas
     drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
     drawCtx.drawImage(
-    video,
-    0,
-    0,
-    video.videoWidth,
-    video.videoHeight,
-    0,
-    0,
-    drawCanvas.width,
-    drawCanvas.height
+      video,
+      0,
+      0,
+      video.videoWidth,
+      video.videoHeight,
+      0,
+      0,
+      drawCanvas.width,
+      drawCanvas.height
     );
 
     drawVideoMaintainingAspectRatio(video, drawCanvas);
@@ -323,20 +323,21 @@ function recordFrame() {
     drawAffdexStats(currentResultImg, currentResults);
 
     let dataFrame = drawCanvas.toDataURL();
-    // recordingFrames.push(dataFrame);
+    recordingFrames.push(dataFrame);
 
     const unixTimestamp = Date.now();
     console.log(unixTimestamp);
 
-    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults };
+    allResults[unixTimestamp] = { timestamp: unix_timestamp, frame: dataFrame, results: currentResults };
   }
 }
 
+
 function saveResults() {
+  detected_values = []
   document.getElementById("canvas-text").innerText = "Loading...";
 
   clearInterval(detectorInterval);
-  //   clearInterval(recordingInterval);
   stopRecordingFrames();
   detector.stop();
   startedUp = false;
@@ -344,6 +345,13 @@ function saveResults() {
   video.pause();
   video.srcObject = null;
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+
+  // Add the 'welcoming', 'listening', and 'compassion' variables to each frame's results
+  Object.values(allResults).forEach((frame) => {
+    frame.results.welcoming = welcoming;
+    frame.results.listening = listening;
+    frame.results.compassion = compassion;
+  });
 
   fetch("/create-video", {
     method: "POST",
@@ -363,10 +371,9 @@ function saveResults() {
       enableButton();
       document.getElementById("canvas-text").innerText = "Done! ";
     });
-
-  allResults = {};
   console.log("allResults: ", allResults);
 }
+
 
 function drawVideoMaintainingAspectRatio(video, canvas) {
   let context = canvas.getContext("2d");

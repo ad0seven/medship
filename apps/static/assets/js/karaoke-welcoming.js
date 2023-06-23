@@ -114,6 +114,7 @@ function stopCamera() {
     adjustCanvas();
     updateAnalytics();
     updateSpreadsheet();
+    clearDrawCanvas();
  
     startedup = false;
     detectorInit = false;
@@ -224,8 +225,15 @@ function drawAffdexStats(img, data) {
         smile: smile,
         engagement: engagement
     };
+
+    const customThresholds = {
+        cheekRaise: 10,
+        smile: 30,
+        engagement: 25
+      };
+      
     
-    const welcoming = checkWelcomingDetected(welcomingExpressions) ? 'Detected' : 'Not Detected';
+    const welcoming = checkWelcomingDetected(welcomingExpressions, customThresholds) ? 'Detected' : 'Not Detected';
     
     const text = `Welcoming: ${welcoming}\nCheek Raise: ${cheekRaise}\nLip Corners Pull: ${smile}\nEngagement ${engagement}\nDominant Emoji: ${emoji}`;
 
@@ -258,21 +266,23 @@ for (const emotion in emotions) {
 return maxEmotion;
 }
 
-function checkWelcomingDetected(expressions) {
+function checkWelcomingDetected(expressions, thresholds) {
     const welcomingExpressions = ['cheekRaise', 'smile', 'engagement'];
     let welcomingDetected = true;
-
+  
     for (const expression of welcomingExpressions) {
-    const score = expressions[expression];
-
-    if (score <= 30) {
+      const score = expressions[expression];
+      const threshold = thresholds[expression];
+  
+      if (score <= threshold) {
         welcomingDetected = false;
         break;
+      }
     }
-    }
-
+  
     return welcomingDetected ? 'welcomingDetected' : null;
-}
+  }
+  
 
 function clearDrawCanvas() {
     let contxt = document.getElementById("drawCanvas").getContext("2d");
