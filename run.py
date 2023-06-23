@@ -213,6 +213,9 @@ def create_video():
                 {
                     "filename": presigned_url,
                     "frame_data": emotion_percents,
+                     "welcoming": frame_data.get("welcoming"),
+                    "listening": frame_data.get("listening"),
+                    "compassion": frame_data.get("compassion")
                 }
             ),
             200,

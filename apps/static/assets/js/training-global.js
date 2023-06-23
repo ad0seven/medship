@@ -28,6 +28,7 @@ let welcoming = ""; // Initialize the variable with an empty string
 let listening = ""; // Initialize the variable with an empty string
 let compassion = ""; // Initialize the variable with an empty string
 
+let allResults = {};
 
 let savingText = document.getElementById("saving");
 var drawCanvas = document.getElementById("drawCanvas");
@@ -56,13 +57,14 @@ var recordingFrames = [];
 var currentResults = null;
 var currentResultImg = null;
 
-var allResults = {};
-
 console.log("training-global.js loaded");
 
 var framePadding = null;
 
 let recordingRequestId;
+
+//get global unix timestamp (more flexible for data analysis)
+let unix_timestamp = new Date().getTime();
 
 /*
 anger
@@ -156,6 +158,51 @@ detector.addEventListener("onInitializeSuccess", function () {
   detectorInit = true;
 });
 
+detector.addEventListener("onImageResultsSuccess", function (faces, image, timestamp) {
+  var time_val = timestamp.toFixed(2);
+
+  if (faces.length > 0) {
+    currentResults = faces[0];
+    currentResultImg = image;
+
+    // Check if "welcoming" expression is detected
+    const welcomingExpression = {
+      cheekRaise: currentResults.expressions.cheekRaise.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      engagement: currentResults.emotions.engagement.toFixed(2),
+    };
+
+    welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+
+    // Check if "listening" expression is detected
+    const listeningExpression = {
+      browRaise: currentResults.expressions.browRaise.toFixed(2),
+      eyeWiden: currentResults.expressions.eyeWiden.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      engagement: currentResults.emotions.engagement.toFixed(2),
+    };
+
+    listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+
+    // Check if "compassion" expression is detected
+    const compassionExpression = {
+      innerBrowRaise: currentResults.expressions.innerBrowRaise.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      lipPress: currentResults.expressions.lipPress.toFixed(2),
+    };
+
+    compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
+
+    // Store the results and timestamp
+    allResults[time_val] = {
+      timestamp: time_val,
+      compassion: compassion,
+      welcoming: welcoming,
+      listening: listening,
+    };    
+  }
+});
+
 detector.addEventListener(
   "onImageResultsSuccess",
   function (faces, image, timestamp) {
@@ -163,9 +210,6 @@ detector.addEventListener(
     //$('#results').html("");
     var time_key = "Timestamp";
     var time_val = timestamp.toFixed(2);
-
-    //get global unix timestamp (more flexible for data analysis)
-    let unix_timestamp = new Date().getTime();
 
     if (verbose) {
       console.log("#results", "Timestamp: " + timestamp.toFixed(2));
@@ -334,6 +378,7 @@ function recordFrame() {
 
 
 function saveResults() {
+  detected_values = []
   document.getElementById("canvas-text").innerText = "Loading...";
 
   clearInterval(detectorInterval);
@@ -345,34 +390,30 @@ function saveResults() {
   video.srcObject = null;
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
-  // Add the 'welcoming', 'listening', and 'compassion' variables to each frame's results
-  Object.values(allResults).forEach((frame) => {
-    frame.results.welcoming = welcoming;
-    frame.results.listening = listening;
-    frame.results.compassion = compassion;
-  });
+  const frameData = Object.values(allResults);
 
   fetch("/create-video", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ frame_data: allResults }),
+    body: JSON.stringify({ frame_data: allResults })
   })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("video generation response: ", data);
-      let fileName = data.filename;
-      let frameData = data.frame_data;
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("video generation response: ", data);
+    let fileName = data.filename;
+    let frameData = data.frame_data;
 
-      localStorage.setItem("filename", fileName);
-      localStorage.setItem("results", frameData);
-      enableButton();
-      document.getElementById("canvas-text").innerText = "Done! ";
-    });
-  console.log("allResults: ", allResults);
+    localStorage.setItem("filename", fileName);
+    localStorage.setItem("results", JSON.stringify(frameData)); // Stringify the frameData object before storing it
+
+    enableButton();
+    document.getElementById("canvas-text").innerText = "Done! ";
+  });
+
+  console.log("allResults", allResults);
 }
-
 
 function drawVideoMaintainingAspectRatio(video, canvas) {
   let context = canvas.getContext("2d");

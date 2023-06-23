@@ -114,6 +114,7 @@ function stopCamera() {
     adjustCanvas();
     updateAnalytics();
     updateSpreadsheet();
+    clearDrawCanvas();
  
     startedup = false;
     detectorInit = false;
@@ -227,7 +228,15 @@ function drawAffdexStats(img, data) {
         engagement: engagement
     };
     
-    const listening = checkListeningDetected(listeningExpressions) ? 'Detected' : 'Not Detected';
+    const customThresholds = {
+        browRaise: 20,
+        eyeWiden: 5,
+        smile: 10,
+        engagement: 20
+      };
+      
+
+    const listening = checkListeningDetected(listeningExpressions, customThresholds) ? 'Detected' : 'Not Detected';
     
     const text = `Listening: ${listening}\nBrow Raise: ${browRaise}\nUpper Lid: ${eyeWiden}\nLip Corners Pull: ${smile}\nEngagement ${engagement}\nDominant Emoji: ${emoji}`;
 
@@ -260,14 +269,15 @@ for (const emotion in emotions) {
 return maxEmotion;
 }
 
-function checkListeningDetected(expressions) {
-    const listeningExpressions = ['','eyeWiden', 'smile', 'engagement'];
-    let compassionDetected = true;
+function checkListeningDetected(expressions, thresholds) {
+    const listeningExpressions = ['browRaise','eyeWiden', 'smile', 'engagement'];
+    let listeningDetected = true;
 
     for (const expression of listeningExpressions) {
-    const score = expressions[expression];
-
-    if (score <= 20) {
+        const score = expressions[expression];
+        const threshold = thresholds[expression];
+    
+        if (score <= threshold) {
         listeningDetected = false;
         break;
     }
@@ -275,6 +285,7 @@ function checkListeningDetected(expressions) {
 
     return listeningDetected ? 'listeningDetected' : null;
 }
+  
 
 function clearDrawCanvas() {
     let contxt = document.getElementById("drawCanvas").getContext("2d");
