@@ -1,3 +1,4 @@
+
 /*
 strategy for the training page
 same as the practice
@@ -24,10 +25,8 @@ let nextButton = document.getElementById("next");
 let filename = null;
 let results = null;
 
-let welcoming = ""; // Initialize the variable with an empty string
-let listening = ""; // Initialize the variable with an empty string
-let compassion = ""; // Initialize the variable with an empty string
 
+let allResults = {};
 
 let savingText = document.getElementById("saving");
 var drawCanvas = document.getElementById("drawCanvas");
@@ -51,12 +50,12 @@ var recordingInterval = null;
 
 var secs = 0;
 
-var recordingFrames = [];
+let recordingFrames = {};
 // var detectorResults = [];
 var currentResults = null;
 var currentResultImg = null;
 
-var allResults = {};
+
 
 console.log("training-global.js loaded");
 
@@ -67,17 +66,6 @@ let recordingRequestId;
 //get global unix timestamp (more flexible for data analysis)
 let unix_timestamp = new Date().getTime();
 
-/*
-anger
-contempt
-disgust
-engagement
-fear
-joy
-sadness
-surprise
-valence
-*/
 
 // warm up the detector
 var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
@@ -159,6 +147,126 @@ detector.addEventListener("onInitializeSuccess", function () {
   detectorInit = true;
 });
 
+function checkCompassionDetected(expressions) {
+  const compassionExpression = ['innerBrowRaise', 'smile', 'lipPress'];
+  let compassionDetected = true;
+
+  for (const expression of compassionExpression) {
+  const score = expressions[expression];
+
+  if (score <= 20) {
+      compassionDetected = false;
+      break;
+  }
+  }
+
+  return compassionDetected ? 'compassionDetected' : null;
+}
+
+function checkWelcomingDetected(expressions) {
+  const welcomingExpression = ['cheekRaise', 'smile', 'engagement'];
+  let welcomingDetected = true;
+
+  for (const expression of welcomingExpression) {
+  const score = expressions[expression];
+
+  if (score <= 30) {
+      welcomingDetected = false;
+      break;
+  }
+  }
+
+  return welcomingDetected ? 'welcomingDetected' : null;
+}
+
+function checkListeningDetected(expressions) {
+    const listeningExpression = ['','eyeWiden', 'smile', 'engagement'];
+    let listeningDetected = true;
+
+    for (const expression of listeningExpression) {
+    const score = expressions[expression];
+
+    if (score <= 20) {
+        listeningDetected = false;
+        break;
+    }
+    }
+
+    return listeningDetected ? 'listeningDetected' : null;
+}
+
+var welcoming, listening, compassion;
+
+detector.addEventListener("onImageResultsSuccess", function (faces, image, timestamp) {
+  var time_val = timestamp.toFixed(2);
+
+  if (faces.length > 0) {
+    currentResults = faces[0];
+    currentResultImg = image;
+
+      // Update the expressions and emotions data
+      const browFurrow = currentResults.expressions.browFurrow.toFixed(2);
+      const browRaise = currentResults.expressions.browRaise.toFixed(2);
+      const smile = currentResults.expressions.smile.toFixed(2);
+      const innerBrowRaise = currentResults.expressions.innerBrowRaise.toFixed(2);
+      const lipPress = currentResults.expressions.lipPress.toFixed(2);
+      const cheekRaise = currentResults.expressions.cheekRaise.toFixed(2);
+      const eyeWiden = currentResults.expressions.eyeWiden.toFixed(2);
+      const engagement = currentResults.emotions.engagement.toFixed(2);
+  
+      const compassionExpression = {
+        innerBrowRaise: innerBrowRaise,
+        smile: smile,
+        lipPress: lipPress
+      };
+  
+      const welcomingExpression = {
+        cheekRaise: cheekRaise,
+        smile: smile,
+        engagement: engagement
+      };
+  
+      const listeningExpression = {
+        browRaise: browRaise,
+        eyeWiden: eyeWiden,
+        smile: smile,
+        engagement: engagement
+      };
+  
+      welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+      listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+      compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
+
+    // Check if "welcoming" expression is detected
+    welcomingExpression = {
+      cheekRaise: currentResults.expressions.cheekRaise.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      engagement: currentResults.emotions.engagement.toFixed(2),
+    };
+
+    welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+
+    // Check if "listening" expression is detected
+    listeningExpression = {
+      browRaise: currentResults.expressions.browRaise.toFixed(2),
+      eyeWiden: currentResults.expressions.eyeWiden.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      engagement: currentResults.emotions.engagement.toFixed(2),
+    };
+
+    listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+
+    // Check if "compassion" expression is detected
+    compassionExpression = {
+      innerBrowRaise: currentResults.expressions.innerBrowRaise.toFixed(2),
+      smile: currentResults.expressions.smile.toFixed(2),
+      lipPress: currentResults.expressions.lipPress.toFixed(2),
+    };
+
+    compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected'; 
+  }
+});
+
 detector.addEventListener(
   "onImageResultsSuccess",
   function (faces, image, timestamp) {
@@ -195,9 +303,7 @@ detector.addEventListener(
 //Draw the detected facial feature points on the image
 function drawAffdexStats(img, data) {
   let featurePoints = data.featurePoints;
-  // var contxt = $('#face_video_canvas')[0].getContext('2d');
   var contxt = document.getElementById("drawCanvas").getContext("2d");
-  // contxt.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
   var hRatio = contxt.canvas.width / img.width;
   var vRatio = contxt.canvas.height / img.height;
@@ -214,52 +320,46 @@ function drawAffdexStats(img, data) {
   let emoji = data.emojis.dominantEmoji;
   const emotionWithHighestScore = getEmotionWithHighestScore(data.emotions);
 
-  console.log(emotionWithHighestScore); 
-  const browFurrow = data.expressions.browFurrow.toFixed(2);
-  const browRaise = data.expressions.browRaise.toFixed(2);
-  const smile = data.expressions.smile.toFixed(2);
-  const innerBrowRaise = data.expressions.innerBrowRaise.toFixed(2);
-  const lipPress = data.expressions.lipPress.toFixed(2);
-  const cheekRaise = data.expressions.cheekRaise.toFixed(2);
-  const eyeWiden = data.expressions.eyeWiden.toFixed(2);
-  const engagement = data.emotions.engagement.toFixed(2);
+  console.log(emotionWithHighestScore);
 
-const compassionExpression = {
-    innerBrowRaise: innerBrowRaise,
-    smile: smile,
-    lipPress: lipPress
-};
+  // Define and initialize the expression objects
+  const welcomingExpression = {
+    cheekRaise: data.expressions.cheekRaise.toFixed(2),
+    smile: data.expressions.smile.toFixed(2),
+    engagement: data.emotions.engagement.toFixed(2),
+  };
 
-const welcomingExpression = {
-  cheekRaise: cheekRaise,
-  smile: smile,
-  engagement: engagement
-};
+  const listeningExpression = {
+    browRaise: data.expressions.browRaise.toFixed(2),
+    eyeWiden: data.expressions.eyeWiden.toFixed(2),
+    smile: data.expressions.smile.toFixed(2),
+    engagement: data.emotions.engagement.toFixed(2),
+  };
 
-const listeningExpression = {
-  browRaise: browRaise,
-  eyeWiden: eyeWiden,
-  smile: smile,
-  engagement: engagement
-};
+  const compassionExpression = {
+    innerBrowRaise: data.expressions.innerBrowRaise.toFixed(2),
+    smile: data.expressions.smile.toFixed(2),
+    lipPress: data.expressions.lipPress.toFixed(2),
+  };
 
-welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
-listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
-compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
+  // Call the detection functions and assign the results
+  welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+  listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+  compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
 
-const text = `Compassonate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}\nDominant Emoji: ${emoji}`;
+  const text = `Compassionate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}\nDominant Emoji: ${emoji}`;
 
-const dataColumns = ['timestamp', 'compassion', 'welcoming', 'listening']
+  // const dataColumns = ['timestamp', 'compassion', 'welcoming', 'listening'];
 
-  for (const columnName of dataColumns) {
-    if (data.expressions.hasOwnProperty(columnName)) {
-      let dataCol = data.expressions[columnName].toFixed(2);
+  //for (const columnName of dataColumns) {
+  // if (data.expressions.hasOwnProperty(columnName)) {
+  //    let dataCol = data.expressions[columnName].toFixed(2);
 
-      const name = convertCamelCaseToSpaces(columnName);
+ //     const name = convertCamelCaseToSpaces(columnName);
 
-      text += `\n${name}: ${dataCol}`;
-    }
-  }
+   //   text += `\n${name}: ${dataCol}`;
+   // }
+ // }
 
   contxt.font = "20px Arial";
   contxt.fillStyle = "white";
@@ -303,7 +403,6 @@ function stopRecordingFrames() {
 
 function recordFrame() {
   if (startedUp && detectorInit && currentResults) {
-    // draw the video in the drawCanvas
     drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
     drawCtx.drawImage(
@@ -323,12 +422,47 @@ function recordFrame() {
     drawAffdexStats(currentResultImg, currentResults);
 
     let dataFrame = drawCanvas.toDataURL();
-    recordingFrames.push(dataFrame);
+    recordingFrames[dataFrame] = dataFrame;
 
     const unixTimestamp = Date.now();
     console.log(unixTimestamp);
 
-    allResults[unixTimestamp] = { timestamp: unix_timestamp, frame: dataFrame, results: currentResults };
+
+  // Update the detection results based on the expressions
+  const compassionExpression = {
+    innerBrowRaise: currentResults.expressions.innerBrowRaise.toFixed(2),
+    smile: currentResults.expressions.smile.toFixed(2),
+    lipPress: currentResults.expressions.lipPress.toFixed(2)
+  };
+  const welcomingExpression = {
+    cheekRaise: currentResults.expressions.cheekRaise.toFixed(2),
+    smile: currentResults.expressions.smile.toFixed(2),
+    engagement: currentResults.emotions.engagement.toFixed(2)
+  };
+  const listeningExpression = {
+    browRaise: currentResults.expressions.browRaise.toFixed(2),
+    eyeWiden: currentResults.expressions.eyeWiden.toFixed(2),
+    smile: currentResults.expressions.smile.toFixed(2),
+    engagement: currentResults.emotions.engagement.toFixed(2)
+  };
+
+  // Update the welcoming, listening, and compassion variables based on detection results
+  const welcomingDetected = checkWelcomingDetected(welcomingExpression);
+  const listeningDetected = checkListeningDetected(listeningExpression);
+  const compassionDetected = checkCompassionDetected(compassionExpression);
+
+    // Store the detection results in the allResults object
+    const frameData = {
+      timestamp: unixTimestamp,
+      frame: dataFrame,
+      results: {
+        compassion: compassionDetected ? 'Detected' : 'Not Detected',
+        welcoming: welcomingDetected ? 'Detected' : 'Not Detected',
+        listening: listeningDetected ? 'Detected' : 'Not Detected'
+      }
+    };
+  
+    allResults[unixTimestamp] = frameData;
   }
 }
 
@@ -346,34 +480,30 @@ function saveResults() {
   video.srcObject = null;
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
-  // Add the 'welcoming', 'listening', and 'compassion' variables to each frame's results
-  Object.values(allResults).forEach((frame) => {
-    frame.results.welcoming = welcoming;
-    frame.results.listening = listening;
-    frame.results.compassion = compassion;
-  });
+  const frameData = Object.entries(allResults);
 
   fetch("/create-video", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ frame_data: allResults }),
+    body: JSON.stringify({ frame_data: frameData }),
   })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("video generation response: ", data);
-      let fileName = data.filename;
-      let frameData = data.frame_data;
+  .then((response) => response.json())
+  .then((data) => {
+    console.log("video generation response: ", data);
+    let fileName = data.filename;
+    let frameData = data.frame_data;
 
-      localStorage.setItem("filename", fileName);
-      localStorage.setItem("results", frameData);
-      enableButton();
-      document.getElementById("canvas-text").innerText = "Done! ";
-    });
-  console.log("allResults: ", allResults);
+    localStorage.setItem("filename", fileName);
+    localStorage.setItem("results", JSON.stringify(frameData)); // Stringify the frameData object before storing it
+
+    enableButton();
+    document.getElementById("canvas-text").innerText = "Done! ";
+  });
+
+  console.log("allResults", allResults);
 }
-
 
 function drawVideoMaintainingAspectRatio(video, canvas) {
   let context = canvas.getContext("2d");
@@ -424,54 +554,6 @@ function getEmotionWithHighestScore(emotions) {
   }
 
   return maxEmotion;
-}
-
-function checkCompassionDetected(expressions) {
-  const compassionExpression = ['innerBrowRaise', 'smile', 'lipPress'];
-  let compassionDetected = true;
-
-  for (const expression of compassionExpression) {
-  const score = expressions[expression];
-
-  if (score <= 20) {
-      compassionDetected = false;
-      break;
-  }
-  }
-
-  return compassionDetected ? 'compassionDetected' : null;
-}
-
-function checkWelcomingDetected(expressions) {
-  const welcomingExpression = ['cheekRaise', 'smile', 'engagement'];
-  let welcomingDetected = true;
-
-  for (const expression of welcomingExpression) {
-  const score = expressions[expression];
-
-  if (score <= 30) {
-      welcomingDetected = false;
-      break;
-  }
-  }
-
-  return welcomingDetected ? 'welcomingDetected' : null;
-}
-
-function checkListeningDetected(expressions) {
-    const listeningExpression = ['','eyeWiden', 'smile', 'engagement'];
-    let compassionDetected = true;
-
-    for (const expression of listeningExpression) {
-    const score = expressions[expression];
-
-    if (score <= 20) {
-        listeningDetected = false;
-        break;
-    }
-    }
-
-    return listeningDetected ? 'listeningDetected' : null;
 }
 
 
