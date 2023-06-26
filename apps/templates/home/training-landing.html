@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Training {% endblock %} 
+{% block title %} Clinical Scenario 1 {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
@@ -11,99 +11,59 @@
 
 {% block content %}
 
-  <div class="body flex-grow-1 px-3" >
+  <div class="body flex-grow-1 px-3">
     <div class="container-lg">
-      <div class="card mb-4">
-        <div class="card-body">
-          <h4 class="card-title" style="color: #E7751D"><strong>Trauma-Informed Care</strong></h4>
-          <p class="card-text">
-            The majority of people who inject opioids have a history of trauma either inflicted by others (e.g.
-            physical, psychological, sexual, or emotional abuse, neglect, war, poverty, racism) or self-inflicted (i.e.
-            physical trauma secondary to repeated drug use). The medical sequelae (e.g. skin abscess, endocarditis,
-            cellulitis) and trauma (e.g. overdose, withdrawal) associated with injection drug use lead many PWID to
-            seek care in hospital.
-            <br>
-            Trauma-informed care (TIC) is an approach that clinicians might use in order to respectfully meet these
-            patients where they are regarding their comfort, trust, and openness toward their healthcare
-            experience. One study demonstrated improvements in medical students’ perceived knowledge and
-            comfort in treating sexual assault survivors following completion of a TIC module. Another study found
-            patients reported a more trusting partnership with physicians who underwent TIC training compared to
-            physicians who did not.
-            <br>
-            <strong> TIC involves five core principles: patient empowerment, choice, collaboration, safety, and
-            trustworthiness. </strong>
-            </p>
-                   <div class="body flex-grow-1 px-3">
-                     <div class="container-lg">
-                        <div class="row">
-                          <div style="width:20% ; float:left" class="col-sm d-flex">
-                            <div class="card">
-                              <div class="card-body text-center">
-                                <h5 class="card-title" style="color: #E7751D">Patient Empowerment</h5>
-                                <p class="card-text">Using individuals' strengths to empower them in the development of their treatment.</p> <br>
-                                <img src="/static/assets/img/empowerment.png" alt="Empowerment icon" style="object-fit:contain" width="100" height="100">
-                                <a href="https://www.flaticon.com/free-icons/fist" title="fist icons"></a>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="width:20% ; float:left" class="col-sm d-flex">
-                            <div class="card">
-                              <div class="card-body text-center">
-                                <h5 class="card-title" style="color: #E7751D">Safety</h5>
-                                <p class="card-text">Developing health care settings and activities that ensure patients’ physical and emotional safety.</p> <br> <br>
-                                <img src="/static/assets/img/safety.png" alt="Safety icon" style="object-fit:contain" width="100" height="100">
-                                <a href="https://www.flaticon.com/free-icons/safety" title="safety icons"></a>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="width:20% ; float:left" class="col-sm d-flex">
-                            <div class="card">
-                              <div class="card-body text-center">
-                                <h5 class="card-title" style="color: #E7751D">Patient Choice</h5>
-                                <p class="card-text">Informing patients regarding treatment options so they can choose the options they prefer.</p> <br> <br>
-                                <img src="/static/assets/img/choice.png" alt="Choice icon" style="object-fit:contain" width="100" height="100">
-                                <a href="https://www.flaticon.com/free-icons/choice" title="choice icons"></a>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="width:20% ; float:left" class="col-sm d-flex">
-                            <div class="card">
-                              <div class="card-body text-center">
-                                <h5 class="card-title" style="color: #E7751D">Collaboration</h5>
-                                <p class="card-text">Maximizing collaboration among health care staff, patients, and their families in organizational and treatment planning.</p> <br>
-                                <img src="/static/assets/img/collaboration.png" alt="Collaboration icon" style="object-fit:contain" width="100" height="100">
-                                <a href="https://www.flaticon.com/free-icons/collaboration" title="collaboration icons"></a>
-                              </div>
-                            </div>
-                          </div>
-                          <div style="width:20% ; float:right" class="col-sm d-flex">
-                            <div class="card">
-                              <div class="card-body text-center">
-                                <h5 class="card-title" style="color: #E7751D">Trustworthiness</h5>
-                                <p class="card-text">Creating clear expectations with patients about what proposed treatments entail, who will provide services, and how care will be provided.</p>
-                                <img src="/static/assets/img/trustworthiness.png" alt="Trustworthiness icon" style="object-fit:contain" width="100" height="100">
-                                <a href="https://www.flaticon.com/free-icons/trustworthy" title="trustworthy icons"></a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+      <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="column" style="width:70% ; float:left">
+            <p class="fs-1 fw-bolder">Clinical Scenario</p>
+             <p class="card-text fs-5"> 
+                You will soon meet a 22-year-old female patient who overdosed on opioids. You have never met her before. Her best friend told the nurse that she has experienced a lot of trauma. Your goal is to respond with empathy and sensitivity. 
+                <br> After your response, you will see a video of your interaction and a feedback on your facial expressions. </p>
+           </div>
+          <div class="column" style="width:30%; float:right; text-align:center">
+              <img src="/static/assets/img/trauma.jpg" alt="Trauma vector" style="object-fit:contain" width="300" height="300">
+              <a href="http://www.freepik.com"></a> 
+         </div>
+         <br>
+        </div>
+          <h3 class="card-title text-center fw-bolder">Choose your patient</h3>
+          <br>
+      <div class="row">
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3 ">
+            <div class="card-body">
+              <h5 class="card-title fw-bolder">Anxious patient</h5>
+              <a href="cs1-1-polite-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Suffers from excessive worry or fear and is easily irritated and frustrated</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+              <h5 class="card-title fw-bolder">Detached patient</h5>
+              <a href="cs1-1-sad-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Shows signs of reduced mental and physical activity, such as drowsiness and confusion</p></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-body">
+                <h5 class="card-title fw-bolder">Angry-Paranoid patient</h5>
+                <a href="cs1-1-agitated-1.html" class="btn btn-primary stretched-link"><p class="card-text fs-5">Shows signs of hostility or distrust and thinks that someone is trying to harm them</p></a>
+              </div>
+            </div>
         </div>
       </div>
       <div class="row">
         <div class="col-6">
           <a class="nav-link" href="karaoke-landing.html">
-          <button class="btn btn-dark" type="button" onclick="history.back()">Back</button>
+          <button class="btn btn-dark" type="button">Back</button>
           </a>
         </div>
-        <div class="col-6 text-end">
-          <a class="nav-link" href="cs1-landing.html">
-          <button class="btn btn-dark" type="button">Continue</button>
-          </a>
         </div>
-      </div>
-</div>
+  </div>
 
 {% endblock content %}
 

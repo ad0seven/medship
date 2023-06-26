@@ -12,19 +12,19 @@
 
 {% block content %}
 <div class="body flex-grow-1 px-3" style="text-align: center;">
-  <h3>How well do you read other people?</h3>
+  <p class="fs-2 fw-bolder">How well do you read other people?</p>
     <div id="quizContainer" style="text-align:left">
       <div id="quiz">
         <!-- Quiz will be generated here -->
       </div>
-      <button id="submit" type="button" class="btn btn-dark">Submit</button>
+      <button id="submit" type="button" class="btn btn-dark" style="text-align: right;">Submit</button>
       <div id="result">
         <!-- Result will be shown here -->
       </div>
-      <button type="button" class="btn btn-dark" id="next" style="display: none;">Next</button>
+      <button type="button" class="btn btn-dark" id="next" style="display: none; text-align: right;">Next</button>
     </div>
     <div id="score-container" style="display: none;">
-      <h3>Your Score: <span id="score"></span>/5</h3>
+      <p class="fs-2 fw-bolder">Your Score: <span id="score"></span>/5</p>
       <button id="next-stage" class="btn btn-dark">Next</button>
   </div>
   </div>
@@ -198,6 +198,8 @@ submitButton.addEventListener('click', () => {
     }
   }
   </script>
+
+
 
   <!-- Plugins and scripts required by this view-->
   <script src="/static/assets/vendors/chart.js/js/chart.min.js"></script>
