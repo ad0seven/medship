@@ -163,41 +163,30 @@ def create_video():
     try:
         data_json = request.get_json()
         frame_data = data_json["frame_data"]
-# get the first key in the frame_data dictionary
-        first_key = list(frame_data.keys())[0]
-        # get the first frame
-        first_frame = frame_data[first_key]["frame"]
-        processed_frame = encode_frame(first_frame)
 
-        height, width, layers = processed_frame.shape
-        size = (width, height)
+        # Define the video dimensions
+        video_width = 640
+        video_height = 480
 
-        # print(f'size = {size}')
-
-        # temp_vid = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-
-        # out = cv2.VideoWriter(temp_vid.name, cv2.VideoWriter_fourcc(*"mp4v"), 24, size)
-
-        # for key, value in frame_data.items():
-        #     frame = encode_frame(value["frame"])
-        #     out.write(frame)
-        # out.release()
-
-        # prepare a list to store the frames
+        # Prepare a list to store the frames
         frames = []
+        relevant_frames = []
+
 
         for key, value in frame_data.items():
-            frame = encode_frame(value["frame"])
+            frame = encode_frame(value["frame"], video_width, video_height)
             frames.append(frame)
 
-        # create webm file
+        # Create a temporary file with a .webm extension
         temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
-        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
 
-        # now here send it to aws s3
+        # Save the frames as a webm video file
+        imageio.mimwrite(temp_vid.name, frames, fps=24, codec="vp8")
 
-        # Prepare the file name and upload it to S3
+        # Generate a unique filename for the video
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
+
+        # Upload the video file to AWS S3
         s3.upload_file(temp_vid.name, "mdship-test", filename)
 
         # Generate a presigned URL for the uploaded file
@@ -216,22 +205,34 @@ def create_video():
         for key, value in frame_data.items():
             if "frame" in value:
                 del value["frame"]
-                
+
+        for timestamp, data in frame_data.items():
+         if (
+         data.get('welcoming') == 'Detected'
+         or data.get('listening') == 'Detected'
+         or data.get('compassion') == 'Detected'
+         ):
+           relevant_frames.append({
+            'timestamp': timestamp,
+            'welcoming': data.get('welcoming'),
+            'listening': data.get('listening'),
+            'compassion': data.get('compassion')
+        })
+
+
+        # Get the dominant emotion percentages
         emotion_percents = get_dominant_emotion(frame_data)
 
         # Return the filename and modified frame_data in the response
         return (
             jsonify(
                 {
-                    # 'filename': filename,
                     "filename": presigned_url,
-                    # "frame_data": frame_data,
-                    "frame_data": emotion_percents,
+                    "frame_data": relevant_frames,
                 }
             ),
             200,
         )
-
 
     except Exception as e:
         print(e)
@@ -246,12 +247,15 @@ def remove_video(filename):
         app.logger.error("Error removing video", error)
 
 
-def encode_frame(base64_frame):
+def encode_frame(base64_frame, width, height):
     data = base64_frame.split(",")[1]  # Remove the "data:image/png;base64," part
     data = base64.b64decode(data)
 
     # Convert the data to an image
     img = Image.open(BytesIO(data))
+
+    # Resize the image to match the video dimensions
+    img = img.resize((width, height))
 
     # Convert the image to a numpy array
     frame = np.array(img)
@@ -271,8 +275,7 @@ def get_dominant_emotion(data_dict):
     }
 
     for key in data_dict:
-        emotions = data_dict[key]['results'].get('emotions', {})
-        print(f'emotions = {emotions}')
+        emotions = data_dict[key]["results"].get("emotions", {})
         # Remove valence from the emotions dictionary
         if "valence" in emotions:
             del emotions["valence"]
@@ -280,23 +283,18 @@ def get_dominant_emotion(data_dict):
         if emotions:
             # Get the emotion with the maximum score
             dominant_emotion = max(emotions, key=emotions.get)
-            print(f'dominant_emotion = {dominant_emotion}')
 
             # Increase the count for this emotion
             if dominant_emotion in emotion_count:
                 emotion_count[dominant_emotion] += 1
             else:
                 emotion_count[dominant_emotion] = 1
-    print(f'emotion_count = {emotion_count}')
     
     # Get the total number of samples
     total_samples = sum(emotion_count.values())
-    #now make a list with just the emotion counts
-    emotion_list = list(emotion_count.values())
-    #now make a list with the percentages
-    emotion_percentages = [int((emotion / total_samples) * 10) for emotion in emotion_list]
+    # Calculate the emotion percentages
+    emotion_percentages = [int((emotion / total_samples) * 10) for emotion in emotion_count.values()]
 
-    print(f'emotion_percentages = {emotion_percentages}')
     return emotion_percentages
 
 
@@ -307,3 +305,5 @@ if DEBUG:
 
 if __name__ == "__main__":
     app.run()
+
+

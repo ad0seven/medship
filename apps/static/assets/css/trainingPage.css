@@ -17,3 +17,7 @@
 #captureCanvas {
   opacity: 0;
 }
+
+#stream {
+  object-fit: cover;
+}
