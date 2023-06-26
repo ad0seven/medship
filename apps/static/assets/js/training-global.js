@@ -247,7 +247,7 @@ welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Dete
 listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
 compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
 
-const text = `Dominant Emoji: ${emoji}\nCompassonate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}`;
+const text = `Dominant Emoji: ${emoji}\nCompassionate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}`;
 
 const dataColumns = ['timestamp', 'compassion', 'welcoming', 'listening']
 
