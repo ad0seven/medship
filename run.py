@@ -193,9 +193,7 @@ def create_video():
         # create webm file
         temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
         imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
-
-        # now here send it to aws s3
-
+        
         # Prepare the file name and upload it to S3
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
         s3.upload_file(temp_vid.name, "mdship-test", filename)

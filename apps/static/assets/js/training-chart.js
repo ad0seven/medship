@@ -3,6 +3,7 @@ function loadResults() {
 
   var ctx = document.getElementById('myChart');
   let results = localStorage.getItem("results");
+  
   const config = {
     type: 'doughnut',
     data: {
@@ -45,7 +46,8 @@ let filename = localStorage.getItem("filename");
 
 console.log(`the filename is ${filename}`)
 console.log(`the results are`)
-console.log(localStorage.getItem("results"))
+console.log(localStorage.getItem("results"));
+
 
 //replayVid.src = filename;
 replayVid.src = filename;
