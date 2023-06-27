@@ -28,6 +28,7 @@ let welcoming = ""; // Initialize the variable with an empty string
 let listening = ""; // Initialize the variable with an empty string
 let compassion = ""; // Initialize the variable with an empty string
 
+
 let savingText = document.getElementById("saving");
 var drawCanvas = document.getElementById("drawCanvas");
 var drawCtx = drawCanvas.getContext("2d");
@@ -316,7 +317,7 @@ function recordFrame() {
       drawCanvas.width,
       drawCanvas.height
     );
-   
+
     drawVideoMaintainingAspectRatio(video, drawCanvas);
 
     drawAffdexStats(currentResultImg, currentResults);
@@ -324,11 +325,10 @@ function recordFrame() {
     let dataFrame = drawCanvas.toDataURL();
     // recordingFrames.push(dataFrame);
 
-    let relativeTimestamp = frameIndex * (1000 / frameRate);
+    const unixTimestamp = Date.now();
+    console.log(unixTimestamp);
 
-    console.log(relativeTimestamp);
-
-    allResults[relativeTimestamp] = { frame: dataFrame, results: currentResults, timestamp: relativeTimestamp };
+    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults };
   }
 }
 
