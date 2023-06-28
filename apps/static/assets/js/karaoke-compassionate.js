@@ -224,8 +224,8 @@
         };
         
         const customThresholds = {
-            innerBrowRaise: 30,
-            smile: 15,
+            innerBrowRaise: 20,
+            smile: 10,
             lipPress: 10
           };
 
