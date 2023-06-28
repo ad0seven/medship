@@ -228,8 +228,8 @@ function drawAffdexStats(img, data) {
 
     const customThresholds = {
         cheekRaise: 10,
-        smile: 30,
-        engagement: 25
+        smile: 25,
+        engagement: 20
       };
       
     

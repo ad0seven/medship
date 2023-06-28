@@ -229,10 +229,10 @@ function drawAffdexStats(img, data) {
     };
     
     const customThresholds = {
-        browRaise: 20,
+        browRaise: 15,
         eyeWiden: 5,
         smile: 10,
-        engagement: 20
+        engagement: 15
       };
       
 
