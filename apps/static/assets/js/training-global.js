@@ -328,7 +328,7 @@ function recordFrame() {
     const unixTimestamp = Date.now();
     console.log(unixTimestamp);
 
-    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults };
+    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults.emotions };
   }
 }
 
@@ -433,7 +433,7 @@ function checkCompassionDetected(expressions) {
   for (const expression of compassionExpression) {
   const score = expressions[expression];
 
-  if (score <= 20) {
+  if (score <= 10) {
       compassionDetected = false;
       break;
   }
@@ -449,7 +449,7 @@ function checkWelcomingDetected(expressions) {
   for (const expression of welcomingExpression) {
   const score = expressions[expression];
 
-  if (score <= 30) {
+  if (score <= 10) {
       welcomingDetected = false;
       break;
   }
@@ -459,13 +459,13 @@ function checkWelcomingDetected(expressions) {
 }
 
 function checkListeningDetected(expressions) {
-    const listeningExpression = ['','eyeWiden', 'smile', 'engagement'];
+    const listeningExpression = ['eyeWiden', 'smile', 'engagement'];
     let compassionDetected = true;
 
     for (const expression of listeningExpression) {
     const score = expressions[expression];
 
-    if (score <= 20) {
+    if (score <= 10) {
         listeningDetected = false;
         break;
     }
