@@ -50,10 +50,10 @@
 
                 <div class="row">
                   <div class="col-6">
-                    <button class="btn btn-block btn-dark" type="submit" name="register">Create account</button>
+                    <a href="{{ url_for('authentication_blueprint.login') }}" class="btn btn-dark px-4" type="button">Back to login</a>
                   </div>
                   <div class="col-6 text-end">
-                    <a href="{{ url_for('authentication_blueprint.login') }}" class="btn btn-dark px-4" type="button">Back to login</a>
+                    <button class="btn btn-block btn-dark" type="submit" name="register">Create account</button>
                   </div>
                 </div>
 
