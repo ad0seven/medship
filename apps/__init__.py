@@ -37,5 +37,6 @@ def create_app(config):
     register_blueprints(app)
     configure_database(app)
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-    app.config['TIMEOUT'] = 150 # Set the timeout 
+    app.config['TIMEOUT'] = 150
     return app
+
