@@ -13,7 +13,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
    # Add timeout configuration
-    TIMEOUT = config('TIMEOUT', default=150, cast=int)  # Set timeout value in seconds
+   # TIMEOUT = config('TIMEOUT', default=150, cast=int)  # Set timeout value in seconds
 
 class ProductionConfig(Config):
     DEBUG = False

@@ -56,6 +56,8 @@ ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 
+app.config['TIMEOUT'] = 150 # Set the timeout 
+
 # load your service account credentials
 # creds = Credentials.from_service_account_file('./sheet_creds.json')
 
