@@ -2,6 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
+from decouple import config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -38,3 +39,4 @@ def create_app(config):
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
     app.config['TIMEOUT'] = 150
     return app
+
