@@ -130,8 +130,8 @@ def update_sheet():
         return {"success": True, "sheet_title": sheet_title}
 
     except Exception as e:
-        print(e)
-        return {"success": False, "error": str(e)}
+      print(e)
+      return str(e), 500
 
 
 # ====================================================================================================
