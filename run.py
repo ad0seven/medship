@@ -269,20 +269,21 @@ def get_dominant_emotion(data_dict):
     }
 
     for key in data_dict:
-        emotions = data_dict[key]['results'].get('emotions', {})
+        emotions = data_dict[key]['results']
+    # .get('emotions', {})
         print(f'emotions = {emotions}')
         # Remove valence from the emotions dictionary
         if "valence" in emotions:
             del emotions["valence"]
-
-       #if "compassion" in emotions: 
-       #     del emotions["compassion"]
+       
+        if "compassion" in emotions: 
+            del emotions["compassion"]
         
-       # if "listening" in emotions: 
-       #     del emotions["listening"] 
+        if "listening" in emotions: 
+            del emotions["listening"] 
 
-       # if "welcoming" in emotions: 
-        #    del emotions["welcoming"]     
+        if "welcoming" in emotions: 
+            del emotions["welcoming"]     
 
         if emotions:
             # Get the emotion with the maximum score
