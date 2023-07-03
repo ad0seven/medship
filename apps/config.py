@@ -11,8 +11,9 @@ class Config(object):
     # This will create a file in <app> FOLDER
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
- # Add timeout configuration
-    TIMEOUT = config('TIMEOUT', default=60, cast=int)  # Set timeout value in seconds
+
+   # Add timeout configuration
+    TIMEOUT = config('TIMEOUT', default=120, cast=int)  # Set timeout value in seconds
 
 class ProductionConfig(Config):
     DEBUG = False
