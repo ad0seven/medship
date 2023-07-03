@@ -328,7 +328,7 @@ function recordFrame() {
     const unixTimestamp = Date.now();
     console.log(unixTimestamp);
 
-    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults.emotions };
+    allResults[unixTimestamp] = { frame: dataFrame, results: currentResults };
   }
 }
 
