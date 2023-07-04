@@ -347,11 +347,11 @@ function saveResults() {
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 
   // Add the 'welcoming', 'listening', and 'compassion' variables to each frame's results
-  // Object.values(allResults).forEach((frame) => {
-   // frame.results.welcoming = welcoming;
-   // frame.results.listening = listening;
-   // frame.results.compassion = compassion;
-  // });
+  Object.values(allResults).forEach((frame) => {
+    frame.results.welcoming = welcoming;
+    frame.results.listening = listening;
+    frame.results.compassion = compassion;
+  });
 
   fetch("/create-video", {
     method: "POST",
