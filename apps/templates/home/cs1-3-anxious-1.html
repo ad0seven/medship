@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Training {% endblock %} 
+
+{% block stylesheets %}
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.179.0.min.js"></script>
+<link href="/static/assets/css/trainingPage.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="body flex-grow-1 px-3">
+  <div class="container-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="progress" style="height: 30px;">
+          <div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Level 3</div>
+        </div>
+        <br>
+        <h3 style="color: #B31B1B">Could you tell me when your opioid use started?</h3>
+          <p class="card-text"> You want to find out more about Katie’s history with opiods, even though she is becoming more anxious. <br> <br>Click on "Start Camera" below to listen to what the patient tells next, and to start the recording. When the patient stops talking, please click on "Save" and proceed to the next page to see your results.</p>
+        <div class="start-stop text-center">
+          <button class="btn btn-dark" type="button" id="startRecord" onclick="startListener()">Start</button>
+          <!-- <button class="btn btn-dark" type="button" id="save" onclick="getfilename()">Save</button> -->
+          <button class="btn btn-dark" type="button" id="save" onclick="saveResults()">Save</button>
+        </div>
+        <div class="card-body text-center">
+          <p id="saving" style="display: none"><span class="spinner-border" role="status"></span>Processing Video...</p>
+        </div>
+      </div>
+    </div>
+      <div class="row">
+         <div class="col">
+          <div id="vidParent" class="card-body text-center">
+            <video id="vid" controlslist="”nodownload”" style="width: 100%; height: 32vw; object-fit: cover;">
+            <source src="https://medship.s3.amazonaws.com/cs1/3/anxious/pt.MOV" type="video/mp4">
+           </video>
+          </div>
+       </div>
+        <div class="col">
+       <div id="streamParent" class="card-body text-center">
+       <video id="stream" style="width: 100%; height: 32vw; object-fit: cover;" autoplay="" muted=""></video>
+       </div> 
+</div>
+</div>
+<div class="row">
+      <div class="col-6">
+        <a class="nav-link" href="cs1-2-polite-2.html">
+        <button class="btn btn-dark" type="button">Back</button>
+        </a>
+      </div>
+      <div class="col-6 text-end">
+        <a class="nav-link" href="cs1-3-anxious-2.html">
+          <button class="btn btn-primary" type="button">Next</button>
+        </a>  
+      </div>
+      </div>
+   
+    </div>
+  </div>
+
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
+
+<script>
+  //const testType = 'karaoke-welcoming'
+  //const dataColumns = ['timestamp', 'smile', 'cheekRaise']
+</script>
+<script type="text/javascript" src="/static/assets/js/training-global.js"></script>
+
+
+{% endblock javascripts %}

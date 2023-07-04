@@ -5,24 +5,27 @@
     text-align: left;
   }
   
+  #quizContainer button {
+    margin-left: auto;
+  }
+
   button {
     padding: 10px;
     margin: 20px;
   }
   
   #quiz img {
-    width: 50%;
-    max-height: 300px;
+    width: 80%;
+    max-height: 500px;
     display: block;
     margin-left:auto;
     margin-right:auto;
   }
   
   
-  
   #result img {
-    width: 50%;
-    max-height: 300px;
+    width: 80%;
+    max-height: 500px;
     display: block;
     margin-left:auto;
     margin-right:auto;
@@ -45,4 +48,18 @@
     margin-right: 10px;
   }
   
+  #quiz {
+    font-size: 23px;
+  }
   
+  #result {
+    font-size: 23px;
+  }
+
+  #quiz correct-answer {
+    font-style: oblique; /* Add your desired styles for correct answer */
+  }
+  
+  #quiz incorrect-answer {
+    font-style: oblique; /* Add your desired styles for incorrect answer */
+  }
