@@ -14,13 +14,12 @@ from apps import create_app, db
 from flask_migrate import Migrate
 from apps.config import config_dict
 
+
 # WARNING: Don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 
 # The configuration
 get_config_mode = "Debug" if DEBUG else "Production"
-
-app.config['TIMEOUT'] = 200 
 
 try:
     app_config = config_dict[get_config_mode.capitalize()]
@@ -56,7 +55,8 @@ from os import environ as env
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
-# Set the  
+
+app.config['TIMEOUT'] = 200 # Set the  
 
 # load your service account credentials
 # creds = Credentials.from_service_account_file('./sheet_creds.json')
@@ -75,7 +75,7 @@ credentials_info = {
     "client_x509_cert_url": env.get("G_SHEET_CLIENT_X509_CERT_URL"),
 }
 
-print('CREDENTIALS INFO: ', credentials_info)
+# print('CREDENTIALS INFO: ', credentials_info)
 
 # Create credentials from the loaded information
 creds = Credentials.from_service_account_info(credentials_info)
@@ -102,6 +102,7 @@ def update_sheet():
         # get the data from the POST request
         data_json = request.get_json()
         test_type = data_json["test_type"]
+        print(data_json)
 
         # get the date in hh_mm_MM_DD_YYYY format 24 hour time + timezone
         test_date = time.strftime("%H:%M_%m/%d/%Y_%Z")
@@ -141,12 +142,14 @@ def update_sheet():
 # ====================================================================================================
 
 import base64
-
+import numpy as np
 from PIL import Image
 from io import BytesIO
 from flask import send_file, after_this_request, jsonify
 from botocore.config import Config
 import imageio
+import time
+import datetime
 
 s3 = boto3.client(
     "s3",
@@ -159,45 +162,23 @@ s3 = boto3.client(
 
 @app.route("/create-video", methods=["POST"])
 def create_video():
-    try:
+ try:
         data_json = request.get_json()
         frame_data = data_json["frame_data"]
 
-        # get the first key in the frame_data dictionary
-        first_key = list(frame_data.keys())[0]
-        # get the first frame
-        first_frame = frame_data[first_key]["frame"]
-        processed_frame = encode_frame(first_frame)
-
-        height, width, layers = processed_frame.shape
-        size = (width, height)
-
-        # print(f'size = {size}')
-
-        # temp_vid = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-
-        # out = cv2.VideoWriter(temp_vid.name, cv2.VideoWriter_fourcc(*"mp4v"), 24, size)
-
-        # for key, value in frame_data.items():
-        #     frame = encode_frame(value["frame"])
-        #     out.write(frame)
-        # out.release()
-
-        # prepare a list to store the frames
         frames = []
 
         for key, value in frame_data.items():
             frame = encode_frame(value["frame"])
             frames.append(frame)
-            print(frame)
+            print(frames)
 
-        # create webm file
-        temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
-        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
-        
+        # Create webm file in memory using imageio
+        video_bytes = create_video_file(frames)
+
         # Prepare the file name and upload it to S3
-        filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
-        s3.upload_file(temp_vid.name, "mdship-test", filename)
+        filename = f"{current_user.username}/{get_unique_filename()}.webm"
+        s3.upload_fileobj(BytesIO(video_bytes), "mdship-test", filename)
 
         # Generate a presigned URL for the uploaded file
         presigned_url = s3.generate_presigned_url(
@@ -208,43 +189,26 @@ def create_video():
 
         @after_this_request
         def delete_file(response):
-            remove_video(temp_vid.name)
+            frames.clear()
             return response
 
-        # Modify the frame_data to remove the 'frame' item from each element
-        for key, value in frame_data.items():
-            if "frame" in value:
-                del value["frame"]
-                
         emotion_percents = get_dominant_emotion(frame_data)
         print(emotion_percents)
+
         # Return the filename and modified frame_data in the response
         return (
             jsonify(
                 {
-                    # 'filename': filename,
                     "filename": presigned_url,
-                    # "frame_data": frame_data,
                     "frame_data": emotion_percents,
                 }
             ),
             200,
         )
-
-
-    except Exception as e:
-        print(e)
-        return "", 500
-
-
-def remove_video(filename):
-    try:
-        os.remove(filename)
-        print("Video deleted!")
-    except Exception as error:
-        app.logger.error("Error removing video", error)
-
-
+ except Exception as e:
+            print(e)
+            return "", 500
+ 
 def encode_frame(base64_frame):
     data = base64_frame.split(",")[1]  # Remove the "data:image/png;base64," part
     data = base64.b64decode(data)
@@ -256,6 +220,19 @@ def encode_frame(base64_frame):
     frame = np.array(img)
 
     return frame
+
+def create_video_file(frames):
+    # Create video file in memory using imageio
+    video_bytes = BytesIO()
+    imageio.mimwrite(
+        video_bytes, frames, format="webm", fps=24, codec='vp8'
+    )
+    video_bytes.seek(0)
+    return video_bytes.read()
+
+def get_unique_filename():
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+    return f"video_{timestamp}"
 
 def get_dominant_emotion(data_dict):
     emotion_count = {
@@ -277,14 +254,14 @@ def get_dominant_emotion(data_dict):
         if "valence" in emotions:
             del emotions["valence"]
        
-      #  if "compassion" in emotions: 
-       #     del emotions["compassion"]
+        if "compassion" in emotions: 
+            del emotions["compassion"]
         
-      #  if "listening" in emotions: 
-      #      del emotions["listening"] 
+        if "listening" in emotions: 
+            del emotions["listening"] 
 
-     #   if "welcoming" in emotions: 
-      #      del emotions["welcoming"]     
+        if "welcoming" in emotions: 
+            del emotions["welcoming"]     
 
         if emotions:
             # Get the emotion with the maximum score
@@ -316,5 +293,3 @@ if DEBUG:
 
 if __name__ == "__main__":
     app.run()
-
-
