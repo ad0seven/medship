@@ -102,6 +102,7 @@ def update_sheet():
         # get the data from the POST request
         data_json = request.get_json()
         test_type = data_json["test_type"]
+        print(data_json)
 
         # get the date in hh_mm_MM_DD_YYYY format 24 hour time + timezone
         test_date = time.strftime("%H:%M_%m/%d/%Y_%Z")
@@ -170,6 +171,7 @@ def create_video():
         for key, value in frame_data.items():
             frame = encode_frame(value["frame"])
             frames.append(frame)
+            print(frames)
 
         # Create webm file in memory using imageio
         video_bytes = create_video_file(frames)
@@ -191,6 +193,7 @@ def create_video():
             return response
 
         emotion_percents = get_dominant_emotion(frame_data)
+        print(emotion_percents)
 
         # Return the filename and modified frame_data in the response
         return (
