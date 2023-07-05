@@ -1,1 +1,1 @@
-web: gunicorn run:app --log-file=- 
+web: gunicorn run:app --timeout=600 --worker-class=eventlet --log-file=- 
