@@ -20,7 +20,6 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 # The configuration
 get_config_mode = "Debug" if DEBUG else "Production"
 
-app.config['TIMEOUT'] = 200 
 
 try:
     app_config = config_dict[get_config_mode.capitalize()]
@@ -147,6 +146,7 @@ from io import BytesIO
 from flask import send_file, after_this_request, jsonify
 from botocore.config import Config
 import imageio
+import tempfile
 
 s3 = boto3.client(
     "s3",
@@ -217,7 +217,7 @@ def create_video():
                 del value["frame"]
                 
         emotion_percents = get_dominant_emotion(frame_data)
-        print(emotion_percents)
+       
         # Return the filename and modified frame_data in the response
         return (
             jsonify(
@@ -277,14 +277,14 @@ def get_dominant_emotion(data_dict):
         if "valence" in emotions:
             del emotions["valence"]
        
-      #  if "compassion" in emotions: 
-       #     del emotions["compassion"]
+        if "compassion" in emotions: 
+            del emotions["compassion"]
         
-      #  if "listening" in emotions: 
-      #      del emotions["listening"] 
+        if "listening" in emotions: 
+            del emotions["listening"] 
 
-     #   if "welcoming" in emotions: 
-      #      del emotions["welcoming"]     
+        if "welcoming" in emotions: 
+            del emotions["welcoming"]     
 
         if emotions:
             # Get the emotion with the maximum score
