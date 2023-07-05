@@ -198,11 +198,12 @@ def create_video():
         # Prepare the file name and upload it to S3
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
         s3.upload_file(temp_vid.name, "mdship-test", filename)
+        print(filename)
 
         # Generate a presigned URL for the uploaded file
         presigned_url = s3.generate_presigned_url(
             "get_object",
-            Params={"Bucket": "mdship-test", "Key": filename},
+            Params={"Bucket": "medship", "Key": filename},
             ExpiresIn=3600,
         )
 
@@ -217,7 +218,7 @@ def create_video():
                 del value["frame"]
                 
         emotion_percents = get_dominant_emotion(frame_data)
-       
+        print (emotion_percents)
         # Return the filename and modified frame_data in the response
         return (
             jsonify(
