@@ -56,7 +56,7 @@ ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 
-app.config['TIMEOUT'] = 200 # Set the  
+app.config["TIMEOUT"] = 200  # Set the
 
 # load your service account credentials
 # creds = Credentials.from_service_account_file('./sheet_creds.json')
@@ -133,8 +133,8 @@ def update_sheet():
         return {"success": True, "sheet_title": sheet_title}
 
     except Exception as e:
-      print(e)
-      return str(e), 500
+        print(e)
+        return str(e), 500
 
 
 # ====================================================================================================
@@ -158,63 +158,67 @@ s3 = boto3.client(
     config=Config(signature_version="s3v4"),
     aws_access_key_id=env.get("AWS_ACCESS"),
     aws_secret_access_key=env.get("AWS_SECRET"),
-    region_name='us-east-2'
+    region_name="us-east-2",
 )
 
 
 @app.route("/create-video", methods=["POST"])
 def create_video():
- try:
+    try:
+        app.logger.info("\ncreating video")
         data_json = request.get_json()
         frame_data = data_json["frame_data"]
 
+        app.logger.info(f"frame data len is: {len(frame_data)}")
         frames = []
 
         for key, value in frame_data.items():
             frame = encode_frame(value["frame"])
             frames.append(frame)
-            print(frames)
+            # print(frames)
 
         # Create webm file in memory using imageio
-        video_bytes = create_video_file(frames)
+        # video_bytes = create_video_file(frames)
+        # this saves the video in a bytesio memory object, but it has to be saved to a file to be uploaded to s3
 
-        # Prepare the file name and upload it to S3
+        # Make a temp file, save the video to it, then upload it to s3
+        temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
+        imageio.mimwrite(temp_vid.name, frames, fps=24, codec="vp8")
 
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
-        s3.upload_file(temp_vid.name, "medship", filename)
-        print(filename)
-
+        # s3.upload_file(temp_vid.name, "medship", filename)
+        app.logger.info(filename)
+        s3.upload_file(temp_vid.name, "mdship-test", filename)
 
         # Generate a presigned URL for the uploaded file
         presigned_url = s3.generate_presigned_url(
             "get_object",
-            Params={"Bucket": "medship", "Key": filename},
+            Params={"Bucket": "mdship-test", "Key": filename},
             ExpiresIn=3600,
         )
 
         @after_this_request
         def delete_file(response):
             frames.clear()
+            remove_video(temp_vid.name)
             return response
 
         emotion_percents = get_dominant_emotion(frame_data)
 
-        print(emotion_percents)
+        app.logger.info(f"emotion percents: {len(emotion_percents)}")
 
         # Return the filename and modified frame_data in the response
         return (
-            jsonify(
-                {
-                    "filename": presigned_url,
-                    "frame_data": emotion_percents,
-                }
-            ),
+            jsonify({"filename": presigned_url, "frame_data": emotion_percents,}),
             200,
         )
- except Exception as e:
-            print(e)
-            return "", 500
- 
+    except Exception as e:
+        app.logger.error(
+            e
+        )  # its better to use app.logger as print is not shown in the logs
+        return "", 500
+
+
 def encode_frame(base64_frame):
     data = base64_frame.split(",")[1]  # Remove the "data:image/png;base64," part
     data = base64.b64decode(data)
@@ -227,18 +231,27 @@ def encode_frame(base64_frame):
 
     return frame
 
+
+def remove_video(filename):
+    try:
+        os.remove(filename)
+        print("video deleted!")
+    except Exception as error:
+        app.logger.error("Error removing video", error)
+
+
 def create_video_file(frames):
     # Create video file in memory using imageio
     video_bytes = BytesIO()
-    imageio.mimwrite(
-        video_bytes, frames, format="webm", fps=24, codec='vp8'
-    )
+    imageio.mimwrite(video_bytes, frames, format="webm", fps=24, codec="vp8")
     video_bytes.seek(0)
     return video_bytes.read()
+
 
 def get_unique_filename():
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
     return f"video_{timestamp}"
+
 
 def get_dominant_emotion(data_dict):
     emotion_count = {
@@ -253,42 +266,44 @@ def get_dominant_emotion(data_dict):
     }
 
     for key in data_dict:
-        emotions = data_dict[key]['results']
-    # .get('emotions', {})
-        print(f'emotions = {emotions}')
+        emotions = data_dict[key]["results"]
+        # .get('emotions', {})
+        print(f"emotions = {emotions}")
         # Remove valence from the emotions dictionary
         if "valence" in emotions:
             del emotions["valence"]
-       
-        if "compassion" in emotions: 
-            del emotions["compassion"]
-        
-        if "listening" in emotions: 
-            del emotions["listening"] 
 
-        if "welcoming" in emotions: 
-            del emotions["welcoming"]     
+        if "compassion" in emotions:
+            del emotions["compassion"]
+
+        if "listening" in emotions:
+            del emotions["listening"]
+
+        if "welcoming" in emotions:
+            del emotions["welcoming"]
 
         if emotions:
             # Get the emotion with the maximum score
             dominant_emotion = max(emotions, key=emotions.get)
-            print(f'dominant_emotion = {dominant_emotion}')
+            print(f"dominant_emotion = {dominant_emotion}")
 
             # Increase the count for this emotion
             if dominant_emotion in emotion_count:
                 emotion_count[dominant_emotion] += 1
             else:
                 emotion_count[dominant_emotion] = 1
-    print(f'emotion_count = {emotion_count}')
-    
+    print(f"emotion_count = {emotion_count}")
+
     # Get the total number of samples
     total_samples = sum(emotion_count.values())
-    #now make a list with just the emotion counts
+    # now make a list with just the emotion counts
     emotion_list = list(emotion_count.values())
-    #now make a list with the percentages
-    emotion_percentages = [int((emotion / total_samples) * 10) for emotion in emotion_list]
+    # now make a list with the percentages
+    emotion_percentages = [
+        int((emotion / total_samples) * 10) for emotion in emotion_list
+    ]
 
-    print(f'emotion_percentages = {emotion_percentages}')
+    print(f"emotion_percentages = {emotion_percentages}")
     return emotion_percentages
 
 
