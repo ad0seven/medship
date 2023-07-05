@@ -181,7 +181,7 @@ def create_video():
         # Prepare the file name and upload it to S3
 
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
-        s3.upload_file(temp_vid.name, "mdship-test", filename)
+        s3.upload_file(temp_vid.name, "medship", filename)
         print(filename)
 
 
