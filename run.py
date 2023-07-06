@@ -188,12 +188,12 @@ def create_video():
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
         # s3.upload_file(temp_vid.name, "medship", filename)
         app.logger.info(filename)
-        s3.upload_file(temp_vid.name, "mdship-test", filename)
+        s3.upload_file(temp_vid.name, "medship", filename)
 
         # Generate a presigned URL for the uploaded file
         presigned_url = s3.generate_presigned_url(
             "get_object",
-            Params={"Bucket": "mdship-test", "Key": filename},
+            Params={"Bucket": "medship", "Key": filename},
             ExpiresIn=3600,
         )
 
