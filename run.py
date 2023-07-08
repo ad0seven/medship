@@ -149,7 +149,7 @@ s3 = boto3.client(
     config=Config(signature_version="s3v4"),
     aws_access_key_id=env.get("AWS_ACCESS"),
     aws_secret_access_key=env.get("AWS_SECRET"),
-    region_name='us-east-2'
+    region_name='us-east-1'
 )
 
 
