@@ -132,99 +132,61 @@ def update_sheet():
 # ====================================================================================================
 """training video generation stuff"""
 # ====================================================================================================
-
 import base64
-
-# import cv2
-# import numpy as np
 from PIL import Image
 from io import BytesIO
 from flask import send_file, after_this_request, jsonify
 import tempfile
-from botocore.config import Config
 import imageio
+import numpy as np
+import os
 
-s3 = boto3.client(
-    "s3",
-    config=Config(signature_version="s3v4"),
-    aws_access_key_id=env.get("AWS_ACCESS"),
-    aws_secret_access_key=env.get("AWS_SECRET"),
-    region_name='us-east-1'
-)
+# Remove the import statement for boto3
 
+# Remove the S3 client initialization code
 
 @app.route("/create-video", methods=["POST"])
 def create_video():
     try:
         data_json = request.get_json()
         frame_data = data_json["frame_data"]
-# get the first key in the frame_data dictionary
         first_key = list(frame_data.keys())[0]
-        # get the first frame
         first_frame = frame_data[first_key]["frame"]
         processed_frame = encode_frame(first_frame)
 
         height, width, layers = processed_frame.shape
         size = (width, height)
 
-        # print(f'size = {size}')
-
-        # temp_vid = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-
-        # out = cv2.VideoWriter(temp_vid.name, cv2.VideoWriter_fourcc(*"mp4v"), 24, size)
-
-        # for key, value in frame_data.items():
-        #     frame = encode_frame(value["frame"])
-        #     out.write(frame)
-        # out.release()
-
-        # prepare a list to store the frames
         frames = []
-
         for key, value in frame_data.items():
             frame = encode_frame(value["frame"])
             frames.append(frame)
 
-        # create webm file
         temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
+        print("Temporary Video File Path:", temp_vid.name)
+
         imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
-        
-        # Prepare the file name and upload it to S3
-        filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
-        s3.upload_file(temp_vid.name, "medship", filename)
 
-        # Generate a presigned URL for the uploaded file
-        presigned_url = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": "medship", "Key": filename},
-            ExpiresIn=3600,
-        )
+        #@after_this_request
+        # def delete_file(response):
+        #    remove_video(temp_vid.name)
+        #   return response
 
-        @after_this_request
-        def delete_file(response):
-            remove_video(temp_vid.name)
-            return response
-
-        # Modify the frame_data to remove the 'frame' item from each element
         for key, value in frame_data.items():
             if "frame" in value:
                 del value["frame"]
                 
         emotion_percents = get_dominant_emotion(frame_data)
 
-        # Return the filename and modified frame_data in the response
         return (
             jsonify(
                 {
-                    # 'filename': filename,
-                    "filename": presigned_url,
-                    # "frame_data": frame_data,
+                    "filename": temp_vid.name,  # Return the temporary file name
                     "frame_data": emotion_percents,
                 }
             ),
             200,
         )
-
 
     except Exception as e:
         print(e)
@@ -240,16 +202,12 @@ def remove_video(filename):
 
 
 def encode_frame(base64_frame):
-    data = base64_frame.split(",")[1]  # Remove the "data:image/png;base64," part
+    data = base64_frame.split(",")[1]
     data = base64.b64decode(data)
-
-    # Convert the data to an image
     img = Image.open(BytesIO(data))
-
-    # Convert the image to a numpy array
     frame = np.array(img)
-
     return frame
+
 
 def get_dominant_emotion(data_dict):
     emotion_count = {
@@ -265,9 +223,6 @@ def get_dominant_emotion(data_dict):
 
     for key in data_dict:
         emotions = data_dict[key]['results']
-    # .get('emotions', {})
-        print(f'emotions = {emotions}')
-        # Remove valence from the emotions dictionary
         if "valence" in emotions:
             del emotions["valence"]
        
@@ -281,27 +236,17 @@ def get_dominant_emotion(data_dict):
             del emotions["welcoming"]     
 
         if emotions:
-            # Get the emotion with the maximum score
             dominant_emotion = max(emotions, key=emotions.get)
-            print(f'dominant_emotion = {dominant_emotion}')
-
-            # Increase the count for this emotion
             if dominant_emotion in emotion_count:
                 emotion_count[dominant_emotion] += 1
             else:
                 emotion_count[dominant_emotion] = 1
-    print(f'emotion_count = {emotion_count}')
     
-    # Get the total number of samples
     total_samples = sum(emotion_count.values())
-    #now make a list with just the emotion counts
     emotion_list = list(emotion_count.values())
-    #now make a list with the percentages
     emotion_percentages = [int((emotion / total_samples) * 10) for emotion in emotion_list]
 
-    print(f'emotion_percentages = {emotion_percentages}')
     return emotion_percentages
-
 
 if DEBUG:
     app.logger.info("DEBUG       = " + str(DEBUG))
