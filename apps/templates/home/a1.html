@@ -1,0 +1,245 @@
+
+{% extends "layouts/base.html" %}
+
+{% block title %} Training {% endblock %}
+
+{% block stylesheets %}
+
+
+{% endblock stylesheets %}
+
+{% block content %}
+<main id="container">
+    <video id="gum" playsinline autoplay muted></video>
+    <video id="recorded" playsinline loop></video>
+
+    <section>
+      <button id="start">Start camera</button>
+      <button id="record" disabled>Record</button>
+      <button id="play" disabled>Play</button>
+    </section>
+  </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+let mediaRecorder;
+let recordedBlobs;
+
+let welcoming = ""; // Initialize the variable with an empty string
+let listening = ""; // Initialize the variable with an empty string
+let compassion = ""; // Initialize the variable with an empty string
+
+
+let savingText = document.getElementById("saving");
+var drawCanvas = document.getElementById("drawCanvas");
+var drawCtx = drawCanvas.getContext("2d");
+
+var captureCanvas = document.getElementById("captureCanvas");
+var captureCtx = captureCanvas.getContext("2d");
+
+var verbose = true;
+
+var detectorInit = false;
+var startedUp = false;
+var detectorInterval = null;
+var recordingInterval = null;
+
+var secs = 0
+
+// warm up the detector
+var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
+var detector = new affdex.FrameDetector(faceMode);
+
+detector.detectAllEmotions();
+detector.detectAllExpressions();
+detector.detectAllEmojis();
+detector.detectAllAppearance();
+saveButton.style.display = "none";
+
+const errorMsgElement = document.querySelector("span#errorMsg");
+const recordedVideo = document.querySelector("video#recorded");
+const recordButton = document.querySelector("button#record");
+const playButton = document.querySelector("button#play");
+
+recordButton.addEventListener("click", () => {
+  if (recordButton.textContent === "Record") return startRecording();
+  stopRecording();
+  recordButton.textContent = "Record";
+  playButton.disabled = false;
+});
+
+playButton.addEventListener("click", () => {
+  const superBuffer = new Blob(recordedBlobs, { type: "video/webm" });
+  recordedVideo.src = null;
+  recordedVideo.srcObject = null;
+  recordedVideo.src = window.URL.createObjectURL(superBuffer);
+  recordedVideo.controls = true;
+  recordedVideo.play();
+  drawAffdexStats(currentResultImg, currentResults);
+});
+
+function handleDataAvailable(event) {
+  if (event.data && event.data.size > 0) recordedBlobs.push(event.data);
+}
+
+function startRecording() {
+  recordedBlobs = [];
+  let options = { mimeType: "video/webm;codecs=vp9,opus" };
+  try {
+    mediaRecorder = new MediaRecorder(window.stream, options);
+  } catch (e) {
+    console.error("Exception while creating MediaRecorder:", e);
+    errorMsgElement.innerHTML = `Exception while creating MediaRecorder: ${JSON.stringify(
+      e
+    )}`;
+    return;
+  }
+  recordButton.textContent = "Stop Recording";
+  playButton.disabled = true;
+  mediaRecorder.onstop = (event) => console.log(event);
+  mediaRecorder.ondataavailable = handleDataAvailable;
+  mediaRecorder.start();
+  console.log("MediaRecorder started", mediaRecorder);
+}
+detector.addEventListener("onInitializeSuccess", function () {
+  // console.log('detector initialized');
+  detectorInit = true;
+});
+
+detector.addEventListener("onImageResultsSuccess", function(faces, image, timestamp) {
+    // drawImage(image);
+    //$('#results').html("");
+    var time_key = "Timestamp";
+    var time_val = timestamp.toFixed(2);
+
+    if (verbose) {
+      console.log("#results", "Timestamp: " + timestamp.toFixed(2));
+      console.log("#results", "Number of faces found: " + faces.length);
+      console.log("Number of faces found: " + faces.length);
+    }
+    if (faces.length > 0) {
+      if (verbose) {
+        console.log("\nFACES RESULT");
+        console.log(faces);
+      }
+
+      //   updateStats(faces[0], unix_timestamp);
+
+      if (startedUp) {
+        // drawAffdexStats(image, faces[0]);
+        currentResults = faces[0];
+        currentResultImg = image;
+      }
+    } else {
+      // If face is not detected skip entry.
+      console.log("Cannot find face, skipping entry");
+    }
+  }
+);
+
+//Draw the detected facial feature points on the image
+function drawAffdexStats(img, data) {
+  let featurePoints = data.featurePoints;
+  // var contxt = $('#face_video_canvas')[0].getContext('2d');
+  var contxt = document.getElementById("drawCanvas").getContext("2d");
+  // contxt.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+
+  var hRatio = contxt.canvas.width / img.width;
+  var vRatio = contxt.canvas.height / img.height;
+  padding = parseInt(getComputedStyle(drawCanvas).padding);
+  var ratio = Math.min(hRatio, vRatio);
+
+  contxt.strokeStyle = "#FFFFFF";
+  for (var id in featurePoints) {
+    contxt.beginPath();
+    contxt.arc(featurePoints[id].x, featurePoints[id].y, 2, 0, 2 * Math.PI);
+    contxt.stroke();
+  }
+
+  let emoji = data.emojis.dominantEmoji;
+  const emotionWithHighestScore = getEmotionWithHighestScore(data.emotions);
+
+  console.log(emotionWithHighestScore); 
+  const browFurrow = data.expressions.browFurrow.toFixed(2);
+  const browRaise = data.expressions.browRaise.toFixed(2);
+  const smile = data.expressions.smile.toFixed(2);
+  const innerBrowRaise = data.expressions.innerBrowRaise.toFixed(2);
+  const lipPress = data.expressions.lipPress.toFixed(2);
+  const cheekRaise = data.expressions.cheekRaise.toFixed(2);
+  const eyeWiden = data.expressions.eyeWiden.toFixed(2);
+  const engagement = data.emotions.engagement.toFixed(2);
+
+const compassionExpression = {
+    innerBrowRaise: innerBrowRaise,
+    smile: smile,
+    lipPress: lipPress
+};
+
+const welcomingExpression = {
+  cheekRaise: cheekRaise,
+  smile: smile,
+  engagement: engagement
+};
+
+const listeningExpression = {
+  browRaise: browRaise,
+  eyeWiden: eyeWiden,
+  smile: smile,
+  engagement: engagement
+};
+
+welcoming = checkWelcomingDetected(welcomingExpression) ? 'Detected' : 'Not Detected';
+listening = checkListeningDetected(listeningExpression) ? 'Detected' : 'Not Detected';
+compassion = checkCompassionDetected(compassionExpression) ? 'Detected' : 'Not Detected';
+
+const text = `Dominant Emoji: ${emoji}\nCompassionate: ${compassion}\nWelcoming: ${welcoming}\nListening: ${listening}`;
+
+const dataColumns = ['timestamp', 'compassion', 'welcoming', 'listening']
+
+  for (const columnName of dataColumns) {
+    if (data.expressions.hasOwnProperty(columnName)) {
+      let dataCol = data.expressions[columnName].toFixed(2);
+
+      const name = convertCamelCaseToSpaces(columnName);
+
+      text += `\n${name}: ${dataCol}`;
+    }
+  }
+
+  contxt.font = "20px Arial";
+  contxt.fillStyle = "white";
+
+  contxt.lineWidth = 2; // Width of the border line
+  contxt.fillStyle = "white"; // Color of the text
+  contxt.strokeStyle = "black"; // Color of the border
+
+  for (let i = 0; i < text.split("\n").length; i++) {
+    contxt.strokeText(text.split("\n")[i], 10, 20 + i * 20);
+    contxt.fillText(text.split("\n")[i], 10, 20 + i * 20);
+  }
+}
+
+function stopRecording() {
+  mediaRecorder.stop();
+}
+
+document.querySelector("button#start").addEventListener("click", async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    recordButton.disabled = false;
+    window.stream = stream;
+    const gumVideo = document.querySelector("video#gum");
+    gumVideo.srcObject = stream;
+  } catch (e) {
+    console.error("navigator.getUserMedia error:", e);
+    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+});
+</script>
+{% endblock javascripts %}
