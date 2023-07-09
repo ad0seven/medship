@@ -140,7 +140,10 @@ import tempfile
 import imageio
 import numpy as np
 import os
-import shutil
+
+# Remove the import statement for boto3
+
+# Remove the S3 client initialization code
 
 @app.route("/create-video", methods=["POST"])
 def create_video():
@@ -159,15 +162,15 @@ def create_video():
             frame = encode_frame(value["frame"])
             frames.append(frame)
 
-        temp_dir = tempfile.mkdtemp()  # Create a temporary directory
-        temp_vid_path = os.path.join(temp_dir, "output.webm")
+        temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
+        print("Temporary Video File Path:", temp_vid.name)
 
-        imageio.mimwrite(temp_vid_path, frames, fps=24, codec='vp8')
+        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
 
-   #     @after_this_request
-    #    def delete_files(response):
-    #        remove_directory(temp_dir)  # Remove the temporary directory and its contents
-     #       return response
+        #@after_this_request
+        # def delete_file(response):
+        #    remove_video(temp_vid.name)
+        #   return response
 
         for key, value in frame_data.items():
             if "frame" in value:
@@ -178,7 +181,7 @@ def create_video():
         return (
             jsonify(
                 {
-                    "filename": temp_vid_path,  # Return the temporary video file path
+                    "filename": temp_vid.name,  # Return the temporary file name
                     "frame_data": emotion_percents,
                 }
             ),
@@ -190,12 +193,12 @@ def create_video():
         return "", 500
 
 
-#def remove_directory(directory):
- #   try:
-  #      shutil.rmtree(directory)
-   #     print("Temporary directory deleted!")
-    #except Exception as error:
-     #   app.logger.error("Error removing temporary directory", error)
+def remove_video(filename):
+    try:
+        os.remove(filename)
+        print("Video deleted!")
+    except Exception as error:
+        app.logger.error("Error removing video", error)
 
 
 def encode_frame(base64_frame):
