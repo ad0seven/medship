@@ -146,7 +146,7 @@ import datetime
 
 s3 = boto3.client(
     "s3",
-    config=Config(signature_version="s3v4"),
+    config=Config(signature_version="s3"),
     aws_access_key_id=env.get("AWS_ACCESS"),
     aws_secret_access_key=env.get("AWS_SECRET"),
     region_name='us-east-1'
