@@ -30,14 +30,6 @@ except KeyError:
 app = create_app(app_config)
 Migrate(app, db)
 
-# Connecting to file storage with AWS S3
-resource = boto3.resource(
-    "s3",
-    aws_access_key_id=str(os.getenv("AWS_ACCESS")),
-    aws_secret_access_key=str(os.getenv("AWS_SECRET")),
-    region_name="us-east-1",
-)
-
 
 # ====================================================================================================
 """google sheets stuff in the main file because the way this thing is put together is a mess 🤷‍♂️"""
@@ -157,7 +149,7 @@ s3 = boto3.client(
     config=Config(signature_version="s3v4"),
     aws_access_key_id=env.get("AWS_ACCESS"),
     aws_secret_access_key=env.get("AWS_SECRET"),
-    region_name="us-east-2",
+    region_name='us-east-1'
 )
 
 # Remove the S3 client initialization code
@@ -168,8 +160,27 @@ def create_video():
         app.logger.info("\ncreating video")
         data_json = request.get_json()
         frame_data = data_json["frame_data"]
+# get the first key in the frame_data dictionary
+        first_key = list(frame_data.keys())[0]
+        # get the first frame
+        first_frame = frame_data[first_key]["frame"]
+        processed_frame = encode_frame(first_frame)
 
-        app.logger.info(f"frame data len is: {len(frame_data)}")
+        height, width, layers = processed_frame.shape
+        size = (width, height)
+
+        # print(f'size = {size}')
+
+        # temp_vid = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+
+        # out = cv2.VideoWriter(temp_vid.name, cv2.VideoWriter_fourcc(*"mp4v"), 24, size)
+
+        # for key, value in frame_data.items():
+        #     frame = encode_frame(value["frame"])
+        #     out.write(frame)
+        # out.release()
+
+        # prepare a list to store the frames
         frames = []
         for key, value in frame_data.items():
             frame = encode_frame(value["frame"])
@@ -180,13 +191,12 @@ def create_video():
         # video_bytes = create_video_file(frames)
         # this saves the video in a bytesio memory object, but it has to be saved to a file to be uploaded to s3
 
-        # Make a temp file, save the video to it, then upload it to s3
+        # create webm file
         temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
-        imageio.mimwrite(temp_vid.name, frames, fps=24, codec="vp8")
-
+        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
+        
+        # Prepare the file name and upload it to S3
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
-        # s3.upload_file(temp_vid.name, "medship", filename)
-        app.logger.info(filename)
         s3.upload_file(temp_vid.name, "medship", filename)
 
         # Generate a presigned URL for the uploaded file
@@ -198,19 +208,30 @@ def create_video():
 
         @after_this_request
         def delete_file(response):
-            frames.clear()
             remove_video(temp_vid.name)
             return response
 
+        # Modify the frame_data to remove the 'frame' item from each element
+        for key, value in frame_data.items():
+            if "frame" in value:
+                del value["frame"]
+                
         emotion_percents = get_dominant_emotion(frame_data)
-
-        app.logger.info(f"emotion percents: {len(emotion_percents)}")
 
         # Return the filename and modified frame_data in the response
         return (
-            jsonify({"filename": presigned_url, "frame_data": emotion_percents,}),
+            jsonify(
+                {
+                    # 'filename': filename,
+                    "filename": presigned_url,
+                    # "frame_data": frame_data,
+                    "frame_data": emotion_percents,
+                }
+            ),
             200,
         )
+
+
     except Exception as e:
         app.logger.error(
             e
