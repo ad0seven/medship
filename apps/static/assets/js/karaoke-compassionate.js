@@ -136,6 +136,9 @@
     };
 
     var detectorInit = false;
+    const testType = 'karaoke-compassionate'
+    const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress', 'compassion']
+     var recordedData = [] //storing the spreadsheet data
 
     function grab() {
         captureCtx.drawImage(
@@ -169,7 +172,10 @@
         // drawImage(image);
         //$('#results').html("");
         var time_key = "Timestamp";
-        var time_val = timestamp;
+        var time_val = timestamp.toFixed(2); 
+
+       //get global unix timestamp (more flexible for data analysis)
+       let unix_timestamp = new Date().getTime();
 
         if (verbose) {
             console.log('#results', "Timestamp: " + timestamp.toFixed(2));
@@ -182,6 +188,7 @@
                 console.log(faces) }
             // drawFeaturePoints(image, faces[0].featurePoints);
             drawAffdexStats(image, faces[0]);
+            updateStats(faces[0], unix_timestamp);
         } else {
             // If face is not detected skip entry.
             console.log('Cannot find face, skipping entry');
@@ -289,30 +296,46 @@
         console.log("Cleared draw canvas");
       }
 
+      function updateStats(data, timestamp){
+        let newDataRow = []
+        newDataRow.push(timestamp)
+    
+        for (const columnName of dataColumns) {
+            if (data.expressions.hasOwnProperty(columnName)) {
+                let dataCol = data.expressions[columnName].toFixed(2);
+                newDataRow.push(dataCol)
+            }
+        }
+        if (verbose){
+            console.log(`New data row: ${newDataRow}`)}
+        recordedData.push(newDataRow)
+    }
+    
     function updateSpreadsheet() {
         //send over the data to flask endpoint that updates the google sheet
     
-        fetch("/update-sheet", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            test_type: testType,
-            columns: dataColumns,
-            values: recordedData,
-        }),
+        fetch('/update-sheet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                test_type: testType,
+                columns: dataColumns,
+                values: recordedData
+            }),
         })
-        .then((response) => response.json())
-        .then((data) => {
-            let success = data["success"];
+        .then(response => response.json())
+        .then(data => {
+            let success = data['success']
             if (success) {
-            console.log("Successfully updated spreadsheet");
+                console.log('Successfully updated spreadsheet')
             } else {
-            console.log("Failed to update spreadsheet");
+                console.log('Failed to update spreadsheet')
             }
         })
         .catch((error) => {
-            console.error("Error:", error);
+            console.error('Error:', error);
         });
+    
     }
