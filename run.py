@@ -146,7 +146,7 @@ import datetime
 
 s3 = boto3.client(
     "s3",
-    config=Config(signature_version="s3"),
+    config=Config(signature_version="s3v4"),
     aws_access_key_id=env.get("AWS_ACCESS"),
     aws_secret_access_key=env.get("AWS_SECRET"),
     region_name='us-east-1'
@@ -193,19 +193,17 @@ def create_video():
 
         # create webm file
         temp_vid = tempfile.NamedTemporaryFile(suffix=".webm", delete=False)
-        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8')
+        imageio.mimwrite(temp_vid.name, frames, fps=24, codec='vp8', macro_block_size = None)
         
         # Prepare the file name and upload it to S3
         filename = f"{current_user.username}/{os.path.basename(temp_vid.name)}"
         s3.upload_file(temp_vid.name, "medship", filename)
 
         # Generate a presigned URL for the uploaded file
-        presigned_url = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": "medship", "Key": filename},
-            ExpiresIn=3600,
+        presigned_url = s3.generate_presigned_post(
+            'medship', filename, ExpiresIn=3600
         )
-
+            
         @after_this_request
         def delete_file(response):
             remove_video(temp_vid.name)
@@ -223,7 +221,7 @@ def create_video():
             jsonify(
                 {
                     # 'filename': filename,
-                    "filename": presigned_url,
+                    "filename": presigned_url["url"]+presigned_url["fields"]["key"],
                     # "frame_data": frame_data,
                     "frame_data": emotion_percents,
                 }
