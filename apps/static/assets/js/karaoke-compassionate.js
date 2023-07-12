@@ -38,23 +38,6 @@
     detector.detectAllEmojis();
     detector.detectAllAppearance();
 
-    document.getElementById('startCamera').addEventListener('click', function () {
-        startCamera();
-    });
-
-    document.getElementById('stopCamera').addEventListener('click', function () {
-        stopCamera();
-        clearCanvas('drawCanvas');
-    });
-
-
-    function adjustCanvas() {
-        const canvas = document.getElementById('canvasElement');
-        const context = canvas.getContext('2d');
-        // Resetting or adjusting canvas. For example, you can clear the canvas as follows:
-        context.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    
 
     function startup() {
     if (!startedup) {
@@ -76,27 +59,22 @@
 
     function startCamera() {
         if (navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-        .then(function onSuccess(stream) {
-            const video = document.getElementById('videoElement');
-            streamRef = stream;
-            video.autoplay = true;
-            video.srcObject = stream;
-            timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
-            if (detector && !detector.isRunning) {
-            detector.start();
-            }
-        })
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(function onSuccess(stream) {
+                const video = document.getElementById('videoElement');
+                streamRef = stream;
+                video.autoplay = true;
+                video.srcObject = stream;
+                timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
+            })
         } else {
-        alert('getUserMedia is not supported in this browser.');
+            alert('getUserMedia is not supported in this browser.');
         }
-    }
-    
-
-    function stopInterval() {
-        clearInterval(timeInterval);
-        clearCanvas('drawCanvas');  // Clear the canvas after the interval is stopped.
-    }
+        }
+        
+        function stopInterval() {
+            clearInterval(timeInterval);
+        }
 
     function stopCamera() {
         if (streamRef === null) {
@@ -134,9 +112,9 @@
     }
     };
 
-    var detectorInit = false;
+
     const testType = 'karaoke-compassionate'
-    const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress', 'compassion']
+    const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress', 'compassionDetected', 'maxEmotion']
     var recordedData = [] //storing the spreadsheet data
 
     function grab() {
@@ -176,23 +154,28 @@
        //get global unix timestamp (more flexible for data analysis)
        let unix_timestamp = new Date().getTime();
 
+       if (verbose) {
+        console.log('#results', "Timestamp: " + timestamp.toFixed(2));
+        console.log('#results', "Number of faces found: " + faces.length);
+        console.log("Number of faces found: " + faces.length);
+    }
+    if (faces.length > 0) {
         if (verbose) {
-            console.log('#results', "Timestamp: " + timestamp.toFixed(2));
-            console.log('#results', "Number of faces found: " + faces.length);
-            console.log("Number of faces found: " + faces.length);
+            console.log('\nFACES RESULT')
+            console.log(faces) 
         }
-        if (faces.length > 0) {
-            if (verbose) {
-                console.log('\nFACES RESULT')
-                console.log(faces) }
-            // drawFeaturePoints(image, faces[0].featurePoints);
+        // drawFeaturePoints(image, faces[0].featurePoints);
+
+        updateStats(faces[0], unix_timestamp);
+
+        if (startedup) {
             drawAffdexStats(image, faces[0]);
-            updateStats(faces[0], unix_timestamp);
-        } else {
-            // If face is not detected skip entry.
-            console.log('Cannot find face, skipping entry');
-        };
-    });
+        }
+    } else {
+        // If face is not detected skip entry.
+        console.log('Cannot find face, skipping entry');
+    };
+});
 
     //Draw the detected facial feature points on the image
     function drawAffdexStats(img, data) {
