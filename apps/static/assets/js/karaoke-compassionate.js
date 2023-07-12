@@ -19,6 +19,10 @@ let analytics = {
     "neutral": 0,
 }
 
+let maxEmotion = null;
+let compassion = null;
+
+
 const verbose = true;
 var secs = 0;
 
@@ -113,7 +117,7 @@ function startCamera() {
 
 
     const testType = 'karaoke-compassionate'
-    const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress', 'compassionDetected', 'maxEmotion']
+    const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress','maxEmotion','compassion']
     var recordedData = [] //storing the spreadsheet data
 
     function grab() {
@@ -221,6 +225,10 @@ function startCamera() {
 
         const compassion = checkCompassionDetected(compassionExpressions, customThresholds) ? 'Detected' : 'Not Detected';
         
+        maxEmotion = getEmotionWithHighestScore(data.emotions);
+        console.log(maxEmotion);
+
+
         let text = `Compassion: ${compassion}\nInner Brow Raise: ${innerBrowRaise}\nLip Corners Pull: ${smile}\nLip Press: ${lipPress}\nDominant Emoji: ${emoji}`;
 
         contxt.font = "20px Arial";
@@ -295,10 +303,32 @@ function startCamera() {
                 newDataRow.push(dataCol)
             }
         }
+    
+        // Calculate maxEmotion and compassionDetected here
+        const maxEmotion = getEmotionWithHighestScore(data.emotions);
+        const compassionExpressions = {
+            innerBrowRaise: data.expressions.innerBrowRaise.toFixed(2),
+            smile: data.expressions.smile.toFixed(2),
+            lipPress: data.expressions.lipPress.toFixed(2)
+        };
+    
+        const customThresholds = {
+            innerBrowRaise: 20,
+            smile: 10,
+            lipPress: 10
+        };
+    
+        const compassionDetected = checkCompassionDetected(compassionExpressions, customThresholds);
+    
+        // Add maxEmotion and compassionDetected to newDataRow
+        newDataRow.push(maxEmotion, compassionDetected);
+    
         if (verbose){
-            console.log(`New data row: ${newDataRow}`)}
+            console.log(`New data row: ${newDataRow}`)
+        }
         recordedData.push(newDataRow)
     }
+    
     
     function updateSpreadsheet() {
         //send over the data to flask endpoint that updates the google sheet
@@ -311,7 +341,9 @@ function startCamera() {
             body: JSON.stringify({
                 test_type: testType,
                 columns: dataColumns,
-                values: recordedData
+                values: recordedData,
+                max_emotion: maxEmotion, // Include maxEmotion data
+                compassion_detected: compassion
             }),
         })
         .then(response => response.json())
@@ -328,3 +360,18 @@ function startCamera() {
         });
     
     }
+
+    function adjustCanvas(bool) {
+        if (!adjustedCanvas || bool) {
+            drawCanvas.width = drawCanvas.width;
+            drawCanvas.width = video.videoWidth || drawCanvas.width;
+            drawCanvas.height = video.videoHeight || drawCanvas.height;
+            captureCanvas.width = video.videoWidth || captureCanvas.width;
+            captureCanvas.height = video.videoHeight || captureCanvas.height;
+            drawCtx.lineWidth = "5";
+            drawCtx.strokeStyle = "blue";
+            drawCtx.font = "20px Verdana";
+            drawCtx.fillStyle = "red";
+            adjustedCanvas = true;
+        }
+        }
