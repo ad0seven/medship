@@ -112,7 +112,6 @@
         clearDrawCanvas();
         stopInterval();
         adjustCanvas();
-        updateAnalytics();
         updateSpreadsheet();
         clearDrawCanvas();
 
@@ -138,7 +137,7 @@
     var detectorInit = false;
     const testType = 'karaoke-compassionate'
     const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress', 'compassion']
-     var recordedData = [] //storing the spreadsheet data
+    var recordedData = [] //storing the spreadsheet data
 
     function grab() {
         captureCtx.drawImage(
