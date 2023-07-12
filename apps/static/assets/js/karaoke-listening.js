@@ -17,6 +17,10 @@ let analytics = {
     "surprise": 0,
     "neutral": 0,
 }
+let maxEmotion = null;
+let listening = null;
+
+
 
 const verbose = true;
 var secs = 0;
@@ -38,24 +42,6 @@ detector.detectAllExpressions();
 detector.detectAllEmojis();
 detector.detectAllAppearance();
 
-document.getElementById('startCamera').addEventListener('click', function () {
-    startCamera();
-});
-
-document.getElementById('stopCamera').addEventListener('click', function () {
-    stopCamera();
-    clearCanvas('drawCanvas');
-});
-
-
-function adjustCanvas() {
-    const canvas = document.getElementById('canvasElement');
-    const context = canvas.getContext('2d');
-    // Resetting or adjusting canvas. For example, you can clear the canvas as follows:
-    context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-
 function startup() {
 if (!startedup) {
     detector.start()
@@ -76,26 +62,22 @@ if (!startedup) {
 
 function startCamera() {
     if (navigator.mediaDevices) {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    .then(function onSuccess(stream) {
-        const video = document.getElementById('videoElement');
-        streamRef = stream;
-        video.autoplay = true;
-        video.srcObject = stream;
-        timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
-        if (detector && !detector.isRunning) {
-        detector.start();
-        }
-    })
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then(function onSuccess(stream) {
+            const video = document.getElementById('videoElement');
+            streamRef = stream;
+            video.autoplay = true;
+            video.srcObject = stream;
+            timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
+        })
     } else {
-    alert('getUserMedia is not supported in this browser.');
+        alert('getUserMedia is not supported in this browser.');
     }
-}
+    }
 
 
 function stopInterval() {
     clearInterval(timeInterval);
-    clearCanvas('drawCanvas');  // Clear the canvas after the interval is stopped.
 }
 
 function stopCamera() {
@@ -109,12 +91,11 @@ function stopCamera() {
     detector.stop();
 
     video.srcObject = null;
-    clearDrawCanvas();
     stopInterval();
     adjustCanvas();
-    updateAnalytics();
     updateSpreadsheet();
     clearDrawCanvas();
+
  
     startedup = false;
     detectorInit = false;
@@ -133,9 +114,12 @@ if (document.readyState === "complete") {
     drawCanvas = document.getElementById("drawCanvas");
     drawCtx = drawCanvas.getContext("2d");
 }
-};
 
-var detectorInit = false;
+};
+    const testType = 'karaoke-listening'
+    const dataColumns = ['timestamp', 'browRaise','eyeWiden', 'smile', 'engagement','maxEmotion','listening']
+    var recordedData = [] //storing the spreadsheet data
+
 
 function grab() {
     captureCtx.drawImage(
@@ -171,6 +155,10 @@ function grab() {
     var time_key = "Timestamp";
     var time_val = timestamp;
 
+
+    //get global unix timestamp (more flexible for data analysis)
+    let unix_timestamp = new Date().getTime();
+    
     if (verbose) {
         console.log('#results', "Timestamp: " + timestamp.toFixed(2));
         console.log('#results', "Number of faces found: " + faces.length);
@@ -238,7 +226,10 @@ function drawAffdexStats(img, data) {
 
     const listening = checkListeningDetected(listeningExpressions, customThresholds) ? 'Detected' : 'Not Detected';
     
-    const text = `Listening: ${listening}\nBrow Raise: ${browRaise}\nUpper Lid: ${eyeWiden}\nLip Corners Pull: ${smile}\nEngagement ${engagement}\nDominant Emoji: ${emoji}`;
+    maxEmotion = getEmotionWithHighestScore(data.emotions);
+    console.log(maxEmotion);
+
+    let text = `Listening: ${listening}\nBrow Raise: ${browRaise}\nUpper Lid: ${eyeWiden}\nLip Corners Pull: ${smile}\nEngagement ${engagement}\nDominant Emoji: ${emoji}`;
 
     contxt.font = "20px Arial";
     contxt.fillStyle = "white";
@@ -293,32 +284,124 @@ function clearDrawCanvas() {
     console.log("Cleared draw canvas");
   }
 
-function updateSpreadsheet() {
-    //send over the data to flask endpoint that updates the google sheet
+  function convertCamelCaseToSpaces(str) {
+    // Use regular expressions to find uppercase letters preceded by a lowercase letter
+    // and insert a space before them
+    return str.replace(/([a-z])([A-Z])/g, '$1 $2')
+              // Replace all uppercase letters with lowercase letters
+              .toLowerCase();
+  }
 
-    fetch("/update-sheet", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-        test_type: testType,
-        columns: dataColumns,
-        values: recordedData,
-    }),
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        let success = data["success"];
-        if (success) {
-        console.log("Successfully updated spreadsheet");
-        } else {
-        console.log("Failed to update spreadsheet");
+  function updateStats(data, timestamp){
+    let newDataRow = []
+    newDataRow.push(timestamp)
+
+    for (const columnName of dataColumns) {
+        if (data.expressions.hasOwnProperty(columnName)) {
+            let dataCol = data.expressions[columnName].toFixed(2);
+            newDataRow.push(dataCol)
         }
-    })
-    .catch((error) => {
-        console.error("Error:", error);
-    });
-}
+    }
+        // Calculate maxEmotion and compassionDetected here
+        const maxEmotion = getEmotionWithHighestScore(data.emotions);
+        const listeningExpressions = {
+            browRaise: data.expressions.BrowRaise.toFixed(2),
+            eyeWiden: data.expressions.eyeWiden.toFixed(2),
+            smile: data.expressions.smile.toFixed(2),
+            engagement: data.emotions.engagement.toFixed(2),
+        };
+    
+        const customThresholds = {
+            browRaise: 15,
+            eyeWiden: 5,
+            smile: 10,
+            engagement: 15
+          };
+    
+        const listeningDetected = checkListeningDetected(listeningExpressions, customThresholds);
+    
+        // Add maxEmotion and compassionDetected to newDataRow
+        newDataRow.push(maxEmotion, listeningDetected);
+    
+        if (verbose){
+            console.log(`New data row: ${newDataRow}`)
+        }
+        recordedData.push(newDataRow)
+    }
+
+    // Initialize the selectedFeedback variable globally
+    let selectedFeedback = '';
+    
+    // Initially disable the stopCamera button
+    document.querySelector('#stopCamera').disabled = true;
+
+       // Feedback event listener
+       document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
+        if(!entry.classList.contains('active')) {
+            document.querySelector('.feedback li.active').classList.remove('active');
+            entry.classList.add('active');
+            selectedFeedback = entry.className.split(' ')[0]; // Store the class name before 'active'
+            
+            // Enable the stopCamera button when feedback is selected
+            document.querySelector('#stopCamera').disabled = false;
+        }
+        e.preventDefault();
+    }));
+
+ 
+    function updateSpreadsheet() {
+        //send over the data to flask endpoint that updates the google sheet
+        let quizResults = JSON.parse(localStorage.getItem('quizResults'));
+        console.log('Quiz results retrieved:', quizResults);
+        
+        // Ensure we're only sending the score
+        let quizScore = quizResults.score;
+    
+        fetch('/update-sheet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                test_type: testType,
+                columns: dataColumns,
+                values: recordedData,
+                max_emotion: maxEmotion, // Include maxEmotion data
+                listening_detected: listening,
+                feedback: selectedFeedback, // Include user feedback data
+                quiz_results: quizScore  // Send just the quiz score
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            let success = data['success']
+            if (success) {
+                console.log('Successfully updated spreadsheet')
+            } else {
+                console.log('Failed to update spreadsheet')
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+
+
+    function adjustCanvas(bool) {
+        if (!adjustedCanvas || bool) {
+            drawCanvas.width = drawCanvas.width;
+            drawCanvas.width = video.videoWidth || drawCanvas.width;
+            drawCanvas.height = video.videoHeight || drawCanvas.height;
+            captureCanvas.width = video.videoWidth || captureCanvas.width;
+            captureCanvas.height = video.videoHeight || captureCanvas.height;
+            drawCtx.lineWidth = "5";
+            drawCtx.strokeStyle = "blue";
+            drawCtx.font = "20px Verdana";
+            drawCtx.fillStyle = "red";
+            adjustedCanvas = true;
+        }
+        }
+
 
 

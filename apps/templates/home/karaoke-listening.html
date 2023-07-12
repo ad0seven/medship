@@ -34,8 +34,8 @@
           </div>
         </div>
         <div class="start-stop text-center">
-          <button class="btn btn-dark" type="button" id="startCamera">I'm ready!</button>
-          <button class="btn btn-primary" type="button" id="stopCamera">Nailed it</button>
+          <button class="btn btn-dark" type="button" id="startCamera" onclick="startCamera()">I'm ready!</button>
+          <button class="btn btn-primary" type="button" id="stopCamera" onclick="stopCamera()">Nailed it</button>
         </div>
         <br>
         <p class="card-text fs-5"> Note: emotion recognition works the best when you position your face in the center of
@@ -129,23 +129,6 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script>
-document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
-    if(!entry.classList.contains('active')) {
-        document.querySelector('.feedback li.active').classList.remove('active');
-        entry.classList.add('active');
-    }
-    e.preventDefault();
-}));
-
-document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
-    if(!entry.classList.contains('active')) {
-        document.querySelector('.feedback li.active').classList.remove('active');
-        entry.classList.add('active');
-    }
-    e.preventDefault();
-}));
-</script>
 
 <script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 <script type="text/javascript" src="/static/assets/js/karaoke-listening.js"></script>
@@ -153,8 +136,5 @@ document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListene
 
 <!-- <script type="text/javascript" src="/static/assets/vendors/affdex/affdex.js"></script> -->
 
-<script>
-
-</script>
 
 {% endblock javascripts %}

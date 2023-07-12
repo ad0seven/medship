@@ -115,7 +115,7 @@ function startCamera() {
         };
         
 
-
+        
     const testType = 'karaoke-compassionate'
     const dataColumns = ['timestamp', 'smile', 'innerBrowRaise', 'lipPress','maxEmotion','compassion']
     var recordedData = [] //storing the spreadsheet data
@@ -217,8 +217,8 @@ function startCamera() {
         };
         
         const customThresholds = {
-            innerBrowRaise: 20,
-            smile: 10,
+            innerBrowRaise: 15,
+            smile: 5,
             lipPress: 10
           };
 
@@ -303,7 +303,8 @@ function startCamera() {
                 newDataRow.push(dataCol)
             }
         }
-    
+
+
         // Calculate maxEmotion and compassionDetected here
         const maxEmotion = getEmotionWithHighestScore(data.emotions);
         const compassionExpressions = {

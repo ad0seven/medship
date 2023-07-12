@@ -129,32 +129,12 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script>
-document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
-    if(!entry.classList.contains('active')) {
-        document.querySelector('.feedback li.active').classList.remove('active');
-        entry.classList.add('active');
-    }
-    e.preventDefault();
-}));
 
-document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
-    if(!entry.classList.contains('active')) {
-        document.querySelector('.feedback li.active').classList.remove('active');
-        entry.classList.add('active');
-    }
-    e.preventDefault();
-}));
-</script>
 
 <script type="text/javascript" src="https://download.affectiva.com/js/3.2/affdex.js"></script>
 <script type="text/javascript" src="/static/assets/js/karaoke-welcoming.js"></script>
 
 
-<!-- <script type="text/javascript" src="/static/assets/vendors/affdex/affdex.js"></script> -->
 
-<script>
-
-</script>
 
 {% endblock javascripts %}
