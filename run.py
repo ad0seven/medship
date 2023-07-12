@@ -109,6 +109,12 @@ def update_sheet():
 
         # Create data values
         data_values = [data_json["columns"]] + data_json["values"]
+        
+       # Append feedback
+        data_values.append(["Feedback:", data_json["feedback"]])
+
+         # Append quiz results
+        data_values.append(["Quiz Results:", data_json["quiz_results"]])
 
         # generate the data
         data = [{"range": sheet_title, "majorDimension": "ROWS", "values": data_values}]
@@ -142,6 +148,7 @@ import imageio
 import tempfile
 import time
 import datetime
+from urllib.parse import urlparse
 
 
 s3 = boto3.client(
@@ -214,7 +221,46 @@ def create_video():
             if "frame" in value:
                 del value["frame"]
                 
-        emotion_percents = get_dominant_emotion(frame_data)
+        # Get the emotions
+        emotion_percentages, emotion_percentage_dict = get_dominant_emotion(frame_data)
+
+        # Create a 2D list from the dictionary
+        data_values = [[k, v] for k, v in emotion_percentage_dict.items()]
+                                                
+        # Get page name
+        referer_url = request.headers.get("Referer")
+        path = urlparse(referer_url).path if referer_url else ''
+        test_type = path
+       # Use the page that is calling the function
+
+        # The ID of your Google Sheets file
+        spreadsheet_id = env.get("SPREADSHEET_ID")
+
+        service = build("sheets", "v4", credentials=creds)
+        sheet = service.spreadsheets()
+
+        # get the date in hh_mm_MM_DD_YYYY format 24 hour time + timezone
+        test_date = time.strftime("%H:%M_%m/%d/%Y_%Z")
+
+        sheet_title = (
+            current_user.username + "_" + test_type + "_" + test_date
+        )  # Create a unique title using the current timestamp
+
+        # Create a new sheet with the title
+        body = {"requests": [{"addSheet": {"properties": {"title": sheet_title}}}]}
+        sheet.batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
+
+
+        # generate the data
+        data = [{"range": sheet_title, "majorDimension": "ROWS", "values": data_values}]
+
+        body = {
+            "valueInputOption": "RAW",
+            "data": data,
+        }
+
+        # call the Sheets API
+        sheet.values().batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
 
         # Return the filename and modified frame_data in the response
         return (
@@ -223,7 +269,8 @@ def create_video():
                     # 'filename': filename,
                     "filename": presigned_url["url"]+presigned_url["fields"]["key"],
                     # "frame_data": frame_data,
-                    "frame_data": emotion_percents,
+                    "frame_data": emotion_percentages,
+
                 }
             ),
             200,
@@ -313,8 +360,11 @@ def get_dominant_emotion(data_dict):
     #now make a list with the percentages
     emotion_percentages = [int((emotion / total_samples) * 10) for emotion in emotion_list]
 
+   # Create a dictionary that pairs emotion labels with their percentages
+    emotion_percentage_dict = dict(zip(emotion_count.keys(), emotion_percentages))
+
     print(f'emotion_percentages = {emotion_percentages}')
-    return emotion_percentages
+    return emotion_percentages, emotion_percentage_dict
 
 if DEBUG:
     app.logger.info("DEBUG       = " + str(DEBUG))

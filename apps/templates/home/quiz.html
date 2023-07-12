@@ -142,6 +142,7 @@ submitButton.addEventListener('click', () => {
     score++;
   }
 
+  let quizResults = {};
 
   quizContainer.innerHTML = ''; // Here we clear the contents of the quiz container.
 
@@ -155,24 +156,29 @@ submitButton.addEventListener('click', () => {
   submitButton.style.display = 'none';
 });
     
-    nextButton.addEventListener('click', () => {
-      currentQuestionIndex++;
-    
-      if (currentQuestionIndex >= questions.length) {
+nextButton.addEventListener('click', () => {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex >= questions.length) {
         scoreContainer.style.display = '';
         scoreSpan.textContent = score;
         nextButton.style.display = 'none';
         resultsContainer.style.display = 'none';
-        sendScoreToGoogleSheets(); // Call the function here.
+
+        // Save quizResults to localStorage
+        let quizResults = {"score": score};
+        localStorage.setItem('quizResults', JSON.stringify(quizResults));
+        console.log('Quiz results saved:', quizResults);
+
         return;
-      }
-    
-      showQuestion(currentQuestionIndex);
-      nextButton.style.display = 'none';
-      submitButton.style.display = '';
-      resultsContainer.innerHTML = '';
-    });
-    
+    }
+
+    showQuestion(currentQuestionIndex);
+    nextButton.style.display = 'none';
+    submitButton.style.display = '';
+    resultsContainer.innerHTML = '';
+});
+
     showQuestion(currentQuestionIndex);
     
     let nextStageButton = document.getElementById('next-stage');
@@ -185,16 +191,16 @@ submitButton.addEventListener('click', () => {
         // replace this with the actual URL of the next stage
         window.location.href = 'karaoke-landing.html'; 
     });
-
-    function sendScoreToGoogleSheets() {
-      fetch('https://script.google.com/macros/s/AKfycbymk-fq4KkIeiysTUgpmDYKPP_kekHnORuAG4E0QCFftcQR4jtva2PHmNgAFzkiyCGq/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: 'user', score: score })
-      });
+   
+    if (currentQuestionIndex >= questions.length) {
+    scoreContainer.style.display = '';
+    scoreSpan.textContent = score;
+    quizResults["score"] = score;
+    nextButton.style.display = 'none';
+    resultsContainer.style.display = 'none'; 
+    localStorage.setItem('quizResults', JSON.stringify(quizResults));
+    console.error('score:', score); // This function will be added later
+    return;
     }
   }
   </script>

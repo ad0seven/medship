@@ -329,9 +329,34 @@ function startCamera() {
         recordedData.push(newDataRow)
     }
     
+
+    // Initialize the selectedFeedback variable globally
+    let selectedFeedback = '';
+    
+    // Initially disable the stopCamera button
+    document.querySelector('#stopCamera').disabled = true;
+    
+    // Feedback event listener
+    document.querySelectorAll('.feedback li').forEach(entry => entry.addEventListener('click', e => {
+        if(!entry.classList.contains('active')) {
+            document.querySelector('.feedback li.active').classList.remove('active');
+            entry.classList.add('active');
+            selectedFeedback = entry.className.split(' ')[0]; // Store the class name before 'active'
+            
+            // Enable the stopCamera button when feedback is selected
+            document.querySelector('#stopCamera').disabled = false;
+        }
+        e.preventDefault();
+    }));
+
     
     function updateSpreadsheet() {
         //send over the data to flask endpoint that updates the google sheet
+        let quizResults = JSON.parse(localStorage.getItem('quizResults'));
+        console.log('Quiz results retrieved:', quizResults);
+        
+        // Ensure we're only sending the score
+        let quizScore = quizResults.score;
     
         fetch('/update-sheet', {
             method: 'POST',
@@ -343,7 +368,9 @@ function startCamera() {
                 columns: dataColumns,
                 values: recordedData,
                 max_emotion: maxEmotion, // Include maxEmotion data
-                compassion_detected: compassion
+                compassion_detected: compassion,
+                feedback: selectedFeedback, // Include user feedback data
+                quiz_results: quizScore  // Send just the quiz score
             }),
         })
         .then(response => response.json())
@@ -358,8 +385,9 @@ function startCamera() {
         .catch((error) => {
             console.error('Error:', error);
         });
-    
     }
+    
+
 
     function adjustCanvas(bool) {
         if (!adjustedCanvas || bool) {
@@ -375,3 +403,4 @@ function startCamera() {
             adjustedCanvas = true;
         }
         }
+
