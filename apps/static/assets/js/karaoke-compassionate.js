@@ -1,48 +1,48 @@
-    let video = null;
-    let streamRef = null;
-    let adjustedCanvas = false;
-    let drawCanvas = null;
-    let drawCtx = null;
-    let captureCanvas = null;
-    let captureCtx = null;
-    let timeInterval = null;
-    let startedup = null;
-    let constraints = null;
-    let analytics = {
-        "angry": 0,
-        "disgust": 0,
-        "fear": 0,
-        "happy": 0,
-        "sad": 0,
-        "surprise": 0,
-        "neutral": 0,
-    }
+let video = null;
+let streamRef = null;
+let adjustedCanvas = false;
+let drawCanvas = null;
+let drawCtx = null;
+let captureCanvas = null;
+let captureCtx = null;
+let timeInterval = null;
+let startedup = null;
+let detectorInit = false;
+let constraints = null;
+let analytics = {
+    "angry": 0,
+    "disgust": 0,
+    "fear": 0,
+    "happy": 0,
+    "sad": 0,
+    "surprise": 0,
+    "neutral": 0,
+}
 
-    const verbose = true;
-    var secs = 0;
+const verbose = true;
+var secs = 0;
 
-    const ANALYSIS_INTERVAL = 100
-
-
-    // Decide whether your video has large or small face
-    // var faceMode = affdex.FaceDetectorMode.SMALL_FACES;
-    var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
-
-    // Decide which detector to use photo or stream
-    // var detector = new affdex.PhotoDetector(faceMode);
-    var detector = new affdex.FrameDetector(faceMode);
-
-    // Initialize Emotion and Expression detectors
-    detector.detectAllEmotions();
-    detector.detectAllExpressions();
-    detector.detectAllEmojis();
-    detector.detectAllAppearance();
+const ANALYSIS_INTERVAL = 100
 
 
-    function startup() {
+// Decide whether your video has large or small face
+// var faceMode = affdex.FaceDetectorMode.SMALL_FACES;
+var faceMode = affdex.FaceDetectorMode.LARGE_FACES;
+
+// Decide which detector to use photo or stream
+// var detector = new affdex.PhotoDetector(faceMode);
+var detector = new affdex.FrameDetector(faceMode);
+
+// Initialize Emotion and Expression detectors
+detector.detectAllEmotions();
+detector.detectAllExpressions();
+detector.detectAllEmojis();
+detector.detectAllAppearance();
+
+function startup() {
     if (!startedup) {
         detector.start()
-        startCamera();
+        // startCamera();
         drawCanvas.width = drawCanvas.width;
         drawCanvas.width = video.videoWidth || drawCanvas.width;
         drawCanvas.height = video.videoHeight || drawCanvas.height;
@@ -54,63 +54,62 @@
         // drawCtx.fillStyle = "red";
         startedup = true;
     }
+}
+function startCamera() {
+    if (navigator.mediaDevices) {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then(function onSuccess(stream) {
+            const video = document.getElementById('videoElement');
+            streamRef = stream;
+            video.autoplay = true;
+            video.srcObject = stream;
+            timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
+        })
+    } else {
+        alert('getUserMedia is not supported in this browser.');
     }
-
-
-    function startCamera() {
-        if (navigator.mediaDevices) {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-            .then(function onSuccess(stream) {
-                const video = document.getElementById('videoElement');
-                streamRef = stream;
-                video.autoplay = true;
-                video.srcObject = stream;
-                timeInterval = setInterval(grab, ANALYSIS_INTERVAL);
-            })
-        } else {
-            alert('getUserMedia is not supported in this browser.');
-        }
-        }
-        
-        function stopInterval() {
-            clearInterval(timeInterval);
-        }
-
+    }
+    
+    function stopInterval() {
+        clearInterval(timeInterval);
+    }
+    
     function stopCamera() {
         if (streamRef === null) {
-        console.log("Stop Stream: Stream not started/stopped.");
+            console.log("Stop Stream: Stream not started/stopped.");
         }
         else if (streamRef.active) {
-        video.pause();
-        streamRef.getTracks()[0].stop();
+            video.pause();
+            streamRef.getTracks()[0].stop();
+    
+            detector.stop();
+    
+            video.srcObject = null;
+            stopInterval();
+            adjustCanvas();
+            updateSpreadsheet();
+            clearDrawCanvas();
 
-        detector.stop();
-
-        video.srcObject = null;
-        clearDrawCanvas();
-        stopInterval();
-        adjustCanvas();
-        updateSpreadsheet();
-        clearDrawCanvas();
-
-        startedup = false;
-        detectorInit = false;
-        
+            startedup = false;
+            detectorInit = false;
+    
+            //updateAnalytics(); //no idea what this does and its crashing the app
         }
     }
-
+    
     document.onreadystatechange = () => {
-    if (document.readyState === "complete") {
-        String.prototype.capitalize = function () {
-        return this.charAt(0).toUpperCase() + this.slice(1);
+        if (document.readyState === "complete") {
+            String.prototype.capitalize = function () {
+            return this.charAt(0).toUpperCase() + this.slice(1);
+            }
+            video = document.querySelector("#videoElement");
+            captureCanvas = document.getElementById("captureCanvas");
+            captureCtx = captureCanvas.getContext("2d");
+            drawCanvas = document.getElementById("drawCanvas");
+            drawCtx = drawCanvas.getContext("2d");
         }
-        video = document.querySelector("#videoElement");
-        captureCanvas = document.getElementById("captureCanvas");
-        captureCtx = captureCanvas.getContext("2d");
-        drawCanvas = document.getElementById("drawCanvas");
-        drawCtx = drawCanvas.getContext("2d");
-    }
-    };
+        };
+        
 
 
     const testType = 'karaoke-compassionate'
@@ -140,35 +139,36 @@
         secs += ANALYSIS_INTERVAL / 1000;
     }
 
-        detector.addEventListener('onInitializeSuccess', function () {
+    detector.addEventListener('onInitializeSuccess', function () {
         // console.log('detector initialized');
         detectorInit = true
-        });
+    });
 
-        detector.addEventListener("onImageResultsSuccess", function (faces, image, timestamp) {
-        // drawImage(image);
-        //$('#results').html("");
-        var time_key = "Timestamp";
-        var time_val = timestamp.toFixed(2); 
+    detector.addEventListener("onImageResultsSuccess", function (faces, image, timestamp) {
+    // drawImage(image);
+    //$('#results').html("");
+    var time_key = "Timestamp";
+    var time_val = timestamp.toFixed(2); 
 
-       //get global unix timestamp (more flexible for data analysis)
-       let unix_timestamp = new Date().getTime();
+     //get global unix timestamp (more flexible for data analysis)
+     let unix_timestamp = new Date().getTime();
 
-       if (verbose) {
-        console.log('#results', "Timestamp: " + timestamp.toFixed(2));
-        console.log('#results', "Number of faces found: " + faces.length);
-        console.log("Number of faces found: " + faces.length);
-    }
-    if (faces.length > 0) {
-        if (verbose) {
-            console.log('\nFACES RESULT')
-            console.log(faces) 
-        }
-        // drawFeaturePoints(image, faces[0].featurePoints);
-
-        updateStats(faces[0], unix_timestamp);
-
-        if (startedup) {
+     if (verbose) {
+         console.log('#results', "Timestamp: " + timestamp.toFixed(2));
+         console.log('#results', "Number of faces found: " + faces.length);
+         console.log("Number of faces found: " + faces.length);
+     }
+     if (faces.length > 0) {
+         if (verbose) {
+             console.log('\nFACES RESULT')
+             console.log(faces) 
+         }
+         // drawFeaturePoints(image, faces[0].featurePoints);
+ 
+         updateStats(faces[0], unix_timestamp);
+ 
+ 
+         if (startedup) {
             drawAffdexStats(image, faces[0]);
         }
     } else {
@@ -221,7 +221,7 @@
 
         const compassion = checkCompassionDetected(compassionExpressions, customThresholds) ? 'Detected' : 'Not Detected';
         
-        const text = `Compassion: ${compassion}\nInner Brow Raise: ${innerBrowRaise}\nLip Corners Pull: ${smile}\nLip Press: ${lipPress}\nDominant Emoji: ${emoji}`;
+        let text = `Compassion: ${compassion}\nInner Brow Raise: ${innerBrowRaise}\nLip Corners Pull: ${smile}\nLip Press: ${lipPress}\nDominant Emoji: ${emoji}`;
 
         contxt.font = "20px Arial";
         contxt.fillStyle = "white";
@@ -271,11 +271,18 @@
       }
 
       
-    
     function clearDrawCanvas() {
         let contxt = document.getElementById("drawCanvas").getContext("2d");
         contxt.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         console.log("Cleared draw canvas");
+      }
+
+      function convertCamelCaseToSpaces(str) {
+        // Use regular expressions to find uppercase letters preceded by a lowercase letter
+        // and insert a space before them
+        return str.replace(/([a-z])([A-Z])/g, '$1 $2')
+                  // Replace all uppercase letters with lowercase letters
+                  .toLowerCase();
       }
 
       function updateStats(data, timestamp){
