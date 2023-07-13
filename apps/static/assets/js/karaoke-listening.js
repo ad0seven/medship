@@ -7,6 +7,7 @@ let captureCanvas = null;
 let captureCtx = null;
 let timeInterval = null;
 let startedup = null;
+let detectorInit = false;
 let constraints = null;
 let analytics = {
     "angry": 0,
@@ -167,14 +168,22 @@ function grab() {
     if (faces.length > 0) {
         if (verbose) {
             console.log('\nFACES RESULT')
-            console.log(faces) }
+            console.log(faces) 
+        }
         // drawFeaturePoints(image, faces[0].featurePoints);
-        drawAffdexStats(image, faces[0]);
-    } else {
-        // If face is not detected skip entry.
-        console.log('Cannot find face, skipping entry');
-    };
+
+        updateStats(faces[0], unix_timestamp);
+
+
+        if (startedup) {
+           drawAffdexStats(image, faces[0]);
+       }
+   } else {
+       // If face is not detected skip entry.
+       console.log('Cannot find face, skipping entry');
+   };
 });
+
 
 //Draw the detected facial feature points on the image
 function drawAffdexStats(img, data) {
@@ -305,10 +314,10 @@ function clearDrawCanvas() {
         // Calculate maxEmotion and compassionDetected here
         const maxEmotion = getEmotionWithHighestScore(data.emotions);
         const listeningExpressions = {
-            browRaise: data.expressions.BrowRaise.toFixed(2),
+            browRaise: data.expressions.browRaise.toFixed(2),
             eyeWiden: data.expressions.eyeWiden.toFixed(2),
             smile: data.expressions.smile.toFixed(2),
-            engagement: data.emotions.engagement.toFixed(2),
+            engagement: data.emotions.engagement.toFixed(2)
         };
     
         const customThresholds = {

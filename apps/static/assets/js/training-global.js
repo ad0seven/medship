@@ -104,7 +104,7 @@ window.onload = function () {
 };
 
 function startListener() {
-  document.getElementById("canvas-text").innerText = "Loading...";
+  document.getElementById("canvas-text").innerText = "Please wait, loading takes 15-20s";
   navigator.mediaDevices
     .getUserMedia({ video: true, audio: false })
     .then((stream) => {
